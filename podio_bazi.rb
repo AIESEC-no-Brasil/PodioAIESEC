@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'active_support'
 require 'oauth2'
 require 'json'
@@ -35,7 +34,7 @@ class PodioBAZI
     test = true
 
     authenticate
-    podioDatabase = ControlDatabase.new(test)
+    podioDatabase = ControlDatabase.new(test) # Podio se conecta no IM General para saber quais são as workspaces e apps
     TM.new(podioDatabase.workspaces, podioDatabase.apps)
     #TODO GIPo
     #TODO GCDPo

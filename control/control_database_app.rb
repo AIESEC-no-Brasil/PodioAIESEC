@@ -11,16 +11,16 @@ class ControlDatabaseApp < PodioAppControl
                :workspace => 'relationship'}
 
     @fields_extra = {:entity => 'entity',
-                     :area => 'area-2',
-                     :type => 'type',
-                     :year => 'year'}
+                     :area   => 'area-2',
+                     :type   => 'type',
+                     :year   => 'year'}
   end
 
   # Get name of the app
   # @param index [Integer] Index of the item you want to retrieve
   # @return [String] The name of the app
   def name(index)
-    i = get_external_id_index(index,@fields[:name])
+    i = get_field_index_by_external_id(index,@fields[:name])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -28,7 +28,7 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The Podio id of the app
   def id(index)
-    i = get_external_id_index(index,@fields[:id])
+    i = get_field_index_by_external_id(index,@fields[:id])
     fields(index, i).to_i unless i.nil?
   end
 
@@ -36,7 +36,7 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The podio if of the app's workspace
   def workspace_id(index)
-    i = get_external_id_index(index,@fields[:workspace])
+    i = get_field_index_by_external_id(index,@fields[:workspace])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 
@@ -44,14 +44,14 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The item_id of the app's entity
   def entity(index)
-    get_field_from_relationship(workspace_id(index), @fields_extra[:entity], $type_of_data[:referency])
+    get_field_from_relationship(workspace_id(index), @fields_extra[:entity])
   end
 
   # Get the item_id of the apps's area
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The item_id of the app's area
   def area(index)
-    get_field_from_relationship(workspace_id(index), @fields_extra[:area], $type_of_data[:referency])
+    get_field_from_relationship(workspace_id(index), @fields_extra[:area])
   end
 
   # Get the category id of the app's type (ors, national, local)
@@ -61,13 +61,13 @@ class ControlDatabaseApp < PodioAppControl
   # * national = 2
   # * local = 3
   def type(index)
-    get_field_from_relationship(workspace_id(index), @fields_extra[:type], $type_of_data[:category])
+    get_field_from_relationship(workspace_id(index), @fields_extra[:type])
   end
 
   # Get the app's active year
   # @param index[Integer] Index of the item you want to retrieve
   # @return [Integer] Year
   def year(index)
-    get_field_from_relationship(workspace_id(index), @fields_extra[:year], $type_of_data[:integer])
+    get_field_from_relationship(workspace_id(index), @fields_extra[:year])
   end
 end
