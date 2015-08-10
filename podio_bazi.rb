@@ -7,6 +7,9 @@ require 'podio'
 require_relative 'control/control_database'
 require_relative 'tm/tm'
 
+# This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
+# areas of AIESEC in Brazil's Podio. It also automate procedures by controled data manipulation/duplication.
+
 class PodioBAZI
   def initialize
     data = File.read('senha').each_line()
