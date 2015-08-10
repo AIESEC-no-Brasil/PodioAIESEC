@@ -1,6 +1,6 @@
 require_relative 'podio_app_control'
 
-# Class that control every item at app 'app' at 'IM General' app
+# Class that control every item at 'app' app at 'IM General' app
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class ControlDatabaseApp < PodioAppControl
   # @param app_id [Integer] Id of the 'app' app
@@ -24,7 +24,7 @@ class ControlDatabaseApp < PodioAppControl
     fields(index, i).to_s unless i.nil?
   end
 
-  # Get podio id of the app
+  # Get Podio id of the app
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The Podio id of the app
   def id(index)
@@ -34,7 +34,7 @@ class ControlDatabaseApp < PodioAppControl
 
   # Get podio id of the app's workspace
   # @param index [Integer] Index of the item you want to retrieve
-  # @return [Integer] The podio if of the app' workspace
+  # @return [Integer] The podio if of the app's workspace
   def workspace_id(index)
     i = get_external_id_index(index,@fields[:workspace])
     fields(index, i)['item_id'].to_i unless i.nil?
@@ -42,7 +42,7 @@ class ControlDatabaseApp < PodioAppControl
 
   # Get the item_id of the app's entity
   # @param index [Integer] Index of the item you want to retrieve
-  # @return [Integer] The item_id of the app' entity
+  # @return [Integer] The item_id of the app's entity
   def entity(index)
     get_field_from_relationship(workspace_id(index), @fields_extra[:entity], $type_of_data[:referency])
   end
@@ -56,7 +56,7 @@ class ControlDatabaseApp < PodioAppControl
 
   # Get the category id of the app's type (ors, national, local)
   # @param index [Integer] Index of the item you want to retrieve
-  # @return [Integer] Category id of the app' type
+  # @return [Integer] Category id of the app's type
   # * ors = 1
   # * national = 2
   # * local = 3
