@@ -3,11 +3,11 @@ require 'uri'
 require_relative 'control_database_workspace'
 require_relative 'control_database_app'
 
+# Class that initialize and configurate every workspace and application that will be used by the script
+# @author Marcus Vinicius de Carvalo <marcus.carvalho@aiesec.net>
 class ControlDatabase
-  attr_accessor :workspace_control_items
-  attr_accessor :app_control_items
-  attr_accessor :log_control_items
 
+  # @param test [Boolean] Is this a test run?
   def initialize(test = false)
     workspace_control = nil
     app_control = nil
@@ -37,14 +37,22 @@ class ControlDatabase
 
     @workspace_control_items = ControlDatabaseWorkspace.new(workspace_control['app_id'])
     @app_control_items = ControlDatabaseApp.new(app_control['app_id'])
+    #TODO Log Control Items
 
   end
 
+  # Get class that control all items at 'workspaces' app
   def workspaces
     @workspace_control_items
   end
 
+  # Get class that control all items at 'app' app
   def apps
     @app_control_items
+  end
+
+  # Get class that control all items at 'log' app
+  def logs
+    @@log_control_items
   end
 end

@@ -1,5 +1,6 @@
 #TODO refactor
 # Class with all enums used at the project
+# @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesedc.net>
 class Enums
   $enum_apps_name = {:app1 => '1. Inscritos',
                      :app2 => '2. Abordagem',
