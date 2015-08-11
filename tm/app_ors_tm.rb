@@ -25,7 +25,7 @@ class AppORSTM < PodioAppControl
                :turno => 'melhor-turno-test',
                :programa_interesse => 'programa-de-interesse2',
                :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
-               :pessoa_que_indiciou => 'nome-da-pessoaentidade-que-lhe-indicou',
+               :pessoa_que_indicou => 'nome-da-pessoaentidade-que-lhe-indicou',
                :voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
                :vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe'}
   end

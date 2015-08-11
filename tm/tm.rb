@@ -134,6 +134,10 @@ class TM
           inscrito.set_entidade(@ors_app.entidade_id(i))
           inscrito.set_turno(@ors_app.turno(i))
           inscrito.set_programa_interesse(@ors_app.programa_interesse(i))
+          inscrito.set_conheceu_aiesec(@ors_app.conheceu_aiesec(i))
+          inscrito.set_pessoa_que_indicou(@ors_app.pessoa_que_indicou(i))
+          puts @ors_app.conheceu_aiesec(i)
+          puts @ors_app.pessoa_que_indicou(i)
           inscrito.set_voluntario_ferias(@ors_app.voluntario_ferias?(i))
           inscrito.set_projeto_especifico(@ors_app.projeto_especifico(i))
           inscrito.create
