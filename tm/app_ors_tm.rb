@@ -2,15 +2,18 @@ require_relative '../control/podio_app_control'
 require_relative '../enums'
 
 class AppORSTM < PodioAppControl
+
   def initialize(app_id)
     super(app_id)
     @fields = {:nome => 'nome',
                :sexo => 'sexo',
                :data_nascimento => 'data-de-nascimento-2',
-               :telefone => 'telefone',
-               :celular => 'celular',
+               :telefone => 'telefone-2',
+               :telefone_old => 'telefone-3',
+               :celular => 'celular-2',
                :operadora => 'operadora-test',
-               :email => 'text',
+               :email => 'email',
+               :email_old => 'email-2',
                :endereco => 'endereco2',
                :cep => 'cep',
                :cidade => 'cidade',
@@ -25,7 +28,7 @@ class AppORSTM < PodioAppControl
                :turno => 'melhor-turno-test',
                :programa_interesse => 'programa-de-interesse2',
                :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
-               :pessoa_que_indiciou => 'nome-da-pessoaentidade-que-lhe-indicou',
+               :pessoa_que_indicou => 'nome-da-pessoaentidade-que-lhe-indicou',
                :voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
                :vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe'}
   end
@@ -48,9 +51,6 @@ class AppORSTM < PodioAppControl
   def phones(index)
     i = get_external_id_index(index, @fields[:telefone])
     values(index, i) unless i.nil?
-  def telefone(index)
-    i = get_field_index_by_external_id(index, @fields[:telefone])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
   end
 
   def telefone(index)
@@ -61,8 +61,6 @@ class AppORSTM < PodioAppControl
   def celular(index)
     i = get_external_id_index(index, @fields[:celular])
     fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
-    i = get_field_index_by_external_id(index, @fields[:celular])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
   end
 
   def operadora(index)
@@ -77,8 +75,6 @@ class AppORSTM < PodioAppControl
 
   def email_text(index)
     i = get_external_id_index(index, @fields[:email_old])
-  def email(index)
-    i = get_field_index_by_external_id(index, @fields[:email])
     fields(index, i).to_s unless i.nil?
   end
 

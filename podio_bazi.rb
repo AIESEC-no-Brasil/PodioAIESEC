@@ -34,7 +34,7 @@ class PodioBAZI
     test = true
 
     authenticate
-    podioDatabase = ControlDatabase.new(test) # Podio se conecta no IM General para saber quais são as workspaces e apps
+    podioDatabase = ControlDatabase.new(test)
     TM.new(podioDatabase.workspaces, podioDatabase.apps)
     #TODO GIPo
     #TODO GCDPo
