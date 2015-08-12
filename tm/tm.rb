@@ -9,7 +9,14 @@ require_relative 'app5_membros'
 require_relative 'app_nacional_tm'
 require_relative '../enums'
 
+# This class initializes, configure and take care of the TM module.
+# The module is divided in 3 categories:
+# * 1. ORS ( 1 x )
+# * 2. Local ( Number of entities x )
+# * 3. National ( 1 x )
 class TM
+  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
+  # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(spaces, apps)
     abort('Wrong parameter for spaces') unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps') unless apps.is_a?(ControlDatabaseApp)
@@ -20,6 +27,11 @@ class TM
     flow
   end
 
+  # Detect and configure every ORS workspace and ORS app that is linked to TM
+  # @todo research how to raise global variable ors_space_id
+  # @todo research how to raise global variable ors_app
+  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
+  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
     limit = spaces.total_count-1
     for i in 0..limit
@@ -38,6 +50,7 @@ class TM
     end
   end
 
+  
   def configLocals(spaces, apps)
     @local_spaces_ids = []
     @local_apps_ids = {}

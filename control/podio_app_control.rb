@@ -54,7 +54,7 @@ class PodioAppControl
   end
 
   # @private
-  # Return the field index of a field using its external_id as reference
+  # Field index of a field using its external_id as reference
   # @param index [Integer] Index of the item you want to retrieve
   # @param external_id [String] External_id of that field you are searching for
   # @return [Integer] field index of the external_id you are searching for
@@ -71,7 +71,7 @@ class PodioAppControl
   end
 
   # @private
-  # Return the label of a field using its external_id as reference
+  # Label of a field using its external_id as reference
   # @param index [Integer] Index of the item you want to retrieve
   # @param external_id [String] External_id of that field you are searching for
   # @return [String] label of the external_id you are searching for
@@ -81,7 +81,7 @@ class PodioAppControl
   end
 
   # @private
-  # Return the type of data of a field using its external_id as reference
+  # Type of data of a field using its external_id as reference
   # @param index [Integer] Index of the item you want to retrieve
   # @param external_id [String] External_id of that field you are searching for
   # @return [String] Type of data of the external_id you are searching for
@@ -91,15 +91,32 @@ class PodioAppControl
   end
 
   # @private
+  # Make calls though Podio API to retrieve a list of items from the app
+  # @param index [Integer] Index of the item you want to retrieve
+  # @return [nil]
   def prepare_item(index)
     @item = Podio::Item.find_all(@app_id, :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on') if @index.nil? || @index != (index/@max)*@max
     @index = (index/@max)*@max
+    nil
   end
 
+  # @private
+  # Shortcut on the Podio item json array to get to it field value
+  # @param index [Integer] Index of the item you want to retrieve
+  # @param label_position [Integer] Index of the label you want to retrieve
   def fields(index, label_position)
     at_index(index)[:fields][label_position]['values'][0]['value']
   end
 
+  # @private
+  # Get the value from a field at a relationship field
+  # @param relationship_id [Integer] Item id of the relationship you wnat to retrieve
+  # @param external_id [String] External_id of the field you want to retrieve
+  # @return [Integer] if field is category (category id)
+  # @return [Integer] if field is app (referency) (referency item id)
+  # @return [Integer] if field is number (number)
+  # @return [Integer] if field is a contact/profile (contact id)
+  # @return [String]  if field is text (text)
   def get_field_from_relationship(relationship_id, external_id)
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
