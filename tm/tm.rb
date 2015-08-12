@@ -50,7 +50,11 @@ class TM
     end
   end
 
-  
+  # Detect and configure every Locals workspaces and Locals apps taht are linkted to TM
+  # @todo research how to raise global array local_spaces_ids
+  # @todo research how to raise global hash local_apps_ids
+  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
+  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configLocals(spaces, apps)
     @local_spaces_ids = []
     @local_apps_ids = {}
