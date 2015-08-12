@@ -2,16 +2,18 @@ require_relative '../control/podio_app_control'
 require_relative '../enums'
 
 class AppORSTM < PodioAppControl
-  
+
   def initialize(app_id)
     super(app_id)
     @fields = {:nome => 'nome',
                :sexo => 'sexo',
                :data_nascimento => 'data-de-nascimento-2',
-               :telefone => 'telefone',
-               :celular => 'celular',
+               :telefone => 'telefone-2',
+               :telefone_old => 'telefone-3',
+               :celular => 'celular-2',
                :operadora => 'operadora-test',
-               :email => 'text',
+               :email => 'email',
+               :email_old => 'email-2',
                :endereco => 'endereco2',
                :cep => 'cep',
                :cidade => 'cidade',
@@ -46,14 +48,19 @@ class AppORSTM < PodioAppControl
     DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
   end
 
-  def telefone(index)
+  def phones(index)
     i = get_external_id_index(index, @fields[:telefone])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
+    values(index, i) unless i.nil?
+  end
+
+  def telefone(index)
+    i = get_external_id_index(index, @fields[:telefone_old])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
   end
 
   def celular(index)
     i = get_external_id_index(index, @fields[:celular])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
   end
 
   def operadora(index)
@@ -61,8 +68,13 @@ class AppORSTM < PodioAppControl
     $enum_operadora.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
-  def email(index)
+  def emails(index)
     i = get_external_id_index(index, @fields[:email])
+    values(index, i) unless i.nil?
+  end
+
+  def email_text(index)
+    i = get_external_id_index(index, @fields[:email_old])
     fields(index, i).to_s unless i.nil?
   end
 

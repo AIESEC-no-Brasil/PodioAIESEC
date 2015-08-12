@@ -5,32 +5,34 @@ class App1Inscritos < PodioAppControl
 
   def initialize(app_id)
     super(app_id)
-    @fields = {:nome => 'title',
-               :sexo => 'sexo',
-               :data_nascimento => 'data-de-nascimento',
-               :telefone => 'telefone',
-               :celular => 'celular',
-               :operadora => 'category',
-               :email => 'e-mail',
-               :endereco => 'endereco',
-               :cep => 'cep',
-               :cidade => 'cidade',
-               :estado => 'relationship',
-               :formacao => 'category-2',
-               :curso => 'curso',
-               :semestre => 'semestre',
-               :faculdade => 'faculdade',
-               :ingles => 'nivel-de-ingles',
-               :espanhol => 'nivel-de-espanhol',
-               :entidade => 'relationship-2',
-               :turno => 'melhor-turno-para-a-aiesec-entrar-em-contato',
-               :programa_interesse => 'programa-de-interesse',
-               :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
-               :pessoa_que_indicou => 'nome-da-pessoa-que-te-indicou',
-               :voluntario_ferias => 'voce-esta-se-inscrevendo-especificamente-para-o-program',
-               :vaga_especifica => 'caso-voce-esteja-se-candidatando-a-algum-projetovaga-es',
-               :responsavel => 'responsavel-local',
-               :abordado => 'foi-abordado'}
+    @fields = {:nome => 'nome',
+     :sexo => 'sexo',
+     :data_nascimento => 'data-de-nascimento-2',
+     :telefone => 'telefone-2',
+     :telefone_old => 'telefone-3',
+     :celular => 'celular-2',
+     :operadora => 'operadora-test',
+     :email => 'email',
+     :email_old => 'email-2',
+     :endereco => 'endereco2',
+     :cep => 'cep',
+     :cidade => 'cidade',
+     :estado => 'estado2',
+     :formacao => 'formacao2',
+     :curso => 'curso',
+     :semestre => 'semestre-2',
+     :faculdade => 'faculdade',
+     :ingles => 'nivel-de-ingles',
+     :espanhol => 'nivel-de-espanhol',
+     :entidade => 'aiesec-mais-proxima2',
+     :turno => 'melhor-turno-test',
+     :programa_interesse => 'programa-de-interesse2',
+     :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
+     :pessoa_que_indicou => 'nome-da-pessoaentidade-que-lhe-indicou',
+     :voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
+     :vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
+     :responsavel => 'responsavel-local',
+     :abordado => 'foi-abordado'}
   end
 
   def nome_completo(index)
@@ -64,9 +66,18 @@ class App1Inscritos < PodioAppControl
     @data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
   end
 
-  def telefone(index)
+  def phones(index)
     i = get_external_id_index(index, @fields[:telefone])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
+    values(index, i) unless i.nil?
+  end
+
+  def set_phones(param)
+    @phones = param
+  end
+
+  def telefone(index)
+    i = get_external_id_index(index, @fields[:telefone_old])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
   end
 
   def set_telefone(param)
@@ -76,7 +87,7 @@ class App1Inscritos < PodioAppControl
 
   def celular(index)
     i = get_external_id_index(index, @fields[:celular])
-    fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
   end
 
   def set_celular(param)
@@ -93,13 +104,22 @@ class App1Inscritos < PodioAppControl
     @operadora = $enum_operadora[param]
   end
 
-  def email(index)
+  def emails(index)
     i = get_external_id_index(index, @fields[:email])
+    values(index, i) unless i.nil?
+  end
+
+  def set_emails(param)
+    @emails = param
+  end
+
+  def email_text(index)
+    i = get_external_id_index(index, @fields[:email_old])
     fields(index, i).to_s unless i.nil?
   end
 
-  def set_email(param)
-    @email = param
+  def set_email_text(param)
+    @email_text = param
   end
 
   def endereco(index)
@@ -278,10 +298,12 @@ class App1Inscritos < PodioAppControl
     hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
     hash_fields.merge!(@fields[:sexo] => @sexo || sexo(index))
     hash_fields.merge!(@fields[:data_nascimento] => {'start' => @data_nascimento || data_nascimento(index)})
-    hash_fields.merge!(@fields[:telefone] => @telefone || telefone(index))
+    hash_fields.merge!(@fields[:telefone] => @phones || phones(index))
+    hash_fields.merge!(@fields[:telefone_old] => @telefone || telefone(index))
     hash_fields.merge!(@fields[:celular] => @celular || celular(index))
     hash_fields.merge!(@fields[:operadora] => @operadora || operadora(index))
-    hash_fields.merge!(@fields[:email] => @email || email(index))
+    hash_fields.merge!(@fields[:email] => @emails || emails(index))
+    hash_fields.merge!(@fields[:email_old] => @email_text || email_text(index))
     hash_fields.merge!(@fields[:endereco] => @endereco || endereco(index))
     hash_fields.merge!(@fields[:cep] => @cep || cep(index))
     hash_fields.merge!(@fields[:cidade] => @cidade || cidade(index))
@@ -310,10 +332,12 @@ class App1Inscritos < PodioAppControl
     hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
     hash_fields.merge!(@fields[:sexo] => @sexo) unless @sexo.nil?
     hash_fields.merge!(@fields[:data_nascimento] => {'start' => @data_nascimento}) unless @data_nascimento.nil?
-    hash_fields.merge!(@fields[:telefone] => @telefone) unless @telefone.nil?
+    hash_fields.merge!(@fields[:telefone] => @phones) unless @phones.nil?
+    hash_fields.merge!(@fields[:telefone_old] => @telefone) unless @telefone.nil?
     hash_fields.merge!(@fields[:celular] => @celular) unless @celular.nil?
     hash_fields.merge!(@fields[:operadora] => @operadora) unless @operadora.nil?
-    hash_fields.merge!(@fields[:email] => @email) unless @email.nil?
+    hash_fields.merge!(@fields[:email] => @emails) unless @emails.nil?
+    hash_fields.merge!(@fields[:email_old] => @email_text) unless @email_text.nil?
     hash_fields.merge!(@fields[:endereco] => @endereco) unless @endereco.nil?
     hash_fields.merge!(@fields[:cep] => @cep) unless @cep.nil?
     hash_fields.merge!(@fields[:cidade] => @cidade) unless @cidade.nil?
