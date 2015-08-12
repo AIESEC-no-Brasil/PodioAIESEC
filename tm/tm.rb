@@ -94,7 +94,6 @@ class TM
         end
 
         @local_apps_ids[entity] = [app1, app2, app3, app4, app5]
-
       end
     end
 
@@ -119,9 +118,10 @@ class TM
   end
 
   def flow
+    puts @ors_app.total_count
     ors_to_local
     local_to_local
-    local_to_national
+    #local_to_national
   end
 
   def ors_to_local
@@ -134,10 +134,12 @@ class TM
           inscrito.set_nome_completo(@ors_app.nome_completo(i))
           inscrito.set_sexo(@ors_app.sexo(i))
           inscrito.set_data_nascimento(@ors_app.data_nascimento(i))
+          inscrito.set_phones(@ors_app.phones(i))
           inscrito.set_telefone(@ors_app.telefone(i))
           inscrito.set_celular(@ors_app.celular(i))
           inscrito.set_operadora(@ors_app.operadora(i))
-          inscrito.set_email(@ors_app.email(i))
+          inscrito.set_emails(@ors_app.emails(i))
+          inscrito.set_email_text(@ors_app.email_text(i))
           inscrito.set_endereco(@ors_app.endereco(i))
           inscrito.set_cep(@ors_app.cep(i))
           inscrito.set_cidade(@ors_app.cidade(i))
@@ -151,6 +153,8 @@ class TM
           inscrito.set_entidade(@ors_app.entidade_id(i))
           inscrito.set_turno(@ors_app.turno(i))
           inscrito.set_programa_interesse(@ors_app.programa_interesse(i))
+          inscrito.set_conheceu_aiesec(@ors_app.conheceu_aiesec(i))
+          inscrito.set_pessoa_que_indicou(@ors_app.pessoa_que_indicou(i))
           inscrito.set_voluntario_ferias(@ors_app.voluntario_ferias?(i))
           inscrito.set_projeto_especifico(@ors_app.projeto_especifico(i))
           inscrito.create
@@ -160,6 +164,51 @@ class TM
   end
 
   def local_to_local
+    for entity in @entities do
+      inscrito = @local_apps_ids[entity][0]
+      abordado = @local_apps_ids[entity][1]
+
+      abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
+      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+
+      for i in 0..inscrito.total_count-1
+          puts i
+          puts inscrito.email_text(i)
+          puts inscrito.telefone(i)
+          puts inscrito.abordado?(i)
+          puts
+        if inscrito.abordado?(i)
+          puts i
+          abordado.set_nome_completo(inscrito.nome_completo(i))
+          abordado.set_sexo(inscrito.sexo(i))
+          abordado.set_data_nascimento(inscrito.data_nascimento(i))
+          abordado.set_phones(inscrito.phones(i))
+          abordado.set_telefone(inscrito.telefone(i))
+          abordado.set_celular(inscrito.celular(i))
+          abordado.set_operadora(inscrito.operadora(i))
+          abordado.set_emails(inscrito.emails(i))
+          abordado.set_email_text(inscrito.email_text(i))
+          abordado.set_endereco(inscrito.endereco(i))
+          abordado.set_cep(inscrito.cep(i))
+          abordado.set_cidade(inscrito.cidade(i))
+          abordado.set_estado_id(inscrito.estado_id(i))
+          abordado.set_formacao(inscrito.formacao(i))
+          abordado.set_curso(inscrito.curso(i))
+          abordado.set_semestre(inscrito.semestre(i))
+          abordado.set_faculdade(inscrito.faculdade(i))
+          abordado.set_ingles(inscrito.ingles(i))
+          abordado.set_espanhol(inscrito.espanhol(i))
+          abordado.set_entidade(inscrito.entidade_id(i))
+          abordado.set_turno(inscrito.turno(i))
+          abordado.set_programa_interesse(inscrito.programa_interesse(i))
+          abordado.set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
+          abordado.set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
+          abordado.set_voluntario_ferias(inscrito.voluntario_ferias?(i))
+          abordado.set_projeto_especifico(inscrito.projeto_especifico(i))
+          abordado.create
+        end
+      end
+    end
   end
 
   def local_to_national

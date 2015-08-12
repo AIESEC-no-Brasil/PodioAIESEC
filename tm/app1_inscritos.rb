@@ -34,7 +34,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def nome_completo(index)
-    i = get_field_index_by_external_id(index, @fields[:nome])
+    i = get_external_id_index(index, @fields[:nome])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -43,7 +43,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def sexo(index)
-    i = get_field_index_by_external_id(index, @fields[:sexo])
+    i = get_external_id_index(index, @fields[:sexo])
     $enum_sexo.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -52,7 +52,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def data_nascimento(index)
-    i = get_field_index_by_external_id(index, @fields[:data_nascimento])
+    i = get_external_id_index(index, @fields[:data_nascimento])
     DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
   end
 
@@ -64,9 +64,21 @@ class App1Inscritos < PodioAppControl
     @data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
   end
 
+  def phones(index)
+    i = get_external_id_index(index, @fields[:telefone])
+    values(index, i) unless i.nil?
   def telefone(index)
     i = get_field_index_by_external_id(index, @fields[:telefone])
     fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
+  end
+
+  def set_phones(param)
+    @phones = param
+  end
+
+  def telefone(index)
+    i = get_external_id_index(index, @fields[:telefone_old])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
   end
 
   def set_telefone(param)
@@ -75,6 +87,8 @@ class App1Inscritos < PodioAppControl
   end
 
   def celular(index)
+    i = get_external_id_index(index, @fields[:celular])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
     i = get_field_index_by_external_id(index, @fields[:celular])
     fields(index, i).to_s.gsub!(/[^0-9]/,'') unless i.nil?
   end
@@ -85,7 +99,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def operadora(index)
-    i = get_field_index_by_external_id(index, @fields[:operadora])
+    i = get_external_id_index(index, @fields[:operadora])
     $enum_operadora.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -93,6 +107,17 @@ class App1Inscritos < PodioAppControl
     @operadora = $enum_operadora[param]
   end
 
+  def emails(index)
+    i = get_external_id_index(index, @fields[:email])
+    values(index, i) unless i.nil?
+  end
+
+  def set_emails(param)
+    @emails = param
+  end
+
+  def email_text(index)
+    i = get_external_id_index(index, @fields[:email_old])
   def email(index)
     i = get_field_index_by_external_id(index, @fields[:email])
     fields(index, i).to_s unless i.nil?
@@ -103,7 +128,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def endereco(index)
-    i = get_field_index_by_external_id(index, @fields[:endereco])
+    i = get_external_id_index(index, @fields[:endereco])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -112,7 +137,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def cep(index)
-    i = get_field_index_by_external_id(index, @fields[:cep])
+    i = get_external_id_index(index, @fields[:cep])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -121,7 +146,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def cidade(index)
-    i = get_field_index_by_external_id(index, @fields[:cidade])
+    i = get_external_id_index(index, @fields[:cidade])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -130,7 +155,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def estado_id(index)
-    i = get_field_index_by_external_id(index, @fields[:estado])
+    i = get_external_id_index(index, @fields[:estado])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 
@@ -139,7 +164,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def formacao(index)
-    i = get_field_index_by_external_id(index, @fields[:formacao])
+    i = get_external_id_index(index, @fields[:formacao])
     $enum_formacao.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -148,7 +173,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def curso(index)
-    i = get_field_index_by_external_id(index, @fields[:curso])
+    i = get_external_id_index(index, @fields[:curso])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -157,7 +182,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def semestre(index)
-    i = get_field_index_by_external_id(index, @fields[:semestre])
+    i = get_external_id_index(index, @fields[:semestre])
     $enum_semestre.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -166,7 +191,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def faculdade(index)
-    i = get_field_index_by_external_id(index, @fields[:faculdade])
+    i = get_external_id_index(index, @fields[:faculdade])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -175,7 +200,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def ingles(index)
-    i = get_field_index_by_external_id(index, @fields[:ingles])
+    i = get_external_id_index(index, @fields[:ingles])
     $enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -184,7 +209,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def espanhol(index)
-    i = get_field_index_by_external_id(index, @fields[:espanhol])
+    i = get_external_id_index(index, @fields[:espanhol])
     $enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -193,7 +218,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def entidade_id(index)
-    i = get_field_index_by_external_id(index, @fields[:entidade])
+    i = get_external_id_index(index, @fields[:entidade])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 
@@ -202,7 +227,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def turno(index)
-    i = get_field_index_by_external_id(index, @fields[:turno])
+    i = get_external_id_index(index, @fields[:turno])
     $enum_turno.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -211,7 +236,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def programa_interesse(index)
-    i = get_field_index_by_external_id(index, @fields[:programa_interesse])
+    i = get_external_id_index(index, @fields[:programa_interesse])
     $enum_programa.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -220,7 +245,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def conheceu_aiesec(index)
-    i = get_field_index_by_external_id(index, @fields[:como_conheceu_aiesec])
+    i = get_external_id_index(index, @fields[:como_conheceu_aiesec])
     $enum_conheceu.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -230,6 +255,7 @@ class App1Inscritos < PodioAppControl
 
   def pessoa_que_indicou(index)
     i = get_field_index_by_external_id(index, @fields[:pessoa_que_indiciou])
+    i = get_external_id_index(index, @fields[:pessoa_que_indicou])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -238,7 +264,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def voluntario_ferias?(index)
-    i = get_field_index_by_external_id(index, @fields[:volutnario_ferias])
+    i = get_external_id_index(index, @fields[:volutnario_ferias])
     $enum_inscricao_especifica.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
@@ -247,7 +273,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def projeto_especifico(index)
-    i = get_field_index_by_external_id(index, @fields[:vaga_especifica])
+    i = get_external_id_index(index, @fields[:vaga_especifica])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -256,7 +282,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def responsavel_id(index)
-    i = get_field_index_by_external_id(index, @fields[:responsavel])
+    i = get_external_id_index(index, @fields[:responsavel])
     fields(index, i)['profile_id'].to_i unless i.nil?
   end
 
@@ -265,7 +291,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def abordado?(index)
-    i = get_field_index_by_external_id(index, @fields[:abordado])
+    i = get_external_id_index(index, @fields[:abordado])
     fields(index, i)['id'].to_i unless i.nil?
   end
 

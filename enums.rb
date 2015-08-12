@@ -55,17 +55,17 @@ class Enums
                  :noite => 3}
   $enum_programa = {:jovenstalentos => 1,
                     :outro => 2}
-  $enum_conheceu = {:desconhecido => 1,
-                    :amigos_parentes => 2,
-                    :cartazes => 3,
-                    :saladeaula => 4,
-                    :entidadeestudantil => 5,
-                    :facebook_twitter => 6,
-                    :eventos => 7,
-                    :jornal_tv => 8,
-                    :emailmarketingfolder => 9,
-                    :flyer => 10,
-                    :postal => 11}
+  $enum_conheceu = {:desconhecido => 2,
+                    :amigos_parentes => 3,
+                    :cartazes => 4,
+                    :saladeaula => 5,
+                    :entidadeestudantil => 6,
+                    :facebook_twitter => 7,
+                    :eventos => 8,
+                    :jornal_tv => 9,
+                    :emailmarketingfolder => 10,
+                    :flyer => 11,
+                    :postal => 12}
   $enum_inscricao_especifica = {:sim => 1,
                                 :nao => 2}
   $enum_abordado = {:sim => 1,
