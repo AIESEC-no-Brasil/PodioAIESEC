@@ -26,7 +26,7 @@ class App1Inscritos < PodioAppControl
                :turno => 'melhor-turno-para-a-aiesec-entrar-em-contato',
                :programa_interesse => 'programa-de-interesse',
                :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
-               :pessoa_que_indiciou => 'nome-da-pessoa-que-te-indicou',
+               :pessoa_que_indicou => 'nome-da-pessoa-que-te-indicou',
                :voluntario_ferias => 'voce-esta-se-inscrevendo-especificamente-para-o-program',
                :vaga_especifica => 'caso-voce-esteja-se-candidatando-a-algum-projetovaga-es',
                :responsavel => 'responsavel-local',
@@ -229,7 +229,7 @@ class App1Inscritos < PodioAppControl
   end
 
   def pessoa_que_indicou(index)
-    i = get_external_id_index(index, @fields[:pessoa_que_indiciou])
+    i = get_external_id_index(index, @fields[:pessoa_que_indicou])
     fields(index, i).to_s unless i.nil?
   end
 

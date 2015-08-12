@@ -77,7 +77,7 @@ class TM
         end
 
         @local_apps_ids[entity] = [app1, app2, app3, app4, app5]
-
+        puts entity
       end
     end
 
@@ -136,8 +136,6 @@ class TM
           inscrito.set_programa_interesse(@ors_app.programa_interesse(i))
           inscrito.set_conheceu_aiesec(@ors_app.conheceu_aiesec(i))
           inscrito.set_pessoa_que_indicou(@ors_app.pessoa_que_indicou(i))
-          puts @ors_app.conheceu_aiesec(i)
-          puts @ors_app.pessoa_que_indicou(i)
           inscrito.set_voluntario_ferias(@ors_app.voluntario_ferias?(i))
           inscrito.set_projeto_especifico(@ors_app.projeto_especifico(i))
           inscrito.create
@@ -147,6 +145,42 @@ class TM
   end
 
   def local_to_local
+    for entity in @entities do
+      inscrito = @local_apps_ids[entity][0]
+      abordado = @local_apps_ids[entity][1]
+      puts inscrito.total_count
+      abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
+      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+      for i in 0..inscrito.total_count-1
+        if inscrito.abordado?(i)
+          abordado.set_nome_completo(inscrito.nome_completo(i))
+          abordado.set_sexo(inscrito.sexo(i))
+          abordado.set_data_nascimento(inscrito.data_nascimento(i))
+          abordado.set_telefone(inscrito.telefone(i))
+          abordado.set_celular(inscrito.celular(i))
+          abordado.set_operadora(inscrito.operadora(i))
+          abordado.set_email(inscrito.email(i))
+          abordado.set_endereco(inscrito.endereco(i))
+          abordado.set_cep(inscrito.cep(i))
+          abordado.set_cidade(inscrito.cidade(i))
+          abordado.set_estado_id(inscrito.estado_id(i))
+          abordado.set_formacao(inscrito.formacao(i))
+          abordado.set_curso(inscrito.curso(i))
+          abordado.set_semestre(inscrito.semestre(i))
+          abordado.set_faculdade(inscrito.faculdade(i))
+          abordado.set_ingles(inscrito.ingles(i))
+          abordado.set_espanhol(inscrito.espanhol(i))
+          abordado.set_entidade(inscrito.entidade_id(i))
+          abordado.set_turno(inscrito.turno(i))
+          abordado.set_programa_interesse(inscrito.programa_interesse(i))
+          abordado.set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
+          abordado.set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
+          abordado.set_voluntario_ferias(inscrito.voluntario_ferias?(i))
+          abordado.set_projeto_especifico(inscrito.projeto_especifico(i))
+          abordado.create
+        end
+      end
+    end
   end
 
   def local_to_national

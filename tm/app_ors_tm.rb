@@ -2,6 +2,7 @@ require_relative '../control/podio_app_control'
 require_relative '../enums'
 
 class AppORSTM < PodioAppControl
+  
   def initialize(app_id)
     super(app_id)
     @fields = {:nome => 'nome',
