@@ -52,6 +52,10 @@ class PodioAppControl
     at_index(index)[0][0][:fields][label_position]['values'][0]['value']
   end
 
+  def values(index, label_position)
+    at_index(index)[0][0][:fields][label_position]['values']
+  end
+
   def get_field_from_relationship(relationship_id, external_id, type_of_data)
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
