@@ -150,47 +150,63 @@ class TM
     for entity in @entities do
       inscrito = @local_apps_ids[entity][0]
       abordado = @local_apps_ids[entity][1]
+      dinamico = @local_apps_ids[entity][2]
+      entrevistado = @local_apps_ids[entity][3]
+      membro = @local_apps_ids[entity][4]
 
       abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
       abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+      abort('Wrong parameter for spaces') unless dinamico.is_a?(App3Dinamica)
+      abort('Wrong parameter for spaces') unless entrevistado.is_a?(App4Entrevista)
+      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
 
       for i in 0..inscrito.total_count-1
           puts i
-          puts inscrito.email_text(i)
-          puts inscrito.telefone(i)
-          puts inscrito.abordado?(i)
-          puts
-        if inscrito.abordado?(i)
+          puts 'Abordado: ' + inscrito.is_abordado?(i).to_s
+          puts 
+        if inscrito.is_abordado?(i)
           puts i
-          abordado.set_nome_completo(inscrito.nome_completo(i))
-          abordado.set_sexo(inscrito.sexo(i))
-          abordado.set_data_nascimento(inscrito.data_nascimento(i))
-          abordado.set_phones(inscrito.phones(i))
-          abordado.set_telefone(inscrito.telefone(i))
-          abordado.set_celular(inscrito.celular(i))
-          abordado.set_operadora(inscrito.operadora(i))
-          abordado.set_emails(inscrito.emails(i))
-          abordado.set_email_text(inscrito.email_text(i))
-          abordado.set_endereco(inscrito.endereco(i))
-          abordado.set_cep(inscrito.cep(i))
-          abordado.set_cidade(inscrito.cidade(i))
-          abordado.set_estado_id(inscrito.estado_id(i))
-          abordado.set_formacao(inscrito.formacao(i))
-          abordado.set_curso(inscrito.curso(i))
-          abordado.set_semestre(inscrito.semestre(i))
-          abordado.set_faculdade(inscrito.faculdade(i))
-          abordado.set_ingles(inscrito.ingles(i))
-          abordado.set_espanhol(inscrito.espanhol(i))
-          abordado.set_entidade(inscrito.entidade_id(i))
-          abordado.set_turno(inscrito.turno(i))
-          abordado.set_programa_interesse(inscrito.programa_interesse(i))
-          abordado.set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
-          abordado.set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
-          abordado.set_voluntario_ferias(inscrito.voluntario_ferias?(i))
-          abordado.set_projeto_especifico(inscrito.projeto_especifico(i))
+          abordado.populate(inscrito,i)
           abordado.create
         end
       end
+          #puts inscrito.at_index(1)
+
+      for i in 0..abordado.total_count-1
+          puts i
+          puts 'Compareceu dinamica: ' + abordado.is_compareceu_dinamica?(i).to_s
+          puts
+        if abordado.is_compareceu_dinamica?(i)
+          puts i
+          dinamico.populate(abordado,i)
+          dinamico.create
+        end
+      end
+          #puts abordado.at_index(1)
+
+      for i in 0..dinamico.total_count-1
+          puts i
+          puts 'Entrevistado: ' + dinamico.is_entrevistado?(i).to_s
+          puts
+        if dinamico.is_entrevistado?(i)
+          puts i
+          entrevistado.populate(dinamico,i)
+          entrevistado.create
+        end
+      end
+          #puts dinamico.at_index(1)
+
+      for i in 0..entrevistado.total_count-1
+          puts i
+          puts 'Virou Membro: ' + entrevistado.is_virou_membro?(i).to_s
+          puts
+        if entrevistado.is_virou_membro?(i)
+          puts i
+          membro.populate(entrevistado,i)
+          membro.create
+        end
+      end
+          #puts entrevistado.at_index(1)
     end
   end
 

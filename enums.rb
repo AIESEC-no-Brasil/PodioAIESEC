@@ -44,10 +44,10 @@ class Enums
                     :s8 => 8,
                     :s9 => 9,
                     :s10 => 10,
-                    :concluido => 11,
-                    :outro => 12}
-  $enum_lingua = {:desconhecido => 1,
-                  :basico => 2,
+                    :concluido => 12,
+                    :outro => 11}
+  $enum_lingua = {:desconhecido => 4,
+                  :basico => 1,
                   :intermediario => 2,
                   :avancado => 3}
   $enum_turno = {:manha => 1,
@@ -55,19 +55,21 @@ class Enums
                  :noite => 3}
   $enum_programa = {:jovenstalentos => 1,
                     :outro => 2}
-  $enum_conheceu = {:desconhecido => 2,
-                    :amigos_parentes => 3,
-                    :cartazes => 4,
-                    :saladeaula => 5,
-                    :entidadeestudantil => 6,
-                    :facebook_twitter => 7,
-                    :eventos => 8,
-                    :jornal_tv => 9,
-                    :emailmarketingfolder => 10,
-                    :flyer => 11,
-                    :postal => 12}
+  $enum_conheceu = {:desconhecido => 12,
+                    :amigos_parentes => 1,
+                    :cartazes => 2,
+                    :saladeaula => 3,
+                    :entidadeestudantil => 4,
+                    :facebook_twitter => 5,
+                    :eventos => 6,
+                    :jornal_tv => 7,
+                    :emailmarketingfolder => 80,
+                    :flyer => 9,
+                    :postal => 10}
   $enum_inscricao_especifica = {:sim => 1,
                                 :nao => 2}
   $enum_abordado = {:sim => 1,
                     :nao => 2}
+  $enum_boolean = {:sim => 2,
+                    :nao => 1}
 end
