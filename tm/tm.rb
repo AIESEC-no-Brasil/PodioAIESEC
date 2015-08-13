@@ -161,52 +161,32 @@ class TM
       abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
 
       for i in 0..inscrito.total_count-1
-          puts i
-          puts 'Abordado: ' + inscrito.is_abordado?(i).to_s
-          puts 
         if inscrito.is_abordado?(i)
-          puts i
           abordado.populate(inscrito,i)
           abordado.create
         end
       end
-          #puts inscrito.at_index(1)
 
       for i in 0..abordado.total_count-1
-          puts i
-          puts 'Compareceu dinamica: ' + abordado.is_compareceu_dinamica?(i).to_s
-          puts
         if abordado.is_compareceu_dinamica?(i)
-          puts i
           dinamico.populate(abordado,i)
           dinamico.create
         end
       end
-          #puts abordado.at_index(1)
 
       for i in 0..dinamico.total_count-1
-          puts i
-          puts 'Entrevistado: ' + dinamico.is_entrevistado?(i).to_s
-          puts
         if dinamico.is_entrevistado?(i)
-          puts i
           entrevistado.populate(dinamico,i)
           entrevistado.create
         end
       end
-          #puts dinamico.at_index(1)
 
       for i in 0..entrevistado.total_count-1
-          puts i
-          puts 'Virou Membro: ' + entrevistado.is_virou_membro?(i).to_s
-          puts
         if entrevistado.is_virou_membro?(i)
-          puts i
           membro.populate(entrevistado,i)
           membro.create
         end
       end
-          #puts entrevistado.at_index(1)
     end
   end
 
