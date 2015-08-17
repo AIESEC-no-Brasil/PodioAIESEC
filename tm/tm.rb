@@ -94,7 +94,6 @@ class TM
         end
 
         @local_apps_ids[entity] = [app1, app2, app3, app4, app5]
-
       end
     end
 
@@ -119,9 +118,10 @@ class TM
   end
 
   def flow
+    puts @ors_app.total_count
     ors_to_local
     local_to_local
-    local_to_national
+    #local_to_national
   end
 
   def ors_to_local
@@ -134,10 +134,12 @@ class TM
           inscrito.set_nome_completo(@ors_app.nome_completo(i))
           inscrito.set_sexo(@ors_app.sexo(i))
           inscrito.set_data_nascimento(@ors_app.data_nascimento(i))
+          inscrito.set_phones(@ors_app.phones(i))
           inscrito.set_telefone(@ors_app.telefone(i))
           inscrito.set_celular(@ors_app.celular(i))
           inscrito.set_operadora(@ors_app.operadora(i))
-          inscrito.set_email(@ors_app.email(i))
+          inscrito.set_emails(@ors_app.emails(i))
+          inscrito.set_email_text(@ors_app.email_text(i))
           inscrito.set_endereco(@ors_app.endereco(i))
           inscrito.set_cep(@ors_app.cep(i))
           inscrito.set_cidade(@ors_app.cidade(i))
@@ -151,6 +153,8 @@ class TM
           inscrito.set_entidade(@ors_app.entidade_id(i))
           inscrito.set_turno(@ors_app.turno(i))
           inscrito.set_programa_interesse(@ors_app.programa_interesse(i))
+          inscrito.set_conheceu_aiesec(@ors_app.conheceu_aiesec(i))
+          inscrito.set_pessoa_que_indicou(@ors_app.pessoa_que_indicou(i))
           inscrito.set_voluntario_ferias(@ors_app.voluntario_ferias?(i))
           inscrito.set_projeto_especifico(@ors_app.projeto_especifico(i))
           inscrito.create
@@ -160,6 +164,47 @@ class TM
   end
 
   def local_to_local
+    for entity in @entities do
+      inscrito = @local_apps_ids[entity][0]
+      abordado = @local_apps_ids[entity][1]
+      dinamico = @local_apps_ids[entity][2]
+      entrevistado = @local_apps_ids[entity][3]
+      membro = @local_apps_ids[entity][4]
+
+      abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
+      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+      abort('Wrong parameter for spaces') unless dinamico.is_a?(App3Dinamica)
+      abort('Wrong parameter for spaces') unless entrevistado.is_a?(App4Entrevista)
+      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
+
+      for i in 0..inscrito.total_count-1
+        if inscrito.is_abordado?(i)
+          abordado.populate(inscrito,i)
+          abordado.create
+        end
+      end
+
+      for i in 0..abordado.total_count-1
+        if abordado.is_compareceu_dinamica?(i)
+          dinamico.populate(abordado,i)
+          dinamico.create
+        end
+      end
+
+      for i in 0..dinamico.total_count-1
+        if dinamico.is_entrevistado?(i)
+          entrevistado.populate(dinamico,i)
+          entrevistado.create
+        end
+      end
+
+      for i in 0..entrevistado.total_count-1
+        if entrevistado.is_virou_membro?(i)
+          membro.populate(entrevistado,i)
+          membro.create
+        end
+      end
+    end
   end
 
   def local_to_national

@@ -108,6 +108,10 @@ class PodioAppControl
     at_index(index)[:fields][label_position]['values'][0]['value']
   end
 
+  def values(index, label_position)
+    at_index(index)[0][0][:fields][label_position]['values']
+  end
+
   # @private
   # Get the value from a field at a relationship field
   # @param relationship_id [Integer] Item id of the relationship you wnat to retrieve
@@ -117,7 +121,7 @@ class PodioAppControl
   # @return [Integer] if field is number (number)
   # @return [Integer] if field is a contact/profile (contact id)
   # @return [String]  if field is text (text)
-  def get_field_from_relationship(relationship_id, external_id)
+  def get_field_from_relationship(relationship_id, external_id, type_of_data)
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
 
