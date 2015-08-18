@@ -20,7 +20,7 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [String] The name of the app
   def name(index)
-    i = get_external_id_index(index,@fields[:name])
+    i = get_field_index_by_external_id(index,@fields[:name])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -28,7 +28,7 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The Podio id of the app
   def id(index)
-    i = get_external_id_index(index,@fields[:id])
+    i = get_field_index_by_external_id(index,@fields[:id])
     fields(index, i).to_i unless i.nil?
   end
 
@@ -36,7 +36,7 @@ class ControlDatabaseApp < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The podio if of the app's workspace
   def workspace_id(index)
-    i = get_external_id_index(index,@fields[:workspace])
+    i = get_field_index_by_external_id(index,@fields[:workspace])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 

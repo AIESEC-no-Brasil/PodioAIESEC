@@ -64,7 +64,7 @@ class PodioAppControl
 
     for i in 0..limit
       break if i >= limit
-      break if at_index(0)[:fields][i]['external_id'].eql? external_id
+      break if at_index(index)[:fields][i]['external_id'].eql? external_id
     end
 
     if i < limit then i else nil end
@@ -109,7 +109,7 @@ class PodioAppControl
   end
 
   def values(index, label_position)
-    at_index(index)[0][0][:fields][label_position]['values']
+    at_index(index)[:fields][label_position]['values']
   end
 
   # @private
@@ -121,7 +121,7 @@ class PodioAppControl
   # @return [Integer] if field is number (number)
   # @return [Integer] if field is a contact/profile (contact id)
   # @return [String]  if field is text (text)
-  def get_field_from_relationship(relationship_id, external_id, type_of_data)
+  def get_field_from_relationship(relationship_id, external_id)
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
 

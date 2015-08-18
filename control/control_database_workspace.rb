@@ -18,7 +18,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [String] The name of the workspace
   def name(index)
-    i = get_external_id_index(index,@fields[:name])
+    i = get_field_index_by_external_id(index,@fields[:name])
     fields(index, i).to_s unless i.nil?
   end
 
@@ -26,7 +26,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The Podio id of the workspace
   def id(index)
-    i = get_external_id_index(index,@fields[:id])
+    i = get_field_index_by_external_id(index,@fields[:id])
     fields(index, i).to_i unless i.nil?
   end
 
@@ -34,7 +34,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The item_id of the app's entity
   def entity(index)
-    i = get_external_id_index(index,@fields[:entity])
+    i = get_field_index_by_external_id(index,@fields[:entity])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 
@@ -42,7 +42,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The item_id of the workspace's area
   def area(index)
-    i = get_external_id_index(index,@fields[:area])
+    i = get_field_index_by_external_id(index,@fields[:area])
     fields(index, i)['item_id'].to_i unless i.nil?
   end
 
@@ -53,7 +53,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # * national = 2
   # * local = 3
   def type(index)
-    i = get_external_id_index(index,@fields[:type])
+    i = get_field_index_by_external_id(index,@fields[:type])
     fields(index, i)['id'].to_i unless i.nil?
   end
 
@@ -64,7 +64,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # * regular = 2
   # * light = 3
   def robot_type(index)
-    i = get_external_id_index(index,@fields[:robot])
+    i = get_field_index_by_external_id(index,@fields[:robot])
     fields(index,i)['id'].to_i unless i.nil?
   end
 
@@ -72,7 +72,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @param index[Integer] Index of the item you want to retrieve
   # @return [Integer] Year
   def year(index)
-    i = get_external_id_index(index,@fields[:year])
+    i = get_field_index_by_external_id(index,@fields[:year])
     fields(index, i).to_i unless i.nil?
   end
 end
