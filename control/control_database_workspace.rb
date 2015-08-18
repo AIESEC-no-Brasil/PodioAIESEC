@@ -1,6 +1,6 @@
 require_relative 'podio_app_control'
 
-# Class that control every item at 'workspace' app at 'IM General' app
+# Class that control every item at 'workspaces' app at 'IM General' app
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class ControlDatabaseWorkspace < PodioAppControl
   def initialize(app_id)
