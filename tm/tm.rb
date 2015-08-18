@@ -118,7 +118,6 @@ class TM
   end
 
   def flow
-    puts @ors_app.total_count
     ors_to_local
     local_to_local
     #local_to_national
@@ -163,6 +162,7 @@ class TM
     end
   end
 
+  # For all local apps, move the registers through customer flow.
   def local_to_local
     for entity in @entities do
       inscrito = @local_apps_ids[entity][0]
@@ -177,28 +177,32 @@ class TM
       abort('Wrong parameter for spaces') unless entrevistado.is_a?(App4Entrevista)
       abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
 
-      for i in 0..inscrito.total_count-1
+      limit = inscrito.total_count
+      for i in 0..limit-1
         if inscrito.is_abordado?(i)
           abordado.populate(inscrito,i)
           abordado.create
         end
       end
 
-      for i in 0..abordado.total_count-1
+      limit = abordado.total_count
+      for i in 0..limit-1
         if abordado.is_compareceu_dinamica?(i)
           dinamico.populate(abordado,i)
           dinamico.create
         end
       end
 
-      for i in 0..dinamico.total_count-1
+      limit = dinamico.total_count
+      for i in 0..limit-1
         if dinamico.is_entrevistado?(i)
           entrevistado.populate(dinamico,i)
           entrevistado.create
         end
       end
 
-      for i in 0..entrevistado.total_count-1
+      limit = entrevistado.total_count
+      for i in 0..limit-1
         if entrevistado.is_virou_membro?(i)
           membro.populate(entrevistado,i)
           membro.create
