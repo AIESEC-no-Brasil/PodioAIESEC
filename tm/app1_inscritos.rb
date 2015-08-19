@@ -431,16 +431,16 @@ class App1Inscritos < PodioAppControl
   # Getter for abordado of the lead == True
   # @param index [Integer] Index of the item you want to retrieve the value
   # @return [Boolean] If lead was 
-    def is_abordado?(index)
-      self.abordado(index) == $enum_boolean[:sim]
-    end
+  def is_abordado?(index)
+    abordado(index) == $enum_abordado.key($enum_abordado[:sim])
+  end
 
   # Getter for abordado of the lead
   # @param index [Integer] Index of the item you want to retrieve the value
   # @return [Boolean] If lead was 
   def abordado(index)
     i = get_field_index_by_external_id(index, @fields[:abordado])
-    fields(index, i)['id'].to_i unless i.nil?
+    $enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
   # Setter for abordado of the lead
@@ -452,7 +452,6 @@ class App1Inscritos < PodioAppControl
   # Populate self variables with the values of intervield fields
   # @param entrevistado [App4Entrevistado] Reference of the intervield object
   # @param i [Integer] Index of the item you want to retrieve the value
-  # @return [nil]
   def populate(inscrito,i)
     self.set_nome_completo(inscrito.nome_completo(i))
     self.set_sexo(inscrito.sexo(i))
@@ -478,13 +477,12 @@ class App1Inscritos < PodioAppControl
     self.set_programa_interesse(inscrito.programa_interesse(i))
     self.set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
     self.set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
-    self.set_voluntario_ferias(inscrito.voluntario_ferias?(i))
+    self.set_voluntario_ferias(inscrito.voluntario_ferias(i))
     self.set_projeto_especifico(inscrito.projeto_especifico(i))
   end
 
   # Update register on Podio database
   # @param index [Integer] Index of the item you want to retrieve the value
-  # @return [self] Actual updated object
   def update(index)
     hash_fields = {}
     hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
@@ -511,7 +509,7 @@ class App1Inscritos < PodioAppControl
     hash_fields.merge!(@fields[:programa_interesse] => @programa_interesse || programa_interesse(index))
     hash_fields.merge!(@fields[:como_conheceu_aiesec] => @conheceu_aiesec || conheceu_aiesec(index))
     hash_fields.merge!(@fields[:pessoa_que_indicou] => @pessoa_que_indicou || pessoa_que_indicou(index))
-    hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias || voluntario_ferias?(index))
+    hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias || voluntario_ferias(index))
     hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico || projeto_especifico(index))
     hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
     hash_fields.merge!(@fields[:abordado] => @abordado || abordado(index))
@@ -521,7 +519,6 @@ class App1Inscritos < PodioAppControl
 
   # Create register on Podio database
   # @param index [Integer] Index of the item you want to retrieve the value
-  # @return [self] Actual updated object
   def create
     hash_fields = {}
     hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?

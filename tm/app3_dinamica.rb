@@ -72,7 +72,7 @@ class App3Dinamica < PodioAppControl
 
 	# Getter for  of the pushful
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String]  of the pushful
+	# @return [String] Birthday of the pushful
 	def data_nascimento(index)
 		i = get_field_index_by_external_id(index, @fields[:data_nascimento])
 		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
@@ -436,7 +436,7 @@ class App3Dinamica < PodioAppControl
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If pushful was 
     def is_abordado?(index)
-      self.abordado(index) == $enum_boolean[:sim]
+      self.abordado(index) == $enum_abordado.key($enum_abordado[:sim])
     end
 
 	# Getter for abordado of the pushful
@@ -444,7 +444,7 @@ class App3Dinamica < PodioAppControl
 	# @return [Boolean] If pushful was 
 	def abordado(index)
 		i = get_field_index_by_external_id(index, @fields[:abordado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for abordado of the pushful
@@ -457,7 +457,7 @@ class App3Dinamica < PodioAppControl
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If pushful was in group selection
 	def is_compareceu_dinamica?(index)
-  		self.compareceu_dinamica(index) == $enum_boolean[:sim]
+  		compareceu_dinamica(index) == $enum_boolean.key($enum_boolean[:sim])
 	end
 
 	# Getter for compareceu_dinamica of the pushful
@@ -465,7 +465,7 @@ class App3Dinamica < PodioAppControl
 	# @return [Integer] If pushful was in group selection
 	def compareceu_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for compareceu_dinamica of the pushful
@@ -474,11 +474,25 @@ class App3Dinamica < PodioAppControl
 		@compareceu_dinamica = $enum_boolean[param]
 	end
 
+	# Getter for data_da_dinamica of the pushful
+	# @param index [Integer] Index of the item you want to retrieve the value
+	# @return [String] data_da_dinamica of the pushful
+	def data_da_dinamica(index)
+		i = get_field_index_by_external_id(index, @fields[:data_da_dinamica])
+		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+	end
+
+	# Setter for data_da_dinamica of the pushful
+	# @param param [String] The value you want to set
+	def set_data_da_dinamica(param)
+		@data_da_dinamica = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
+	end
+
 	# Test if pushful is_entrevistado
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If pushful was in group selection
 	def is_entrevistado?(index)
-  		self.entrevistado(index) == $enum_boolean[:sim]
+  		self.entrevistado(index) == $enum_boolean.key($enum_boolean[:sim])
 	end
 
 	# Getter for entrevistado of the pushful
@@ -486,7 +500,7 @@ class App3Dinamica < PodioAppControl
 	# @return [Boolean] If pushful was pushful
 	def entrevistado(index)
 		i = get_field_index_by_external_id(index, @fields[:entrevistado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for entrevistado of the pushful
@@ -497,8 +511,6 @@ class App3Dinamica < PodioAppControl
 
 	# Populate self variables with the values of intervield fields
 	# @param entrevistado [App4Entrevistado] Reference of the intervield object
-	# @param i [Integer] Index of the item you want to retrieve the value
-	# @return [nil]
 	def populate(abordado,i)
 		self.set_nome_completo(abordado.nome_completo(i))
 		self.set_sexo(abordado.sexo(i))
@@ -533,7 +545,6 @@ class App3Dinamica < PodioAppControl
 
 	# Update register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def update(index)
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
@@ -565,6 +576,7 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
 		hash_fields.merge!(@fields[:abordado] => @abordado || abordado(index))
 		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica(index))
+		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica || data_da_dinamica(index))
 		hash_fields.merge!(@fields[:entrevistado] => @entrevistado || entrevistado(index))
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
@@ -572,7 +584,6 @@ class App3Dinamica < PodioAppControl
 
 	# Create register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
@@ -604,6 +615,7 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
 		hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
 		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
+		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica) unless @data_da_dinamica.nil?
 		hash_fields.merge!(@fields[:entrevistado] => @entrevistado) unless @entrevistado.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })

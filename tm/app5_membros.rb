@@ -439,7 +439,7 @@ class App5Membros < PodioAppControl
 	# @return [Integer] If member was 
 	def abordado?(index)
 		i = get_field_index_by_external_id(index, @fields[:abordado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for abordado of the member
@@ -453,7 +453,7 @@ class App5Membros < PodioAppControl
 	# @return [Integer] If member was in group selection
 	def compareceu_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for compareceu_dinamica of the member
@@ -462,12 +462,26 @@ class App5Membros < PodioAppControl
 		@compareceu_dinamica = $enum_boolean[param]
 	end
 
+	# Getter for data_da_dinamica of the pushful
+	# @param index [Integer] Index of the item you want to retrieve the value
+	# @return [String] data_da_dinamica of the pushful
+	def data_da_dinamica(index)
+		i = get_field_index_by_external_id(index, @fields[:data_da_dinamica])
+		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+	end
+
+	# Setter for data_da_dinamica of the pushful
+	# @param param [String] The value you want to set
+	def set_data_da_dinamica(param)
+		@data_da_dinamica = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
+	end
+
 	# Getter for entrevistado of the member
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Integer] If member was interviewed
 	def entrevistado?(index)
 		i = get_field_index_by_external_id(index, @fields[:entrevistado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for entrevistado of the member
@@ -481,7 +495,7 @@ class App5Membros < PodioAppControl
 	# @return [Integer] If is a member
 	def virou_membro?(index)
 		i = get_field_index_by_external_id(index, @fields[:virou_membro])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for entrevistado of the member
@@ -493,45 +507,43 @@ class App5Membros < PodioAppControl
 	# Populate self variables with the values of intervield fields
 	# @param entrevistado [App4Entrevistado] Reference of the intervield object
 	# @param i [Integer] Index of the item you want to retrieve the value
-	# @return [nil]
 	def populate(entrevistado,i)
-		self.set_nome_completo(entrevistado.nome_completo(i))
-		self.set_sexo(entrevistado.sexo(i))
-		self.set_data_nascimento(entrevistado.data_nascimento(i))
-		self.set_phones(entrevistado.phones(i))
-		self.set_telefone(entrevistado.telefone(i))
-		self.set_celular(entrevistado.celular(i))
-		self.set_operadora(entrevistado.operadora(i))
-		self.set_emails(entrevistado.emails(i))
-		self.set_email_text(entrevistado.email_text(i))
-		self.set_endereco(entrevistado.endereco(i))
-		self.set_cep(entrevistado.cep(i))
-		self.set_cidade(entrevistado.cidade(i))
-		self.set_estado_id(entrevistado.estado_id(i))
-		self.set_formacao(entrevistado.formacao(i))
-		self.set_curso(entrevistado.curso(i))
-		self.set_semestre(entrevistado.semestre(i))
-		self.set_faculdade(entrevistado.faculdade(i))
-		self.set_ingles(entrevistado.ingles(i))
-		self.set_espanhol(entrevistado.espanhol(i))
-		self.set_entidade(entrevistado.entidade_id(i))
-		self.set_turno(entrevistado.turno(i))
-		self.set_programa_interesse(entrevistado.programa_interesse(i))
-		self.set_conheceu_aiesec(entrevistado.conheceu_aiesec(i))
-		self.set_pessoa_que_indicou(entrevistado.pessoa_que_indicou(i))
-		self.set_voluntario_ferias(entrevistado.voluntario_ferias?(i))
-		self.set_projeto_especifico(entrevistado.projeto_especifico(i))
-		self.set_responsavel_id(entrevistado.responsavel_id(i))
-		self.set_abordado(entrevistado.abordado?(i))
-		self.set_compareceu_dinamica(entrevistado.compareceu_dinamica?(i))
-		self.set_entrevistado(entrevistado.entrevistado?(i))
-		self.set_virou_membro(entrevistado.virou_membro?(i))
-		nil
+		set_nome_completo(entrevistado.nome_completo(i))
+		set_sexo(entrevistado.sexo(i))
+		set_data_nascimento(entrevistado.data_nascimento(i))
+		set_phones(entrevistado.phones(i))
+		set_telefone(entrevistado.telefone(i))
+		set_celular(entrevistado.celular(i))
+		set_operadora(entrevistado.operadora(i))
+		set_emails(entrevistado.emails(i))
+		set_email_text(entrevistado.email_text(i))
+		set_endereco(entrevistado.endereco(i))
+		set_cep(entrevistado.cep(i))
+		set_cidade(entrevistado.cidade(i))
+		set_estado_id(entrevistado.estado_id(i))
+		set_formacao(entrevistado.formacao(i))
+		set_curso(entrevistado.curso(i))
+		set_semestre(entrevistado.semestre(i))
+		set_faculdade(entrevistado.faculdade(i))
+		set_ingles(entrevistado.ingles(i))
+		set_espanhol(entrevistado.espanhol(i))
+		set_entidade(entrevistado.entidade_id(i))
+		set_turno(entrevistado.turno(i))
+		set_programa_interesse(entrevistado.programa_interesse(i))
+		set_conheceu_aiesec(entrevistado.conheceu_aiesec(i))
+		set_pessoa_que_indicou(entrevistado.pessoa_que_indicou(i))
+		set_voluntario_ferias(entrevistado.voluntario_ferias?(i))
+		set_projeto_especifico(entrevistado.projeto_especifico(i))
+		set_responsavel_id(entrevistado.responsavel_id(i))
+		set_abordado(entrevistado.abordado(i))
+		set_compareceu_dinamica(entrevistado.compareceu_dinamica(i))
+		set_data_da_dinamica(entrevistado.data_da_dinamica(i))
+		set_entrevistado(entrevistado.entrevistado(i))
+		set_virou_membro(entrevistado.virou_membro(i))
 	end
 
 	# Update register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def update(index)
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
@@ -563,6 +575,7 @@ class App5Membros < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
 		hash_fields.merge!(@fields[:abordado] => @abordado || abordado?(index))
 		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica?(index))
+		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica || data_da_dinamica(index))
 		hash_fields.merge!(@fields[:entrevistado] => @entrevistado || entrevistado?(index))
 		hash_fields.merge!(@fields[:virou_membro] => @virou_membro || virou_membro?(index))
 
@@ -571,7 +584,6 @@ class App5Membros < PodioAppControl
 
 	# Create register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
@@ -603,6 +615,7 @@ class App5Membros < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
 		hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
 		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
+		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica) unless @data_da_dinamica.nil?
 		hash_fields.merge!(@fields[:entrevistado] => @entrevistado) unless @entrevistado.nil?
 		hash_fields.merge!(@fields[:virou_membro] => @virou_membro) unless @virou_membro.nil?
 

@@ -153,7 +153,7 @@ class AppORSTM < PodioAppControl
     fields(index, i).to_s unless i.nil?
   end
 
-  def voluntario_ferias?(index)
+  def voluntario_ferias(index)
     i = get_field_index_by_external_id(index, @fields[:voluntario_ferias])
     $enum_inscricao_especifica.key(fields(index, i)['id'].to_i) unless i.nil?
   end

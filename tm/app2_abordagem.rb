@@ -434,7 +434,7 @@ class App2Abordagem < PodioAppControl
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If addressed was 
     def is_abordado?(index)
-      self.abordado(index) == $enum_boolean[:sim]
+      	abordado(index) == $enum_abordado.key($enum_abordado[:sim])
     end
 
 	# Getter for abordado of the addressed
@@ -442,7 +442,7 @@ class App2Abordagem < PodioAppControl
 	# @return [Boolean] If addressed was 
 	def abordado(index)
 		i = get_field_index_by_external_id(index, @fields[:abordado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for abordado of the addressed
@@ -455,7 +455,7 @@ class App2Abordagem < PodioAppControl
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If addressed was in group selection
 	def is_compareceu_dinamica?(index)
-  		self.compareceu_dinamica(index) == $enum_boolean[:sim]
+  		compareceu_dinamica(index) == $enum_boolean.key($enum_boolean[:sim])
 	end
 
 	# Getter for compareceu_dinamica of the addressed
@@ -463,7 +463,7 @@ class App2Abordagem < PodioAppControl
 	# @return [Integer] If addressed was in group selection
 	def compareceu_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for compareceu_dinamica of the addressed
@@ -475,41 +475,39 @@ class App2Abordagem < PodioAppControl
 	# Populate self variables with the values of intervield fields
 	# @param entrevistado [App4Entrevistado] Reference of the intervield object
 	# @param i [Integer] Index of the item you want to retrieve the value
-	# @return [nil]
 	def populate(inscrito,i)
-		self.set_nome_completo(inscrito.nome_completo(i))
-		self.set_sexo(inscrito.sexo(i))
-		self.set_data_nascimento(inscrito.data_nascimento(i))
-		self.set_phones(inscrito.phones(i))
-		self.set_telefone(inscrito.telefone(i))
-		self.set_celular(inscrito.celular(i))
-		self.set_operadora(inscrito.operadora(i))
-		self.set_emails(inscrito.emails(i))
-		self.set_email_text(inscrito.email_text(i))
-		self.set_endereco(inscrito.endereco(i))
-		self.set_cep(inscrito.cep(i))
-		self.set_cidade(inscrito.cidade(i))
-		self.set_estado_id(inscrito.estado_id(i))
-		self.set_formacao(inscrito.formacao(i))
-		self.set_curso(inscrito.curso(i))
-		self.set_semestre(inscrito.semestre(i))
-		self.set_faculdade(inscrito.faculdade(i))
-		self.set_ingles(inscrito.ingles(i))
-		self.set_espanhol(inscrito.espanhol(i))
-		self.set_entidade(inscrito.entidade_id(i))
-		self.set_turno(inscrito.turno(i))
-		self.set_programa_interesse(inscrito.programa_interesse(i))
-		self.set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
-		self.set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
-		self.set_voluntario_ferias(inscrito.voluntario_ferias?(i))
-		self.set_projeto_especifico(inscrito.projeto_especifico(i))
-		self.set_responsavel_id(inscrito.responsavel_id(i))
-		self.set_abordado(inscrito.abordado(i))
+		set_nome_completo(inscrito.nome_completo(i))
+		set_sexo(inscrito.sexo(i))
+		set_data_nascimento(inscrito.data_nascimento(i))
+		set_phones(inscrito.phones(i))
+		set_telefone(inscrito.telefone(i))
+		set_celular(inscrito.celular(i))
+		set_operadora(inscrito.operadora(i))
+		set_emails(inscrito.emails(i))
+		set_email_text(inscrito.email_text(i))
+		set_endereco(inscrito.endereco(i))
+		set_cep(inscrito.cep(i))
+		set_cidade(inscrito.cidade(i))
+		set_estado_id(inscrito.estado_id(i))
+		set_formacao(inscrito.formacao(i))
+		set_curso(inscrito.curso(i))
+		set_semestre(inscrito.semestre(i))
+		set_faculdade(inscrito.faculdade(i))
+		set_ingles(inscrito.ingles(i))
+		set_espanhol(inscrito.espanhol(i))
+		set_entidade(inscrito.entidade_id(i))
+		set_turno(inscrito.turno(i))
+		set_programa_interesse(inscrito.programa_interesse(i))
+		set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
+		set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
+		set_voluntario_ferias(inscrito.voluntario_ferias?(i))
+		set_projeto_especifico(inscrito.projeto_especifico(i))
+		set_responsavel_id(inscrito.responsavel_id(i))
+		set_abordado(inscrito.abordado(i))
 	end
 
 	# Update register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def update(index)
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
@@ -547,7 +545,6 @@ class App2Abordagem < PodioAppControl
 
 	# Create register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [self] Actual updated object
 	def create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
