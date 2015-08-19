@@ -123,6 +123,7 @@ class TM
     #local_to_national
   end
 
+  # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
     for entity in @entities do
       for i in 0..@ors_app.total_count-1
@@ -130,32 +131,7 @@ class TM
           inscrito = @local_apps_ids[entity][0]
           abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
 
-          inscrito.set_nome_completo(@ors_app.nome_completo(i))
-          inscrito.set_sexo(@ors_app.sexo(i))
-          inscrito.set_data_nascimento(@ors_app.data_nascimento(i))
-          inscrito.set_phones(@ors_app.phones(i))
-          inscrito.set_telefone(@ors_app.telefone(i))
-          inscrito.set_celular(@ors_app.celular(i))
-          inscrito.set_operadora(@ors_app.operadora(i))
-          inscrito.set_emails(@ors_app.emails(i))
-          inscrito.set_email_text(@ors_app.email_text(i))
-          inscrito.set_endereco(@ors_app.endereco(i))
-          inscrito.set_cep(@ors_app.cep(i))
-          inscrito.set_cidade(@ors_app.cidade(i))
-          inscrito.set_estado_id(@ors_app.estado_id(i))
-          inscrito.set_formacao(@ors_app.formacao(i))
-          inscrito.set_curso(@ors_app.curso(i))
-          inscrito.set_semestre(@ors_app.semestre(i))
-          inscrito.set_faculdade(@ors_app.faculdade(i))
-          inscrito.set_ingles(@ors_app.ingles(i))
-          inscrito.set_espanhol(@ors_app.espanhol(i))
-          inscrito.set_entidade(@ors_app.entidade_id(i))
-          inscrito.set_turno(@ors_app.turno(i))
-          inscrito.set_programa_interesse(@ors_app.programa_interesse(i))
-          inscrito.set_conheceu_aiesec(@ors_app.conheceu_aiesec(i))
-          inscrito.set_pessoa_que_indicou(@ors_app.pessoa_que_indicou(i))
-          inscrito.set_voluntario_ferias(@ors_app.voluntario_ferias?(i))
-          inscrito.set_projeto_especifico(@ors_app.projeto_especifico(i))
+          inscrito.populate(@ors_app,i)
           inscrito.create
         end
       end

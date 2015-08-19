@@ -436,7 +436,7 @@ class App5Membros < PodioAppControl
 
 	# Getter for abordado of the member
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If member was 
+	# @return [Integer] If member was 
 	def abordado?(index)
 		i = get_field_index_by_external_id(index, @fields[:abordado])
 		fields(index, i)['id'].to_i unless i.nil?
@@ -450,8 +450,8 @@ class App5Membros < PodioAppControl
 
 	# Getter for compareceu_dinamica of the member
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If member was in group selection
-	def compareceu_dinamica?(index)
+	# @return [Integer] If member was in group selection
+	def compareceu_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
 		fields(index, i)['id'].to_i unless i.nil?
 	end
@@ -464,7 +464,7 @@ class App5Membros < PodioAppControl
 
 	# Getter for entrevistado of the member
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If member was interviewed
+	# @return [Integer] If member was interviewed
 	def entrevistado?(index)
 		i = get_field_index_by_external_id(index, @fields[:entrevistado])
 		fields(index, i)['id'].to_i unless i.nil?
@@ -478,13 +478,13 @@ class App5Membros < PodioAppControl
 
 	# Getter for virou_membro of the member
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If is a member
+	# @return [Integer] If is a member
 	def virou_membro?(index)
 		i = get_field_index_by_external_id(index, @fields[:virou_membro])
 		fields(index, i)['id'].to_i unless i.nil?
 	end
 
-	# Setter for virou_membro of the member
+	# Setter for entrevistado of the member
 	# @param param [Integer] The value you want to set
 	def set_virou_membro(param)
 		@virou_membro = $enum_boolean[param]
