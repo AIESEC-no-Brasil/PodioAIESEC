@@ -158,6 +158,7 @@ class TM
         if inscrito.is_abordado?(i)
           abordado.populate(inscrito,i)
           abordado.create
+          inscrito.delete(i)
         end
       end
 
@@ -166,6 +167,7 @@ class TM
         if abordado.is_compareceu_dinamica?(i)
           dinamico.populate(abordado,i)
           dinamico.create
+          abordado.delete(i)
         end
       end
 
@@ -174,6 +176,7 @@ class TM
         if dinamico.is_entrevistado?(i)
           entrevistado.populate(dinamico,i)
           entrevistado.create
+          dinamico.delete(i)
         end
       end
 
@@ -182,6 +185,7 @@ class TM
         if entrevistado.is_virou_membro?(i)
           membro.populate(entrevistado,i)
           membro.create
+          entrevistado.delete(i)
         end
       end
     end

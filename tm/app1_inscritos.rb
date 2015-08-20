@@ -432,7 +432,7 @@ class App1Inscritos < PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve the value
   # @return [Boolean] If lead was 
   def is_abordado?(index)
-    abordado(index) == $enum_abordado.key($enum_abordado[:sim])
+    abordado(index) == $enum_boolean.key($enum_boolean[:sim])
   end
 
   # Getter for abordado of the lead
@@ -482,7 +482,7 @@ class App1Inscritos < PodioAppControl
   end
 
   # Update register on Podio database
-  # @param index [Integer] Index of the item you want to retrieve the value
+  # @param index [Integer] Index of the item you want to update
   def update(index)
     hash_fields = {}
     hash_fields.merge!(@fields[:nome] => @nome || nome_completo(index))
@@ -518,7 +518,6 @@ class App1Inscritos < PodioAppControl
   end
 
   # Create register on Podio database
-  # @param index [Integer] Index of the item you want to retrieve the value
   def create
     hash_fields = {}
     hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
@@ -549,6 +548,12 @@ class App1Inscritos < PodioAppControl
     hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico) unless @projeto_especifico.nil?
 
     Podio::Item.create(@app_id, { :fields => hash_fields })
+  end
+
+  # Delete register on Podio database
+  # @param index [Integer] Index of the item you want to delete the value
+  def delete(index)
+    Podio::Item.delete(item_id(index))
   end
 
 end

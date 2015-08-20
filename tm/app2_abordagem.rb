@@ -580,4 +580,10 @@ class App2Abordagem < PodioAppControl
 		Podio::Item.create(@app_id, { :fields => hash_fields })
 	end
 
+	# Delete register on Podio database
+	# @param index [Integer] Index of the item you want to delete the value
+	def delete(index)
+		Podio::Item.delete(item_id(index))
+	end
+
 end

@@ -35,7 +35,7 @@ class App4Entrevista < PodioAppControl
 			:responsavel => 'responsavel-local',
 			:abordado => 'foi-abordado',
 			:compareceu_dinamica => 'compareceu-a-dinamica',
-			:data_da_dinamcia => 'data-da-dinamica',
+			:data_da_dinamica => 'data-da-dinamica',
 			:entrevistado => 'entrevistado',
 			:virou_membro => 'virou-membro'
 		}
@@ -480,13 +480,13 @@ class App4Entrevista < PodioAppControl
 	# @return [String] data_da_dinamica of the pushful
 	def data_da_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:data_da_dinamica])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		#DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
 	end
 
 	# Setter for data_da_dinamica of the pushful
 	# @param param [String] The value you want to set
 	def set_data_da_dinamica(param)
-		@data_da_dinamica = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
+		#@data_da_dinamica = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Test if interviewed is_entrevistado
@@ -639,13 +639,18 @@ class App4Entrevista < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias) unless @voluntario_ferias.nil?
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico) unless @projeto_especifico.nil?
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
-		hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
-		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
+		#hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
+		#hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
 		hash_fields.merge!(@fields[:data_da_dinamica] => {'start' => @data_da_dinamica}) unless @data_da_dinamica.nil?
-		hash_fields.merge!(@fields[:entrevistado] => @entrevistado) unless @entrevistado.nil?
+		#hash_fields.merge!(@fields[:entrevistado] => @entrevistado) unless @entrevistado.nil?
 		hash_fields.merge!(@fields[:virou_membro] => @virou_membro) unless @virou_membro.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
 	end
 
+	# Delete register on Podio database
+	# @param index [Integer] Index of the item you want to delete the value
+	def delete(index)
+		Podio::Item.delete(item_id(index))
+	end
 end
