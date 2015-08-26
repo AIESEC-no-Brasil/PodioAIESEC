@@ -133,6 +133,7 @@ class TM
 
           inscrito.populate(@ors_app,i)
           inscrito.create
+          @ors_app.update_transferido(i)
         end
       end
     end

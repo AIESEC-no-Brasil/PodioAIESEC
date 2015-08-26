@@ -72,4 +72,6 @@ class Enums
                     :nao => 2}
   $enum_boolean = {:sim => 2,
                     :nao => 1}
+  $enum_foi_transferido_ors = {:sim => 1,
+                               :nao => 2}
 end
