@@ -433,88 +433,18 @@ class App4Entrevista < PodioAppControl
 		@responsavel = param.to_i
 	end
 
-	# Getter for abordado of the interviewed == True
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was 
-    def is_abordado?(index)
-      self.abordado(index) == $enum_boolean[:sim]
-    end
-
-	# Getter for abordado of the interviewed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was 
-	def abordado(index)
-		i = get_field_index_by_external_id(index, @fields[:abordado])
-		fields(index, i)['id'].to_i unless i.nil?
-	end
-
-	# Setter for abordado of the interviewed
-	# @param param [Integer] The value you want to set
-	def set_abordado(param)
-		@abordado = $enum_abordado[param]
-	end
-
-	# Test if interviewed compareceu_dinamica
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was in group selection
-	def is_compareceu_dinamica?(index)
-  		self.compareceu_dinamica(index) == $enum_boolean[:sim]
-	end
-
-	# Getter for compareceu_dinamica of the interviewed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] If interviewed was in group selection
-	def compareceu_dinamica(index)
-		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		fields(index, i)['id'].to_i unless i.nil?
-	end
-
-	# Setter for compareceu_dinamica of the interviewed
-	# @param param [Integer] The value you want to set
-	def set_compareceu_dinamica(param)
-		@compareceu_dinamica = $enum_boolean[param]
-	end
-
-	# Test if interviewed is_entrevistado
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was in group selection
-	def is_entrevistado?(index)
-  		self.entrevistado(index) == $enum_boolean[:sim]
-	end
-
-	# Getter for entrevistado of the interviewed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was interviewed
-	def entrevistado(index)
-		i = get_field_index_by_external_id(index, @fields[:entrevistado])
-		fields(index, i)['id'].to_i unless i.nil?
-	end
-
-	# Setter for entrevistado of the interviewed
-	# @param param [Integer] The value you want to set
-	def set_entrevistado(param)
-		@entrevistado = $enum_boolean[param]
-	end
-
-	# Test if interviewed is_virou_membro
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If interviewed was in group selection
-	def is_virou_membro?(index)
-  		self.virou_membro(index) == $enum_boolean[:sim]
-	end
-
 	# Getter for virou_membro of the interviewed
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If is a interviewed
 	def virou_membro(index)
 		i = get_field_index_by_external_id(index, @fields[:virou_membro])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_virou_membro.key[fields(index, i)['id'].to_i] unless i.nil?
 	end
 
 	# Setter for entrevistado of the interviewed
 	# @param param [Integer] The value you want to set
 	def set_virou_membro(param)
-		@virou_membro = $enum_boolean[param]
+		@virou_membro = $enum_virou_membro[param]
 	end
 
 	# Populate self variables with the values of intervield fields

@@ -247,10 +247,20 @@ class AppORSTM < PodioAppControl
   # Getter to know if person register was already transfered to local workspace
   # @param index [Integer] Index of the item you want to retrieve the value
   # @return [enum_foi_transferido] Enum that indicates if person was transfered or not
+  def foi_transferido(index)
+    i = get_field_index_by_external_id(index, @fields[:foi_transferido?])
+    $enum_foi_transferido_ors.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
+
+  # Getter to know if person register was already transfered to local workspace
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [enum_foi_transferido] Enum that indicates if person was transfered or not
   def foi_transferido?(index)
     i = get_field_index_by_external_id(index, @fields[:foi_transferido?])
-    $enum_foi_transferido_ors.key(fields(index, i).to_i) unless i.nil?
+    $enum_foi_transferido_ors.key(fields(index, i)['id'].to_i) unless i.nil?
   end
+
+
 
   # Mark the item as "transfered to local workspace"
   # @param index [Integer] Index of the item you want to update

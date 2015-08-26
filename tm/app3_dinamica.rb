@@ -474,25 +474,18 @@ class App3Dinamica < PodioAppControl
 		@compareceu_dinamica = $enum_boolean[param]
 	end
 
-	# Test if pushful is_entrevistado
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was in group selection
-	def is_entrevistado?(index)
-  		self.entrevistado(index) == $enum_boolean[:sim]
-	end
-
 	# Getter for entrevistado of the pushful
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If pushful was pushful
 	def entrevistado(index)
 		i = get_field_index_by_external_id(index, @fields[:entrevistado])
-		fields(index, i)['id'].to_i unless i.nil?
+		$enum_entrevistado.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for entrevistado of the pushful
 	# @param param [Integer] The value you want to set
 	def set_entrevistado(param)
-		@entrevistado = $enum_boolean[param]
+		@entrevistado = $enum_entrevistado[param]
 	end
 
 	# Populate self variables with the values of intervield fields
