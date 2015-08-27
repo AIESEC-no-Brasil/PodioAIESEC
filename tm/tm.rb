@@ -27,6 +27,8 @@ class TM
     flow
   end
 
+  private
+
   # Detect and configure every ORS workspace and ORS app that is linked to TM
   # @todo research how to raise global variable ors_space_id
   # @todo research how to raise global variable ors_app
@@ -144,18 +146,18 @@ class TM
 
   # For all local apps, move the registers through customer flow.
   def local_to_local
+    inscrito_to_abordado
+    abordado_to_dinamica
+    dinamica_to_entrevista
+    entrevista_to_membros
+  end
+
+  def inscrito_to_abordado
     for entity in @entities do
       inscrito = @local_apps_ids[entity][0]
       abordado = @local_apps_ids[entity][1]
-      dinamico = @local_apps_ids[entity][2]
-      entrevistado = @local_apps_ids[entity][3]
-      membro = @local_apps_ids[entity][4]
-
       abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
       abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
-      abort('Wrong parameter for spaces') unless dinamico.is_a?(App3Dinamica)
-      abort('Wrong parameter for spaces') unless entrevistado.is_a?(App4Entrevista)
-      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
 
       limit = inscrito.total_count-1
       for i in 0..limit
@@ -164,29 +166,65 @@ class TM
           abordado.create
           inscrito.delete(i)
         end
+        inscrito.refresh_item_list
+        abordado.refresh_item_list
       end
+    end
+  end
+
+  def abordado_to_dinamica
+    for entity in @entities do
+      abordado = @local_apps_ids[entity][1]
+      dinamica = @local_apps_ids[entity][2]
+      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+      abort('Wrong parameter for spaces') unless dinamica.is_a?(App3Dinamica)
 
       limit = abordado.total_count-1
       for i in 0..limit
         if $enum_compareceu_dinamica[abordado.compareceu_dinamica(i)] == $enum_compareceu_dinamica[:sim]
-          dinamico.populate(abordado,i)
-          dinamico.create
+          dinamica.populate(abordado,i)
+          dinamica.create
+          abordado.delete(i)
+        end
+        abordado.refresh_item_list
+        dinamica.refresh_item_list
+      end
+    end
+  end
+
+  def dinamica_to_entrevista
+    for entity in @entities do
+      dinamica = @local_apps_ids[entity][2]
+      entrevista = @local_apps_ids[entity][3]
+      abort('Wrong parameter for spaces') unless dinamica.is_a?(App3Dinamica)
+      abort('Wrong parameter for spaces') unless entrevista.is_a?(App4Entrevista)
+
+      limit = dinamica.total_count-1
+      for i in 0..limit
+        if $enum_entrevistado[dinamica.foi_entrevistado(i)] == $enum_entrevistado[:sim]
+          entrevista.populate(dinamica,i)
+          entrevista.create
+          dinamica.delete(i)
         end
       end
+      dinamica.refresh_item_list
+      entrevista.refresh_item_list
+    end
+  end
 
-      limit = dinamico.total_count-1
-      for i in 0..limit
-        if $enum_entrevistado[dinamico.entrevistado(i)] == $enum_entrevistado[:sim]
-          entrevistado.populate(dinamico,i)
-          entrevistado.create
-        end
-      end
+  def entrevista_to_membros
+    for entity in @entities do
+      entrevista = @local_apps_ids[entity][3]
+      membro = @local_apps_ids[entity][4]
+      abort('Wrong parameter for spaces') unless entrevista.is_a?(App4Entrevista)
+      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
 
-      limit = entrevistado.total_count-1
+      limit = entrevista.total_count-1
       for i in 0..limit
-        if $enum_virou_membro[entrevistado.virou_membro(i)] == $enum_virou_membro[:sim]
-          membro.populate(entrevistado,i)
+        if $enum_virou_membro[entrevista.virou_membro(i)] == $enum_virou_membro[:sim]
+          membro.populate(entrevista,i)
           membro.create
+          entrevista.delete(i)
         end
       end
     end

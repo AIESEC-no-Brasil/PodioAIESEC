@@ -68,16 +68,16 @@ class App1Inscritos < PodioAppControl
     @sexo = $enum_sexo[param]
   end
 
-  # Getter for  of the lead
+  # Getter for birthday of the lead
   # @param index [Integer] Index of the item you want to retrieve the value
-  # @return [String]  of the lead
+  # @return [String] Birthday of the lead
   def data_nascimento(index)
     i = get_field_index_by_external_id(index, @fields[:data_nascimento])
     DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
   end
 
   # Setter for data_nascimento of the lead
-  # @param param [String] The value you want to set
+  # @param param [DateTime] Birthday date
   def data_nascimento=(param)
     @data_nascimento = param.strftime('%Y-%m-%d %H:%M:%S')
   end

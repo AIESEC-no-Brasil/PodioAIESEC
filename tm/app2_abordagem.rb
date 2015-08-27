@@ -439,11 +439,16 @@ class App2Abordagem < PodioAppControl
     self.abordado(index) == $enum_boolean[:sim]
   end
 
+  # Getter for approached date of the addressed
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Approached date of the addressed
   def data_abordagem(index)
     i = get_field_index_by_external_id(index, @fields[:data_abordagem])
     DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
   end
 
+  # Setter for approached date
+  # @param param [DateTime] Approached date
   def data_abordagem=(param)
     @data_abordagem = param.strftime('%Y-%m-%d %H:%M:%S')
   end
