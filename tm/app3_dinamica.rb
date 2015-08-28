@@ -1,6 +1,8 @@
 require_relative '../control/podio_app_control'
 require_relative '../enums'
 
+# App "3. Dinâmica de grupo" at local TM workspaces
+# @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class App3Dinamica < PodioAppControl
 
 	def initialize(app_id)
@@ -50,7 +52,7 @@ class App3Dinamica < PodioAppControl
 	# Setter for name of the pushful
 	# @param param [String] The value you want to set
 	# @return [String] Name of the pushful
-	def set_nome_completo(param)
+	def nome_completo=(param)
 		@nome = param.to_s
 	end
 
@@ -65,7 +67,7 @@ class App3Dinamica < PodioAppControl
 	# Setter for sex of the pushful
 	# @param param [String] The value you want to set
 	# @return [Integer] Category Sex id of the pushful
-	def set_sexo(param)
+	def sexo=(param)
 		@sexo = $enum_sexo[param]
 	end
 
@@ -79,7 +81,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for data_nascimento of the pushful
 	# @param param [String] The value you want to set
-	def set_data_nascimento(param)
+	def data_nascimento=(param)
 		@data_nascimento = param.strftime('%Y-%m-%d %H:%M:%S')
 	end
 
@@ -89,7 +91,7 @@ class App3Dinamica < PodioAppControl
 	# @param day [Integer] 
 	# @param hour [Integer] 
 	# @param minute [Integer] 
-	def set_data_nascimento_format(year,month,day,hour,minute,second)
+	def data_nascimento_format=(year,month,day,hour,minute,second)
 		@data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
 	end
 
@@ -103,7 +105,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for phones of the pushful
 	# @param param [Array] The values you want to set
-	def set_phones(param)
+	def phones=(param)
 		@phones = param
 	end
 
@@ -117,7 +119,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for telefone of the pushful
 	# @param param [String] The value you want to set
-	def set_telefone(param)
+	def telefone=(param)
 		param.gsub!(/[^0-9]/,'')
 		@telefone = param
 	end
@@ -132,7 +134,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for celular of the pushful
 	# @param param [String] The value you want to set
-	def set_celular(param)
+	def celular=(param)
 		param.gsub!(/[^0-9]/,'')
 		@celular = param
 	end
@@ -147,7 +149,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for operadora of the pushful
 	# @param param [Integer] The value you want to set
-	def set_operadora(param)
+	def operadora=(param)
 		@operadora = $enum_operadora[param]
 	end
 
@@ -161,7 +163,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for emails of the pushful
 	# @param param [Array] The values you want to set
-	def set_emails(param)
+	def emails=(param)
 		@emails = param
 	end
 
@@ -175,7 +177,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for email_text of the pushful
 	# @param param [String] The value you want to set
-	def set_email_text(param)
+	def email_text=(param)
 		@email_text = param
 	end
 
@@ -189,7 +191,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for endereco of the pushful
 	# @param param [String] The value you want to set
-	def set_endereco(param)
+	def endereco=(param)
 		@endereco = param
 	end
 
@@ -203,7 +205,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for cep of the pushful
 	# @param param [String] The value you want to set
-	def set_cep(param)
+	def cep=(param)
 		@cep = param
 	end
 
@@ -217,7 +219,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for cidade of the pushful
 	# @param param [String] The value you want to set
-	def set_cidade(param)
+	def cidade=(param)
 		@cidade = param
 	end
 
@@ -231,7 +233,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for estado_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_estado_id(param)
+	def estado_id=(param)
 		@estado = param
 	end
 
@@ -245,7 +247,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for formacao of the pushful
 	# @param param [Integer] The value you want to set
-	def set_formacao(param)
+	def formacao=(param)
 		@formacao = $enum_formacao[param]
 	end
 
@@ -259,7 +261,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for curso of the pushful
 	# @param param [String] The value you want to set
-	def set_curso(param)
+	def curso=(param)
 		@curso = param
 	end
 
@@ -273,7 +275,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for semestre of the pushful
 	# @param param [Integer] The value you want to set
-	def set_semestre(param)
+	def semestre=(param)
 		@semestre = $enum_semestre[param]
 	end
 
@@ -287,7 +289,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for faculdade of the pushful
 	# @param param [String] The value you want to set
-	def set_faculdade(param)
+	def faculdade=(param)
 		@faculdade = param
 	end
 
@@ -301,7 +303,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for ingles of the pushful
 	# @param param [Integer] The value you want to set
-	def set_ingles(param)
+	def ingles=(param)
 		@ingles = $enum_lingua[param]
 	end
 
@@ -315,7 +317,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for espanhol of the pushful
 	# @param param [Integer] The value you want to set
-	def set_espanhol(param)
+	def espanhol=(param)
 		@espanhol = $enum_lingua[param]
 	end
 
@@ -329,7 +331,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for entidade_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_entidade(param)
+	def entidade=(param)
 		@entidade = param
 	end
 
@@ -343,7 +345,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for turno of the pushful
 	# @param param [Integer] The value you want to set
-	def set_turno(param)
+	def turno=(param)
 		@turno = $enum_turno[param]
 	end
 
@@ -357,7 +359,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for programa_interesse of the pushful
 	# @param param [Integer] The value you want to set
-	def set_programa_interesse(param)
+	def programa_interesse=(param)
 		@programa_interesse = $enum_programa[param]
 	end
 
@@ -371,7 +373,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for conheceu_aiesec of the pushful
 	# @param param [Integer] The value you want to set
-	def set_conheceu_aiesec(param)
+	def conheceu_aiesec=(param)
 		@conheceu_aiesec = $enum_conheceu[param]
 	end
 
@@ -385,7 +387,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for pessoa_que_indicou of the pushful
 	# @param param [String] The value you want to set
-	def set_pessoa_que_indicou(param)
+	def pessoa_que_indicou=(param)
 		@pessoa_que_indicou = param
 	end
 
@@ -399,7 +401,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for voluntario_ferias of the pushful
 	# @param param [Integer] The value you want to set
-	def set_voluntario_ferias(param)
+	def voluntario_ferias=(param)
 		@voluntario_ferias = $enum_inscricao_especifica[param]
 	end
 
@@ -413,7 +415,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for projeto_especifico of the pushful
 	# @param param [Integer] The value you want to set
-	def set_projeto_especifico(param)
+	def projeto_especifico=(param)
 		@projeto_especifico = param
 	end
 
@@ -427,7 +429,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for responsavel_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_responsavel_id(param)
+	def responsavel_id=(param)
 		@responsavel = param.to_i
 	end
 
@@ -469,7 +471,7 @@ class App3Dinamica < PodioAppControl
 
   # Setter for foi_entrevistado of the addressed
   # @param param [Symbol] The value you want to set
-  def foi_entrevistado(param)
+  def foi_entrevistado=(param)
     @entrevistado = $enum_entrevistado[param]
   end
 
@@ -477,36 +479,36 @@ class App3Dinamica < PodioAppControl
 	# @param abordado [App2Abordado] Reference of the Approached object
 	# @param i [Integer] Index of the item you want to retrieve
 	def populate(abordado,i)
-		self.set_nome_completo(abordado.nome_completo(i))
-		self.set_sexo(abordado.sexo(i))
-		self.set_data_nascimento(abordado.data_nascimento(i))
-		self.set_phones(abordado.phones(i))
-		self.set_telefone(abordado.telefone(i))
-		self.set_celular(abordado.celular(i))
-		self.set_operadora(abordado.operadora(i))
-		self.set_emails(abordado.emails(i))
-		self.set_email_text(abordado.email_text(i))
-		self.set_endereco(abordado.endereco(i))
-		self.set_cep(abordado.cep(i))
-		self.set_cidade(abordado.cidade(i))
-		self.set_estado_id(abordado.estado_id(i))
-		self.set_formacao(abordado.formacao(i))
-		self.set_curso(abordado.curso(i))
-		self.set_semestre(abordado.semestre(i))
-		self.set_faculdade(abordado.faculdade(i))
-		self.set_ingles(abordado.ingles(i))
-		self.set_espanhol(abordado.espanhol(i))
-		self.set_entidade(abordado.entidade_id(i))
-		self.set_turno(abordado.turno(i))
-		self.set_programa_interesse(abordado.programa_interesse(i))
-		self.set_conheceu_aiesec(abordado.conheceu_aiesec(i))
-		self.set_pessoa_que_indicou(abordado.pessoa_que_indicou(i))
-		self.set_voluntario_ferias(abordado.voluntario_ferias?(i))
-		self.set_projeto_especifico(abordado.projeto_especifico(i))
-		self.set_responsavel_id(abordado.responsavel_id(i))
+		self.nome_completo=(abordado.nome_completo(i))
+		self.sexo=(abordado.sexo(i))
+		self.data_nascimento=(abordado.data_nascimento(i))
+		self.phones=(abordado.phones(i))
+		self.telefone=(abordado.telefone(i))
+		self.celular=(abordado.celular(i))
+		self.operadora=(abordado.operadora(i))
+		self.emails=(abordado.emails(i))
+		self.email_text=(abordado.email_text(i))
+		self.endereco=(abordado.endereco(i))
+		self.cep=(abordado.cep(i))
+		self.cidade=(abordado.cidade(i))
+		self.estado_id=(abordado.estado_id(i))
+		self.formacao=(abordado.formacao(i))
+		self.curso=(abordado.curso(i))
+		self.semestre=(abordado.semestre(i))
+		self.faculdade=(abordado.faculdade(i))
+		self.ingles=(abordado.ingles(i))
+		self.espanhol=(abordado.espanhol(i))
+		self.entidade=(abordado.entidade_id(i))
+		self.turno=(abordado.turno(i))
+		self.programa_interesse=(abordado.programa_interesse(i))
+		self.conheceu_aiesec=(abordado.conheceu_aiesec(i))
+		self.pessoa_que_indicou=(abordado.pessoa_que_indicou(i))
+		self.voluntario_ferias=(abordado.voluntario_ferias?(i))
+		self.projeto_especifico=(abordado.projeto_especifico(i))
+		self.responsavel_id=(abordado.responsavel_id(i))
 		self.data_abordagem=(abordado.data_abordagem(i))
     self.data_dinamica=(DateTime.current)
-    self.foi_entrevistado($enum_entrevistado[:nao])
+    self.foi_entrevistado=($enum_entrevistado[:nao])
 	end
 
 	# Update register on Podio database
@@ -540,10 +542,9 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias || voluntario_ferias?(index))
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico || projeto_especifico(index))
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
-    hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_responsavel(index))
+    hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_abordagem(index))
     hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica || data_dinamica(index))
     hash_fields.merge!(@fields[:foi_entrevistado] => @entrevistado || foi_entrevistado(index))
-
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
 	end
