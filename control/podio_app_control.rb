@@ -43,6 +43,12 @@ class PodioAppControl
     @item[-2].to_i
   end
 
+  # Refresh the list of items from the database
+  def refresh_item_list
+    @index = nil
+    prepare_item(0)
+  end
+
   private
 
   # @private

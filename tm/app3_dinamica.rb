@@ -1,6 +1,8 @@
 require_relative '../control/podio_app_control'
 require_relative '../enums'
 
+# App "3. Dinâmica de grupo" at local TM workspaces
+# @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class App3Dinamica < PodioAppControl
 
 	def initialize(app_id)
@@ -33,10 +35,9 @@ class App3Dinamica < PodioAppControl
 			:voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
 			:vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 			:responsavel => 'responsavel-local',
-			:abordado => 'foi-abordado',
-			:compareceu_dinamica => 'compareceu-a-dinamica',
-			:data_da_dinamica => 'data-da-dinamica',
-			:entrevistado => 'entrevistado'
+			:data_abordagem => 'data-da-abordagem',
+			:data_dinamica => 'data-da-dinamica',
+			:foi_entrevistado => 'foi-entrevistado',
 		}
 	end
 
@@ -51,7 +52,7 @@ class App3Dinamica < PodioAppControl
 	# Setter for name of the pushful
 	# @param param [String] The value you want to set
 	# @return [String] Name of the pushful
-	def set_nome_completo(param)
+	def nome_completo=(param)
 		@nome = param.to_s
 	end
 
@@ -66,13 +67,13 @@ class App3Dinamica < PodioAppControl
 	# Setter for sex of the pushful
 	# @param param [String] The value you want to set
 	# @return [Integer] Category Sex id of the pushful
-	def set_sexo(param)
+	def sexo=(param)
 		@sexo = $enum_sexo[param]
 	end
 
 	# Getter for  of the pushful
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Birthday of the pushful
+	# @return [String]  of the pushful
 	def data_nascimento(index)
 		i = get_field_index_by_external_id(index, @fields[:data_nascimento])
 		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
@@ -80,7 +81,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for data_nascimento of the pushful
 	# @param param [String] The value you want to set
-	def set_data_nascimento(param)
+	def data_nascimento=(param)
 		@data_nascimento = param.strftime('%Y-%m-%d %H:%M:%S')
 	end
 
@@ -90,7 +91,7 @@ class App3Dinamica < PodioAppControl
 	# @param day [Integer] 
 	# @param hour [Integer] 
 	# @param minute [Integer] 
-	def set_data_nascimento_format(year,month,day,hour,minute,second)
+	def data_nascimento_format=(year,month,day,hour,minute,second)
 		@data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
 	end
 
@@ -104,7 +105,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for phones of the pushful
 	# @param param [Array] The values you want to set
-	def set_phones(param)
+	def phones=(param)
 		@phones = param
 	end
 
@@ -118,7 +119,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for telefone of the pushful
 	# @param param [String] The value you want to set
-	def set_telefone(param)
+	def telefone=(param)
 		param.gsub!(/[^0-9]/,'')
 		@telefone = param
 	end
@@ -133,7 +134,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for celular of the pushful
 	# @param param [String] The value you want to set
-	def set_celular(param)
+	def celular=(param)
 		param.gsub!(/[^0-9]/,'')
 		@celular = param
 	end
@@ -148,7 +149,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for operadora of the pushful
 	# @param param [Integer] The value you want to set
-	def set_operadora(param)
+	def operadora=(param)
 		@operadora = $enum_operadora[param]
 	end
 
@@ -162,7 +163,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for emails of the pushful
 	# @param param [Array] The values you want to set
-	def set_emails(param)
+	def emails=(param)
 		@emails = param
 	end
 
@@ -176,7 +177,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for email_text of the pushful
 	# @param param [String] The value you want to set
-	def set_email_text(param)
+	def email_text=(param)
 		@email_text = param
 	end
 
@@ -190,7 +191,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for endereco of the pushful
 	# @param param [String] The value you want to set
-	def set_endereco(param)
+	def endereco=(param)
 		@endereco = param
 	end
 
@@ -204,7 +205,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for cep of the pushful
 	# @param param [String] The value you want to set
-	def set_cep(param)
+	def cep=(param)
 		@cep = param
 	end
 
@@ -218,7 +219,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for cidade of the pushful
 	# @param param [String] The value you want to set
-	def set_cidade(param)
+	def cidade=(param)
 		@cidade = param
 	end
 
@@ -232,7 +233,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for estado_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_estado_id(param)
+	def estado_id=(param)
 		@estado = param
 	end
 
@@ -246,7 +247,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for formacao of the pushful
 	# @param param [Integer] The value you want to set
-	def set_formacao(param)
+	def formacao=(param)
 		@formacao = $enum_formacao[param]
 	end
 
@@ -260,7 +261,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for curso of the pushful
 	# @param param [String] The value you want to set
-	def set_curso(param)
+	def curso=(param)
 		@curso = param
 	end
 
@@ -274,7 +275,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for semestre of the pushful
 	# @param param [Integer] The value you want to set
-	def set_semestre(param)
+	def semestre=(param)
 		@semestre = $enum_semestre[param]
 	end
 
@@ -288,7 +289,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for faculdade of the pushful
 	# @param param [String] The value you want to set
-	def set_faculdade(param)
+	def faculdade=(param)
 		@faculdade = param
 	end
 
@@ -302,7 +303,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for ingles of the pushful
 	# @param param [Integer] The value you want to set
-	def set_ingles(param)
+	def ingles=(param)
 		@ingles = $enum_lingua[param]
 	end
 
@@ -316,7 +317,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for espanhol of the pushful
 	# @param param [Integer] The value you want to set
-	def set_espanhol(param)
+	def espanhol=(param)
 		@espanhol = $enum_lingua[param]
 	end
 
@@ -330,7 +331,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for entidade_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_entidade(param)
+	def entidade=(param)
 		@entidade = param
 	end
 
@@ -344,7 +345,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for turno of the pushful
 	# @param param [Integer] The value you want to set
-	def set_turno(param)
+	def turno=(param)
 		@turno = $enum_turno[param]
 	end
 
@@ -358,7 +359,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for programa_interesse of the pushful
 	# @param param [Integer] The value you want to set
-	def set_programa_interesse(param)
+	def programa_interesse=(param)
 		@programa_interesse = $enum_programa[param]
 	end
 
@@ -372,7 +373,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for conheceu_aiesec of the pushful
 	# @param param [Integer] The value you want to set
-	def set_conheceu_aiesec(param)
+	def conheceu_aiesec=(param)
 		@conheceu_aiesec = $enum_conheceu[param]
 	end
 
@@ -386,7 +387,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for pessoa_que_indicou of the pushful
 	# @param param [String] The value you want to set
-	def set_pessoa_que_indicou(param)
+	def pessoa_que_indicou=(param)
 		@pessoa_que_indicou = param
 	end
 
@@ -400,7 +401,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for voluntario_ferias of the pushful
 	# @param param [Integer] The value you want to set
-	def set_voluntario_ferias(param)
+	def voluntario_ferias=(param)
 		@voluntario_ferias = $enum_inscricao_especifica[param]
 	end
 
@@ -414,7 +415,7 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for projeto_especifico of the pushful
 	# @param param [Integer] The value you want to set
-	def set_projeto_especifico(param)
+	def projeto_especifico=(param)
 		@projeto_especifico = param
 	end
 
@@ -428,120 +429,86 @@ class App3Dinamica < PodioAppControl
 
 	# Setter for responsavel_id of the pushful
 	# @param param [Integer] The value you want to set
-	def set_responsavel_id(param)
+	def responsavel_id=(param)
 		@responsavel = param.to_i
 	end
 
-	# Getter for abordado of the pushful == True
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was 
-    def is_abordado?(index)
-      self.abordado(index) == $enum_abordado.key($enum_abordado[:sim])
-    end
+  # Getter for approached date of the pushful
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Approached date of the pushful
+  def data_abordagem(index)
+    i = get_field_index_by_external_id(index, @fields[:data_abordagem])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
 
-	# Getter for abordado of the pushful
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was 
-	def abordado(index)
-		i = get_field_index_by_external_id(index, @fields[:abordado])
-		$enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Setter for approached date
+  # @param param [DateTime] Approached date
+  def data_abordagem=(param)
+    @data_abordagem = param.strftime('%Y-%m-%d %H:%M:%S')
+  end
 
-	# Setter for abordado of the pushful
-	# @param param [Integer] The value you want to set
-	def set_abordado(param)
-		@abordado = $enum_abordado[param]
-	end
+  # Getter for dynamic date of the pushful
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Dynamic date of the pushful
+  def data_dinamica(index)
+    i = get_field_index_by_external_id(index, @fields[:data_dinamica])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
 
-	# Test if pushful compareceu_dinamica
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was in group selection
-	def is_compareceu_dinamica?(index)
-  		compareceu_dinamica(index) == $enum_boolean.key($enum_boolean[:sim])
-	end
+  # Setter for Dynamic date
+  # @param param [DateTime] Dynamic date
+  def data_dinamica=(param)
+    @data_dinamica = param.strftime('%Y-%m-%d %H:%M:%S')
+  end
 
-	# Getter for compareceu_dinamica of the pushful
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] If pushful was in group selection
-	def compareceu_dinamica(index)
-		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for foi_entrevistado of the pushful
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [enum_compareceu_dinamica] If pushful was in group selection
+  def foi_entrevistado(index)
+    i = get_field_index_by_external_id(index, @fields[:foi_entrevistado])
+    $enum_entrevistado.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for compareceu_dinamica of the pushful
-	# @param param [Integer] The value you want to set
-	def set_compareceu_dinamica(param)
-		@compareceu_dinamica = $enum_boolean[param]
-	end
+  # Setter for foi_entrevistado of the addressed
+  # @param param [Symbol] The value you want to set
+  def foi_entrevistado=(param)
+    @entrevistado = $enum_entrevistado[param]
+  end
 
-	# Getter for data_da_dinamica of the pushful
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] data_da_dinamica of the pushful
-	#TODO descobrir pq campo não é puxado do app
-	def data_da_dinamica(index)
-		i = get_field_index_by_external_id(index, @fields[:data_da_dinamica])
-		#DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil? || @item[0][0][:fields][i]['values'][0]['start_date'].nil?
-	end
-
-	# Setter for data_da_dinamica of the pushful
-	# @param param [String] The value you want to set
-	def set_data_da_dinamica(param)
-		#@data_da_dinamica = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
-	end
-
-	# Test if pushful is_entrevistado
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was in group selection
-	def is_entrevistado?(index)
-  		self.entrevistado(index) == $enum_boolean.key($enum_boolean[:sim])
-	end
-
-	# Getter for entrevistado of the pushful
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If pushful was pushful
-	def entrevistado(index)
-		i = get_field_index_by_external_id(index, @fields[:entrevistado])
-		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
-
-	# Setter for entrevistado of the pushful
-	# @param param [Integer] The value you want to set
-	def set_entrevistado(param)
-		@entrevistado = $enum_boolean[param]
-	end
-
-	# Populate self variables with the values of intervield fields
-	# @param entrevistado [App4Entrevistado] Reference of the intervield object
+	# Populate self variables with the values of an approached object
+	# @param abordado [App2Abordado] Reference of the Approached object
+	# @param i [Integer] Index of the item you want to retrieve
 	def populate(abordado,i)
-		self.set_nome_completo(abordado.nome_completo(i))
-		self.set_sexo(abordado.sexo(i))
-		self.set_data_nascimento(abordado.data_nascimento(i))
-		self.set_phones(abordado.phones(i))
-		self.set_telefone(abordado.telefone(i))
-		self.set_celular(abordado.celular(i))
-		self.set_operadora(abordado.operadora(i))
-		self.set_emails(abordado.emails(i))
-		self.set_email_text(abordado.email_text(i))
-		self.set_endereco(abordado.endereco(i))
-		self.set_cep(abordado.cep(i))
-		self.set_cidade(abordado.cidade(i))
-		self.set_estado_id(abordado.estado_id(i))
-		self.set_formacao(abordado.formacao(i))
-		self.set_curso(abordado.curso(i))
-		self.set_semestre(abordado.semestre(i))
-		self.set_faculdade(abordado.faculdade(i))
-		self.set_ingles(abordado.ingles(i))
-		self.set_espanhol(abordado.espanhol(i))
-		self.set_entidade(abordado.entidade_id(i))
-		self.set_turno(abordado.turno(i))
-		self.set_programa_interesse(abordado.programa_interesse(i))
-		self.set_conheceu_aiesec(abordado.conheceu_aiesec(i))
-		self.set_pessoa_que_indicou(abordado.pessoa_que_indicou(i))
-		self.set_voluntario_ferias(abordado.voluntario_ferias?(i))
-		self.set_projeto_especifico(abordado.projeto_especifico(i))
-		self.set_responsavel_id(abordado.responsavel_id(i))
-		self.set_abordado(abordado.abordado(i))
-		self.set_compareceu_dinamica(abordado.compareceu_dinamica(i))
+		self.nome_completo=(abordado.nome_completo(i))
+		self.sexo=(abordado.sexo(i))
+		self.data_nascimento=(abordado.data_nascimento(i))
+		self.phones=(abordado.phones(i))
+		self.telefone=(abordado.telefone(i))
+		self.celular=(abordado.celular(i))
+		self.operadora=(abordado.operadora(i))
+		self.emails=(abordado.emails(i))
+		self.email_text=(abordado.email_text(i))
+		self.endereco=(abordado.endereco(i))
+		self.cep=(abordado.cep(i))
+		self.cidade=(abordado.cidade(i))
+		self.estado_id=(abordado.estado_id(i))
+		self.formacao=(abordado.formacao(i))
+		self.curso=(abordado.curso(i))
+		self.semestre=(abordado.semestre(i))
+		self.faculdade=(abordado.faculdade(i))
+		self.ingles=(abordado.ingles(i))
+		self.espanhol=(abordado.espanhol(i))
+		self.entidade=(abordado.entidade_id(i))
+		self.turno=(abordado.turno(i))
+		self.programa_interesse=(abordado.programa_interesse(i))
+		self.conheceu_aiesec=(abordado.conheceu_aiesec(i))
+		self.pessoa_que_indicou=(abordado.pessoa_que_indicou(i))
+		self.voluntario_ferias=(abordado.voluntario_ferias?(i))
+		self.projeto_especifico=(abordado.projeto_especifico(i))
+		self.responsavel_id=(abordado.responsavel_id(i))
+		self.data_abordagem=(abordado.data_abordagem(i))
+    self.data_dinamica=(DateTime.current)
+    self.foi_entrevistado=($enum_entrevistado[:nao])
 	end
 
 	# Update register on Podio database
@@ -575,16 +542,14 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias || voluntario_ferias?(index))
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico || projeto_especifico(index))
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
-		hash_fields.merge!(@fields[:abordado] => @abordado || abordado(index))
-		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica(index))
-		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica || data_da_dinamica(index))
-		hash_fields.merge!(@fields[:entrevistado] => @entrevistado || entrevistado(index))
+    hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_abordagem(index))
+    hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica || data_dinamica(index))
+    hash_fields.merge!(@fields[:foi_entrevistado] => @entrevistado || foi_entrevistado(index))
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
 	end
 
 	# Create register on Podio database
-	# @param index [Integer] Index of the item you want to retrieve the value
 	def create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
@@ -614,17 +579,17 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias) unless @voluntario_ferias.nil?
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico) unless @projeto_especifico.nil?
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
-		#hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
-		#hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
-		hash_fields.merge!(@fields[:data_da_dinamica] => @data_da_dinamica) unless @data_da_dinamica.nil?
-		hash_fields.merge!(@fields[:entrevistado] => @entrevistado) unless @entrevistado.nil?
+    hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem) unless @data_abordagem.nil?
+    hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica) unless @data_dinamica.nil?
+    hash_fields.merge!(@fields[:foi_entrevistado] => @entrevistado) unless @entrevistado.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
-	end
+  end
 
-	# Delete register on Podio database
-	# @param index [Integer] Index of the item you want to delete the value
-	def delete(index)
-		Podio::Item.delete(item_id(index))
-	end
+  # Delete register on Podio database
+  # @param index [Integer] Index of the item you want to delete
+  def delete(index)
+    Podio::Item.delete(item_id(index))
+  end
+
 end

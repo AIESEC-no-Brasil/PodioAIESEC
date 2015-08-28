@@ -1,6 +1,8 @@
 require_relative '../control/podio_app_control'
 require_relative '../enums'
 
+# App "2. Abordagem" at local TM workspaces
+# @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class App2Abordagem < PodioAppControl
 
 	def initialize(app_id)
@@ -33,477 +35,472 @@ class App2Abordagem < PodioAppControl
 			:voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
 			:vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 			:responsavel => 'responsavel-local',
-			:abordado => 'foi-abordado',
+      :data_abordagem => 'data-da-abordagem',
 			:compareceu_dinamica => 'compareceu-a-dinamica'
 		}
 	end
 
-	# Getter for name of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Name of the addressed
-	def nome_completo(index)
-		i = get_field_index_by_external_id(index, @fields[:nome])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for name of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Name of the lead
+  def nome_completo(index)
+    i = get_field_index_by_external_id(index, @fields[:nome])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for name of the addressed
-	# @param param [String] The value you want to set
-	# @return [String] Name of the addressed
-	def set_nome_completo(param)
-		@nome = param.to_s
-	end
+  # Setter for name of the lead
+  # @param param [String] The value you want to set
+  # @return [String] Name of the lead
+  def nome_completo=(param)
+    @nome = param.to_s
+  end
 
-	# Getter for  of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String]  of the addressed
-	def sexo(index)
-		i = get_field_index_by_external_id(index, @fields[:sexo])
-		$enum_sexo.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for  of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String]  of the lead
+  def sexo(index)
+    i = get_field_index_by_external_id(index, @fields[:sexo])
+    $enum_sexo.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for sex of the addressed
-	# @param param [String] The value you want to set
-	# @return [Integer] Category Sex id of the addressed
-	def set_sexo(param)
-		@sexo = $enum_sexo[param]
-	end
+  # Setter for sex of the lead
+  # @param param [String] The value you want to set
+  # @return [Integer] Category Sex id of the lead
+  def sexo=(param)
+    @sexo = $enum_sexo[param]
+  end
 
-	# Getter for  of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String]  of the addressed
-	def data_nascimento(index)
-		i = get_field_index_by_external_id(index, @fields[:data_nascimento])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
-	end
+  # Getter for  of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String]  of the lead
+  def data_nascimento(index)
+    i = get_field_index_by_external_id(index, @fields[:data_nascimento])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
 
-	# Setter for data_nascimento of the addressed
-	# @param param [String] The value you want to set
-	def set_data_nascimento(param)
-		@data_nascimento = param.strftime('%Y-%m-%d %H:%M:%S')
-	end
+  # Setter for data_nascimento of the lead
+  # @param param [String] The value you want to set
+  def data_nascimento=(param)
+    @data_nascimento = param.strftime('%Y-%m-%d %H:%M:%S')
+  end
 
-	# Setter for data_nascimento date format of the addressed
-	# @param year [Integer] 
-	# @param month [Integer] 
-	# @param day [Integer] 
-	# @param hour [Integer] 
-	# @param minute [Integer] 
-	def set_data_nascimento_format(year,month,day,hour,minute,second)
-		@data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
-	end
+  # Setter for data_nascimento date format of the lead
+  # @param year [Integer]
+  # @param month [Integer]
+  # @param day [Integer]
+  # @param hour [Integer]
+  # @param minute [Integer]
+  def data_nascimento_format=(year,month,day,hour,minute,second)
+    @data_nascimento = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
+  end
 
-	# Getter for phones of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Array] List of Hashs with phone numbers of the addressed
-	def phones(index)
-		i = get_field_index_by_external_id(index, @fields[:telefone])
-		values(index, i) unless i.nil?
-	end
+  # Getter for phones of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Array] List of Hashs with phone numbers of the lead
+  def phones(index)
+    i = get_field_index_by_external_id(index, @fields[:telefone])
+    values(index, i) unless i.nil?
+  end
 
-	# Setter for phones of the addressed
-	# @param param [Array] The values you want to set
-	def set_phones(param)
-		@phones = param
-	end
+  # Setter for phones of the lead
+  # @param param [Array] The values you want to set
+  def phones=(param)
+    @phones = param
+  end
 
-	# Getter for telefone of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Phone of the addressed
-	def telefone(index)
-		i = get_field_index_by_external_id(index, @fields[:telefone_old])
-		fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
-	end
+  # Getter for telefone of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Phone of the lead
+  def telefone(index)
+    i = get_field_index_by_external_id(index, @fields[:telefone_old])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
+  end
 
-	# Setter for telefone of the addressed
-	# @param param [String] The value you want to set
-	def set_telefone(param)
-		param.gsub!(/[^0-9]/,'')
-		@telefone = param
-	end
+  # Setter for telefone of the lead
+  # @param param [String] The value you want to set
+  def telefone=(param)
+    param.gsub!(/[^0-9]/,'')
+    @telefone = param
+  end
 
-	# Getter for celular of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Celphone of the addressed
-	def celular(index)
-		i = get_field_index_by_external_id(index, @fields[:celular])
-		fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
-	end
+  # Getter for celular of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Celphone of the lead
+  def celular(index)
+    i = get_field_index_by_external_id(index, @fields[:celular])
+    fields(index, i).to_s.gsub(/[^0-9]/,'') unless i.nil?
+  end
 
-	# Setter for celular of the addressed
-	# @param param [String] The value you want to set
-	def set_celular(param)
-		param.gsub!(/[^0-9]/,'')
-		@celular = param
-	end
+  # Setter for celular of the lead
+  # @param param [String] The value you want to set
+  def celular=(param)
+    param.gsub!(/[^0-9]/,'')
+    @celular = param
+  end
 
-	# Getter for operadora of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of company phone of the addressed
-	def operadora(index)
-		i = get_field_index_by_external_id(index, @fields[:operadora])
-		$enum_operadora.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for operadora of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of company phone of the lead
+  def operadora(index)
+    i = get_field_index_by_external_id(index, @fields[:operadora])
+    $enum_operadora.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for operadora of the addressed
-	# @param param [Integer] The value you want to set
-	def set_operadora(param)
-		@operadora = $enum_operadora[param]
-	end
+  # Setter for operadora of the lead
+  # @param param [Integer] The value you want to set
+  def operadora=(param)
+    @operadora = $enum_operadora[param]
+  end
 
-	# Getter for emails of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Array] List of hashs emails of the addresseds
-	def emails(index)
-		i = get_field_index_by_external_id(index, @fields[:email])
-		values(index, i) unless i.nil?
-	end
+  # Getter for emails of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Array] List of hashs emails of the leads
+  def emails(index)
+    i = get_field_index_by_external_id(index, @fields[:email])
+    values(index, i) unless i.nil?
+  end
 
-	# Setter for emails of the addressed
-	# @param param [Array] The values you want to set
-	def set_emails(param)
-		@emails = param
-	end
+  # Setter for emails of the lead
+  # @param param [Array] The values you want to set
+  def emails=(param)
+    @emails = param
+  end
 
-	# Getter for email_text of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Old Email of the addressed
-	def email_text(index)
-		i = get_field_index_by_external_id(index, @fields[:email_old])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for email_text of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Old Email of the lead
+  def email_text(index)
+    i = get_field_index_by_external_id(index, @fields[:email_old])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for email_text of the addressed
-	# @param param [String] The value you want to set
-	def set_email_text(param)
-		@email_text = param
-	end
+  # Setter for email_text of the lead
+  # @param param [String] The value you want to set
+  def email_text=(param)
+    @email_text = param
+  end
 
-	# Getter for endereco of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Street of the addressed
-	def endereco(index)
-		i = get_field_index_by_external_id(index, @fields[:endereco])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for endereco of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Street of the lead
+  def endereco(index)
+    i = get_field_index_by_external_id(index, @fields[:endereco])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for endereco of the addressed
-	# @param param [String] The value you want to set
-	def set_endereco(param)
-		@endereco = param
-	end
+  # Setter for endereco of the lead
+  # @param param [String] The value you want to set
+  def endereco=(param)
+    @endereco = param
+  end
 
-	# Getter for cep of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] CEP of the addressed
-	def cep(index)
-		i = get_field_index_by_external_id(index, @fields[:cep])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for cep of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] CEP of the lead
+  def cep(index)
+    i = get_field_index_by_external_id(index, @fields[:cep])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for cep of the addressed
-	# @param param [String] The value you want to set
-	def set_cep(param)
-		@cep = param
-	end
+  # Setter for cep of the lead
+  # @param param [String] The value you want to set
+  def cep=(param)
+    @cep = param
+  end
 
-	# Getter for cidade of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] City of the addressed
-	def cidade(index)
-		i = get_field_index_by_external_id(index, @fields[:cidade])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for cidade of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] City of the lead
+  def cidade(index)
+    i = get_field_index_by_external_id(index, @fields[:cidade])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for cidade of the addressed
-	# @param param [String] The value you want to set
-	def set_cidade(param)
-		@cidade = param
-	end
+  # Setter for cidade of the lead
+  # @param param [String] The value you want to set
+  def cidade=(param)
+    @cidade = param
+  end
 
-	# Getter for estado_id of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Id of referene of state of the addressed
-	def estado_id(index)
-		i = get_field_index_by_external_id(index, @fields[:estado])
-		fields(index, i)['item_id'].to_i unless i.nil?
-	end
+  # Getter for estado_id of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Id of referene of state of the lead
+  def estado_id(index)
+    i = get_field_index_by_external_id(index, @fields[:estado])
+    fields(index, i)['item_id'].to_i unless i.nil?
+  end
 
-	# Setter for estado_id of the addressed
-	# @param param [Integer] The value you want to set
-	def set_estado_id(param)
-		@estado = param
-	end
+  # Setter for estado_id of the lead
+  # @param param [Integer] The value you want to set
+  def estado_id=(param)
+    @estado = param
+  end
 
-	# Getter for formacao of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of formacao of the addressed
-	def formacao(index)
-		i = get_field_index_by_external_id(index, @fields[:formacao])
-		$enum_formacao.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for formacao of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of formacao of the lead
+  def formacao(index)
+    i = get_field_index_by_external_id(index, @fields[:formacao])
+    $enum_formacao.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for formacao of the addressed
-	# @param param [Integer] The value you want to set
-	def set_formacao(param)
-		@formacao = $enum_formacao[param]
-	end
+  # Setter for formacao of the lead
+  # @param param [Integer] The value you want to set
+  def formacao=(param)
+    @formacao = $enum_formacao[param]
+  end
 
-	# Getter for curso of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Course of the addressed
-	def curso(index)
-		i = get_field_index_by_external_id(index, @fields[:curso])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for curso of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Course of the lead
+  def curso(index)
+    i = get_field_index_by_external_id(index, @fields[:curso])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for curso of the addressed
-	# @param param [String] The value you want to set
-	def set_curso(param)
-		@curso = param
-	end
+  # Setter for curso of the lead
+  # @param param [String] The value you want to set
+  def curso=(param)
+    @curso = param
+  end
 
-	# Getter for  of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of faculdade of the addressed
-	def semestre(index)
-		i = get_field_index_by_external_id(index, @fields[:semestre])
-		$enum_semestre.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for  of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of faculdade of the lead
+  def semestre(index)
+    i = get_field_index_by_external_id(index, @fields[:semestre])
+    $enum_semestre.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for semestre of the addressed
-	# @param param [Integer] The value you want to set
-	def set_semestre(param)
-		@semestre = $enum_semestre[param]
-	end
+  # Setter for semestre of the lead
+  # @param param [Integer] The value you want to set
+  def semestre=(param)
+    @semestre = $enum_semestre[param]
+  end
 
-	# Getter for faculdade of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Name of faculdade of the addressed
-	def faculdade(index)
-		i = get_field_index_by_external_id(index, @fields[:faculdade])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for faculdade of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Name of faculdade of the lead
+  def faculdade(index)
+    i = get_field_index_by_external_id(index, @fields[:faculdade])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for faculdade of the addressed
-	# @param param [String] The value you want to set
-	def set_faculdade(param)
-		@faculdade = param
-	end
+  # Setter for faculdade of the lead
+  # @param param [String] The value you want to set
+  def faculdade=(param)
+    @faculdade = param
+  end
 
-	# Getter for ingles of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of ingles of the addressed
-	def ingles(index)
-		i = get_field_index_by_external_id(index, @fields[:ingles])
-		$enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for ingles of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of ingles of the lead
+  def ingles(index)
+    i = get_field_index_by_external_id(index, @fields[:ingles])
+    $enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for ingles of the addressed
-	# @param param [Integer] The value you want to set
-	def set_ingles(param)
-		@ingles = $enum_lingua[param]
-	end
+  # Setter for ingles of the lead
+  # @param param [Integer] The value you want to set
+  def ingles=(param)
+    @ingles = $enum_lingua[param]
+  end
 
-	# Getter for espanhol of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of espanhol of the addressed
-	def espanhol(index)
-		i = get_field_index_by_external_id(index, @fields[:espanhol])
-		$enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for espanhol of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of espanhol of the lead
+  def espanhol(index)
+    i = get_field_index_by_external_id(index, @fields[:espanhol])
+    $enum_lingua.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for espanhol of the addressed
-	# @param param [Integer] The value you want to set
-	def set_espanhol(param)
-		@espanhol = $enum_lingua[param]
-	end
+  # Setter for espanhol of the lead
+  # @param param [Integer] The value you want to set
+  def espanhol=(param)
+    @espanhol = $enum_lingua[param]
+  end
 
-	# Getter for entidade_id of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Id of referene of entity of the addressed
-	def entidade_id(index)
-		i = get_field_index_by_external_id(index, @fields[:entidade])
-		fields(index, i)['item_id'].to_i unless i.nil?
-	end
+  # Getter for entidade_id of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Id of referene of entity of the lead
+  def entidade_id(index)
+    i = get_field_index_by_external_id(index, @fields[:entidade])
+    fields(index, i)['item_id'].to_i unless i.nil?
+  end
 
-	# Setter for entidade_id of the addressed
-	# @param param [Integer] The value you want to set
-	def set_entidade(param)
-		@entidade = param
-	end
+  # Setter for entidade_id of the lead
+  # @param param [Integer] The value you want to set
+  def entidade=(param)
+    @entidade = param
+  end
 
-	# Getter for turno of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of turno of the addressed
-	def turno(index)
-		i = get_field_index_by_external_id(index, @fields[:turno])
-		$enum_turno.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for turno of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of turno of the lead
+  def turno(index)
+    i = get_field_index_by_external_id(index, @fields[:turno])
+    $enum_turno.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for turno of the addressed
-	# @param param [Integer] The value you want to set
-	def set_turno(param)
-		@turno = $enum_turno[param]
-	end
+  # Setter for turno of the lead
+  # @param param [Integer] The value you want to set
+  def turno=(param)
+    @turno = $enum_turno[param]
+  end
 
-	# Getter for programa_interesse of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of programa_interesse of the addressed
-	def programa_interesse(index)
-		i = get_field_index_by_external_id(index, @fields[:programa_interesse])
-		$enum_programa.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for programa_interesse of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of programa_interesse of the lead
+  def programa_interesse(index)
+    i = get_field_index_by_external_id(index, @fields[:programa_interesse])
+    $enum_programa.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for programa_interesse of the addressed
-	# @param param [Integer] The value you want to set
-	def set_programa_interesse(param)
-		@programa_interesse = $enum_programa[param]
-	end
+  # Setter for programa_interesse of the lead
+  # @param param [Integer] The value you want to set
+  def programa_interesse=(param)
+    @programa_interesse = $enum_programa[param]
+  end
 
-	# Getter for conheceu_aiesec of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of conheceu_aiesec of the addressed
-	def conheceu_aiesec(index)
-		i = get_field_index_by_external_id(index, @fields[:como_conheceu_aiesec])
-		$enum_conheceu.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for conheceu_aiesec of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of conheceu_aiesec of the lead
+  def conheceu_aiesec(index)
+    i = get_field_index_by_external_id(index, @fields[:como_conheceu_aiesec])
+    $enum_conheceu.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for conheceu_aiesec of the addressed
-	# @param param [Integer] The value you want to set
-	def set_conheceu_aiesec(param)
-		@conheceu_aiesec = $enum_conheceu[param]
-	end
+  # Setter for conheceu_aiesec of the lead
+  # @param param [Integer] The value you want to set
+  def conheceu_aiesec=(param)
+    @conheceu_aiesec = $enum_conheceu[param]
+  end
 
-	# Getter for pessoa_que_indicou of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [String] Name of the addressed that indicate
-	def pessoa_que_indicou(index)
-		i = get_field_index_by_external_id(index, @fields[:pessoa_que_indicou])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for pessoa_que_indicou of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Name of the lead that indicate
+  def pessoa_que_indicou(index)
+    i = get_field_index_by_external_id(index, @fields[:pessoa_que_indicou])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for pessoa_que_indicou of the addressed
-	# @param param [String] The value you want to set
-	def set_pessoa_que_indicou(param)
-		@pessoa_que_indicou = param
-	end
+  # Setter for pessoa_que_indicou of the lead
+  # @param param [String] The value you want to set
+  def pessoa_que_indicou=(param)
+    @pessoa_que_indicou = param
+  end
 
-	# Getter for voluntario_ferias of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If addressed was just for summer volunteer
-	def voluntario_ferias?(index)
-		i = get_field_index_by_external_id(index, @fields[:volutnario_ferias])
-		$enum_inscricao_especifica.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for voluntario_ferias of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Boolean] If lead was just for summer volunteer
+  def voluntario_ferias?(index)
+    i = get_field_index_by_external_id(index, @fields[:volutnario_ferias])
+    $enum_inscricao_especifica.key(fields(index, i)['id'].to_i) unless i.nil?
+  end
 
-	# Setter for voluntario_ferias of the addressed
-	# @param param [Integer] The value you want to set
-	def set_voluntario_ferias(param)
-		@voluntario_ferias = $enum_inscricao_especifica[param]
-	end
+  # Setter for voluntario_ferias of the lead
+  # @param param [Integer] The value you want to set
+  def voluntario_ferias=(param)
+    @voluntario_ferias = $enum_inscricao_especifica[param]
+  end
 
-	# Getter for projeto_especifico of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Category id of projeto_especifico of the addressed
-	def projeto_especifico(index)
-		i = get_field_index_by_external_id(index, @fields[:vaga_especifica])
-		fields(index, i).to_s unless i.nil?
-	end
+  # Getter for projeto_especifico of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Category id of projeto_especifico of the lead
+  def projeto_especifico(index)
+    i = get_field_index_by_external_id(index, @fields[:vaga_especifica])
+    fields(index, i).to_s unless i.nil?
+  end
 
-	# Setter for projeto_especifico of the addressed
-	# @param param [Integer] The value you want to set
-	def set_projeto_especifico(param)
-		@projeto_especifico = param
-	end
+  # Setter for projeto_especifico of the lead
+  # @param param [Integer] The value you want to set
+  def projeto_especifico=(param)
+    @projeto_especifico = param
+  end
 
-	# Getter for responsavel_id of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] Id of referene of responsable of the addressed
-	def responsavel_id(index)
-		i = get_field_index_by_external_id(index, @fields[:responsavel])
-		fields(index, i)['profile_id'].to_i unless i.nil?
-	end
+  # Getter for responsavel_id of the lead
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Integer] Id of referene of responsable of the lead
+  def responsavel_id(index)
+    i = get_field_index_by_external_id(index, @fields[:responsavel])
+    fields(index, i)['profile_id'].to_i unless i.nil?
+  end
 
-	# Setter for responsavel_id of the addressed
-	# @param param [Integer] The value you want to set
-	def set_responsavel_id(param)
-		@responsavel = param.to_i
-	end
+  # Setter for responsavel_id of the lead
+  # @param param [Integer] The value you want to set
+  def responsavel_id=(param)
+    @responsavel = param.to_i
+  end
 
-	# Getter for abordado of the addressed == True
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If addressed was 
-    def is_abordado?(index)
-      	abordado(index) == $enum_abordado.key($enum_abordado[:sim])
-    end
+  # Getter for abordado of the lead == True
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [Boolean] If lead was
+  def is_abordado?(index)
+    self.abordado(index) == $enum_boolean[:sim]
+  end
 
-	# Getter for abordado of the addressed
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If addressed was 
-	def abordado(index)
-		i = get_field_index_by_external_id(index, @fields[:abordado])
-		$enum_abordado.key(fields(index, i)['id'].to_i) unless i.nil?
-	end
+  # Getter for approached date of the addressed
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Approached date of the addressed
+  def data_abordagem(index)
+    i = get_field_index_by_external_id(index, @fields[:data_abordagem])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
 
-	# Setter for abordado of the addressed
-	# @param param [Integer] The value you want to set
-	def set_abordado(param)
-		@abordado = $enum_abordado[param]
-	end
-
-	# Test if addressed compareceu_dinamica
-	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Boolean] If addressed was in group selection
-	def is_compareceu_dinamica?(index)
-  		compareceu_dinamica(index) == $enum_boolean.key($enum_boolean[:sim])
-	end
+  # Setter for approached date
+  # @param param [DateTime] Approached date
+  def data_abordagem=(param)
+    @data_abordagem = param.strftime('%Y-%m-%d %H:%M:%S')
+  end
 
 	# Getter for compareceu_dinamica of the addressed
 	# @param index [Integer] Index of the item you want to retrieve the value
-	# @return [Integer] If addressed was in group selection
+	# @return [enum_compareceu_dinamica] If addressed was in group selection
 	def compareceu_dinamica(index)
 		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
+    $enum_compareceu_dinamica.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for compareceu_dinamica of the addressed
-	# @param param [Integer] The value you want to set
-	def set_compareceu_dinamica(param)
-		@compareceu_dinamica = $enum_boolean[param]
+	# @param param [Symbol] The value you want to set
+	def compareceu_dinamica=(param)
+		@compareceu_dinamica = $enum_compareceu_dinamica[param]
 	end
 
 	# Populate self variables with the values of intervield fields
-	# @param entrevistado [App4Entrevistado] Reference of the intervield object
-	# @param i [Integer] Index of the item you want to retrieve the value
+	# @param inscrito [App1Inscrito] Reference of the intervield object
+  # @param i [Integer] Index of the item you want to retrieve the value
+	# @return [nil]
 	def populate(inscrito,i)
-		set_nome_completo(inscrito.nome_completo(i))
-		set_sexo(inscrito.sexo(i))
-		set_data_nascimento(inscrito.data_nascimento(i))
-		set_phones(inscrito.phones(i))
-		set_telefone(inscrito.telefone(i))
-		set_celular(inscrito.celular(i))
-		set_operadora(inscrito.operadora(i))
-		set_emails(inscrito.emails(i))
-		set_email_text(inscrito.email_text(i))
-		set_endereco(inscrito.endereco(i))
-		set_cep(inscrito.cep(i))
-		set_cidade(inscrito.cidade(i))
-		set_estado_id(inscrito.estado_id(i))
-		set_formacao(inscrito.formacao(i))
-		set_curso(inscrito.curso(i))
-		set_semestre(inscrito.semestre(i))
-		set_faculdade(inscrito.faculdade(i))
-		set_ingles(inscrito.ingles(i))
-		set_espanhol(inscrito.espanhol(i))
-		set_entidade(inscrito.entidade_id(i))
-		set_turno(inscrito.turno(i))
-		set_programa_interesse(inscrito.programa_interesse(i))
-		set_conheceu_aiesec(inscrito.conheceu_aiesec(i))
-		set_pessoa_que_indicou(inscrito.pessoa_que_indicou(i))
-		set_voluntario_ferias(inscrito.voluntario_ferias?(i))
-		set_projeto_especifico(inscrito.projeto_especifico(i))
-		set_responsavel_id(inscrito.responsavel_id(i))
-		set_abordado(inscrito.abordado(i))
+		self.nome_completo=(inscrito.nome_completo(i))
+		self.sexo=(inscrito.sexo(i))
+		self.data_nascimento=(inscrito.data_nascimento(i))
+		self.phones=(inscrito.phones(i))
+		self.telefone=(inscrito.telefone(i))
+		self.celular=(inscrito.celular(i))
+		self.operadora=(inscrito.operadora(i))
+		self.emails=(inscrito.emails(i))
+		self.email_text=(inscrito.email_text(i))
+		self.endereco=(inscrito.endereco(i))
+		self.cep=(inscrito.cep(i))
+		self.cidade=(inscrito.cidade(i))
+		self.estado_id=(inscrito.estado_id(i))
+		self.formacao=(inscrito.formacao(i))
+		self.curso=(inscrito.curso(i))
+		self.semestre=(inscrito.semestre(i))
+		self.faculdade=(inscrito.faculdade(i))
+		self.ingles=(inscrito.ingles(i))
+		self.espanhol=(inscrito.espanhol(i))
+		self.entidade=(inscrito.entidade_id(i))
+		self.turno=(inscrito.turno(i))
+		self.programa_interesse=(inscrito.programa_interesse(i))
+		self.conheceu_aiesec=(inscrito.conheceu_aiesec(i))
+		self.pessoa_que_indicou=(inscrito.pessoa_que_indicou(i))
+		self.voluntario_ferias=(inscrito.voluntario_ferias?(i))
+		self.projeto_especifico=(inscrito.projeto_especifico(i))
+		self.responsavel_id=(inscrito.responsavel_id(i))
+    self.compareceu_dinamica=($enum_compareceu_dinamica[:nao])
+    self.data_abordagem=(DateTime.current)
 	end
 
 	# Update register on Podio database
@@ -537,14 +534,13 @@ class App2Abordagem < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias || voluntario_ferias?(index))
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico || projeto_especifico(index))
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
-		hash_fields.merge!(@fields[:abordado] => @abordado || abordado(index))
-		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica(index))
+		hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_abordagem(index))
+    hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica(index))
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
 	end
 
 	# Create register on Podio database
-	# @param index [Integer] Index of the item you want to retrieve the value
 	def create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:nome] => @nome) unless @nome.nil?
@@ -574,16 +570,16 @@ class App2Abordagem < PodioAppControl
 		hash_fields.merge!(@fields[:voluntario_ferias] => @voluntario_ferias) unless @voluntario_ferias.nil?
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico) unless @projeto_especifico.nil?
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
-		hash_fields.merge!(@fields[:abordado] => @abordado) unless @abordado.nil?
+    hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem) unless @data_abordagem.nil?
 		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
-	end
+  end
 
-	# Delete register on Podio database
-	# @param index [Integer] Index of the item you want to delete the value
-	def delete(index)
-		Podio::Item.delete(item_id(index))
-	end
+  # Delete register on Podio database
+  # @param index [Integer] Index of the item you want to delete
+  def delete(index)
+    Podio::Item.delete(item_id(index))
+  end
 
 end
