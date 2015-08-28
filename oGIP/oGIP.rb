@@ -71,11 +71,23 @@ class oGIP
     @entities.uniq!
 
     for entity in @entities do
-      app = nil
+      app1 = nil
+      app2 = nil
+      app3 = nil
+      app4 = nil
+      app5 = nil
+      app6 = nil
+      app7 = nil
       for i in 0..apps.total_count-1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
           case apps.name(i)
-            when $enum_apps_name[:ogip] then app = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:opens] then app4 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalent.new(apps.id(i))
           end
         end
 
