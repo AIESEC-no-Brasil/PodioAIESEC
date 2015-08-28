@@ -53,4 +53,9 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new
+loop = true
+while(loop)
+  PodioBAZI.new
+  loop = false
+end
+
