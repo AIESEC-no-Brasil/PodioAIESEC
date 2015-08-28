@@ -161,7 +161,7 @@ class TM
           inscrito.delete(i)
         end
       end
-
+      
       limit = abordado.total_count
       for i in 0..limit-1
         if abordado.is_compareceu_dinamica?(i)

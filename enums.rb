@@ -2,11 +2,14 @@
 # Class with all enums used at the project
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesedc.net>
 class Enums
-  $enum_apps_name = {:app1 => '1. Inscritos',
-                     :app2 => '2. Abordagem',
-                     :app3 => '3. Dinâmica de grupo',
-                     :app4 => '4. Entrevista',
-                     :app5 => '5. Membros'}
+  $enum_apps_name = {
+    :app1 => '1. Inscritos',
+    :app2 => '2. Abordagem',
+    :app3 => '3. Dinâmica de grupo',
+    :app4 => '4. Entrevista',
+    :app5 => '5. Membros',
+    :ogip => 'Pessoas'
+  }
   $enum_type = { :ors => 1,
                  :national => 2,
                  :local => 3 }
@@ -72,4 +75,30 @@ class Enums
                     :nao => 2}
   $enum_boolean = {:sim => 2,
                     :nao => 1}
+  $enum_semester = {
+    :s1 => 1,
+    :s2 => 2,
+    :s3 => 3,
+    :s4 => 4,
+    :s5 => 5,
+    :s6 => 6,
+    :s7 => 7,
+    :s8 => 8,
+    :s9 => 9,
+    :s10 => 10,
+    :completo => 11,
+    :outro => 12,
+  }
+  $enum_moment = {
+
+  }
+  $enum_priority = {
+    
+  }
+  $enum_marketing_channel ={
+
+  }
+  $enum_interest = {
+
+  }
 end
