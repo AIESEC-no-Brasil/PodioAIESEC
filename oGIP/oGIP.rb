@@ -53,7 +53,7 @@ class OGX_GIP
     @local_spaces_ids = []
     @local_apps_ids = {}
 
-    limit = spaces.total_count-1
+    limit = spaces.total_count - 1
     for i in 0..limit
       if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogip]
         @local_spaces_ids << spaces.id(i)
@@ -61,7 +61,7 @@ class OGX_GIP
     end
 
     @entities = []
-    limit = apps.total_count-1
+    limit = apps.total_count - 1
     for i in 0..limit
       if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogip]
         @entities << apps.entity(i)
@@ -78,27 +78,26 @@ class OGX_GIP
       app5 = nil
       app6 = nil
       app7 = nil
-      for i in 0..apps.total_count-1
+      for i in 0..apps.total_count - 1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
           case apps.name(i)
             when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalent.new(apps.id(i))
             when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalent.new(apps.id(i))
             when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:opens] then app4 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalent.new(apps.id(i))
             when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalent.new(apps.id(i))
             when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalent.new(apps.id(i))
             when $enum_oGIP_apps_name[:re] then app7 = GlobalTalent.new(apps.id(i))
           end
         end
-
-        @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7]
       end
+      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7]
     end
 
   end
 
   def configNational(spaces, apps)
-    limit = spaces.total_count-1
+    limit = spaces.total_count - 1
     (0..limit).each do |i|
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
         @national_space_id = spaces.id(i)
@@ -106,7 +105,7 @@ class OGX_GIP
       end
     end
 
-    limit = apps.total_count-1
+    limit = apps.total_count - 1
     (0..limit).each do |i|
       if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogip]
         @national_app_id = apps.id(i)
@@ -123,9 +122,9 @@ class OGX_GIP
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
-    limit = @ors_app.total_count
+    limit = @ors_app.total_count - 1
     for entity in @entities do
-      (0..limit-1).each do |i|
+      (0..limit).each do |i|
         if @ors_app.local_aiesec_id(i) == entity
           leads = @local_apps_ids[entity][0]
           abort('Wrong parameter for leads') unless leads.is_a?(GlobalTalent)
@@ -156,57 +155,58 @@ class OGX_GIP
       abort('Wrong parameter for matchs') unless matchs.is_a?(GlobalTalent)
       abort('Wrong parameter for realizes') unless realizes.is_a?(GlobalTalent)
 
-      limit = inscrito.total_count
-      (0..limit-1).each do |i|
-        if test_lead_to_contacted(leads)
+      puts leads.at_index(1).to_s
+      limit = leads.total_count - 1
+      (0..limit).each do |i|
+        if test_lead_to_contacted(leads,i)
           contacteds.populate(leads,i)
           contacteds.create
-          leads.delete(i)
+          #leads.delete(i)
         end
       end
       
-      limit = epis.total_count
-      (0..limit-1).each do |i|
-        if test_contacted_to_EPI(contacteds)
+      limit = contacteds.total_count - 1
+      (0..limit).each do |i|
+        if test_contacted_to_EPI(contacteds,i)
           epis.populate(contacteds,i)
           epis.create
-          contacteds.delete(i)
+          #contacteds.delete(i)
         end
       end
 
-      limit = epis.total_count
-      (0..limit-1).each do |i|
-        if test_EPI_to_open(epis)
+      limit = epis.total_count - 1
+      (0..limit).each do |i|
+        if test_EPI_to_open(epis,i)
           opens.populate(epis,i)
           opens.create
-          epis.delete(i)
+          #epis.delete(i)
         end
       end
 
-      limit = opens.total_count
-      (0..limit-1).each do |i|
-        if test_open_to_ip(opens)
+      limit = opens.total_count - 1
+      (0..limit).each do |i|
+        if test_open_to_ip(opens,i)
           in_progress.populate(opens,i)
           in_progress.create
-          opens.delete(i)
+          #opens.delete(i)
         end
       end
 
-      limit = in_progress.total_count
-      (0..limit-1).each do |i|
-        if test_ip_to_ma(in_progress)
+      limit = in_progress.total_count - 1
+      (0..limit).each do |i|
+        if test_ip_to_ma(in_progress,i)
           matchs.populate(in_progress,i)
           matchs.create
-          in_progress.delete(i)
+          #in_progress.delete(i)
         end
       end
 
-      limit = matchs.total_count
-      (0..limit-1).each do |i|
-        if test_ma_to_re(matchs)
+      limit = matchs.total_count - 1
+      (0..limit).each do |i|
+        if test_ma_to_re(matchs,i)
           realizes.populate(matchs,i)
           realizes.create
-          matchs.delete(i)
+          #matchs.delete(i)
         end
       end
     end
@@ -215,31 +215,35 @@ class OGX_GIP
   def local_to_national
   end
 
-  def test_ORS_to_Local(youth_leader)
+  def test_ORS_to_Local(youth_leader,i)
     true
   end
 
-  def test_lead_to_contacted(youth_leader)
-    true unless youth_leader.first_contact_date.nil? or youth_leader.first_contact_responsable_id.nil?
+  def test_lead_to_contacted(youth_leader,i)
+    /puts 'Test'
+    puts youth_leader.name(i)
+    puts youth_leader.first_contact_date(i)
+    puts youth_leader.first_contact_responsable_id(i)/
+    true unless youth_leader.first_contact_date(i).nil? or youth_leader.first_contact_responsable_id(i).nil?
   end
 
-  def test_contacted_to_EPI(youth_leader)
-    true unless youth_leader.epi_date.nil? or youth_leader.epi_responsable_id.nil?
+  def test_contacted_to_EPI(youth_leader,i)
+    true unless youth_leader.epi_date(i).nil? or youth_leader.epi_responsable_id(i).nil?
   end
 
-  def test_EPI_to_open(youth_leader)
-    true unless youth_leader.link_to_expa.nil? or youth_leader.ep_manager_id.nil?
+  def test_EPI_to_open(youth_leader,i)
+    true unless youth_leader.link_to_expa(i).nil? or youth_leader.ep_manager_id(i).nil?
   end
 
-  def test_open_to_ip(youth_leader)
-    youth_leader.applying?
+  def test_open_to_ip(youth_leader,i)
+    youth_leader.applying?(i)
   end
 
-  def test_ip_to_ma(youth_leader)
-    true unless youth_leader.match_date.nil?
+  def test_ip_to_ma(youth_leader,i)
+    true unless youth_leader.match_date(i).nil?
   end
 
-  def test_ma_to_re(youth_leader)
-    true unless youth_leader.ops_date.nil? or youth_leader.realize_date.nil?
+  def test_ma_to_re(youth_leader,i)
+    true unless youth_leader.ops_date(i).nil? or youth_leader.realize_date(i).nil?
   end
 end

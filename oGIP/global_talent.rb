@@ -12,7 +12,7 @@ class GlobalTalent < PodioAppControl
 			:phone => 'telefone',
 			:telefone_old => 'telefone-3',#TODO exluir
 			:celular => 'celular-2',#TODO exluir
-			:carrier => 'operadoras',
+			:carrier => 'operadoras', #TODO aceitar múltiplas
 			:email => 'email',
 			:email_old => 'email-2',#TODO exluir
 			:address => 'endereco-completo',
@@ -27,7 +27,7 @@ class GlobalTalent < PodioAppControl
 			:spanish_level => 'nivel-de-espanhol',
 			:best_moment => 'melhor-turno-para-a-aiesec-entrar-em-contato',
 			:local_aiesec => 'aiesec-mais-proxima',
-			:interest => 'programa-de-interesse',
+			:interest => 'programa-de-intersesse',
 			:marketing_channel => 'categoria',
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
 			:specific_opportunity => 'esta-se-candidatando-a-algum-projetovaga-especifica',
@@ -44,7 +44,7 @@ class GlobalTalent < PodioAppControl
 			:was_in_ops => 'compareceu-a-ops',
 			:match_date => 'data-do-match',
 			:realize_date => 'data-do-realize', #TODO considerar início e fim
-			:delete => 'apagar',
+			:erase => 'apagar',
 			#:link_to_mc => 'link-to-mc',
 			#:link_to_local => 'link-to-local',
 		}
@@ -91,7 +91,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for birthdate of the Global Talent
 	# @param param [String] The value you want to set
 	def birthdate=(param)
-		@birthdate = param.strftime('%Y-%m-%d %H:%M:%S')
+		@birthdate = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for data_nascimento date format of the Global Talent
@@ -209,13 +209,13 @@ class GlobalTalent < PodioAppControl
 	# @return [String] Zip code of the Global Talent
 	def zip_code(index)
 		i = get_field_index_by_external_id(index, @fields[:zip_code])
-		fields(index, i).to_s unless i.nil?
+		fields(index, i).to_i unless i.nil?
 	end
 
 	# Setter for zip_code of the Global Talent
 	# @param param [String] The value you want to set
 	def zip_code=(param)
-		@zip_code = param
+		@zip_code = param.to_i unless param.nil?
 	end
 
 	# Getter for city of the Global Talent
@@ -243,7 +243,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for state_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def state_id=(param)
-		@state_id = param
+		@state_id = param.to_i unless param.nil?
 	end
 
 	# Getter for study_stage of the Global Talent
@@ -355,7 +355,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for local_aiesec of the Global Talent
 	# @param param [Integer] The value you want to set
 	def local_aiesec_id=(param)
-		@local_aiesec_id = param
+		@local_aiesec_id = param.to_i unless param.nil?
 	end
 
 	# Getter for interest of the Global Talent
@@ -447,13 +447,18 @@ class GlobalTalent < PodioAppControl
 	# @return [String]  of the Global Talent
 	def first_contact_date(index)
 		i = get_field_index_by_external_id(index, @fields[:first_contact_date])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		/puts 'get'
+		puts i
+		puts @item[0][0][:fields][i] unless i.nil?
+		puts date/
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for first_contact_date of the Global Talent
 	# @param param [String] The value you want to set
 	def first_contact_date=(param)
-		@first_contact_date = param.strftime('%Y-%m-%d %H:%M:%S')
+		@first_contact_date = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for first_contact_date date format of the Global Talent
@@ -477,7 +482,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for first_contact_responsable_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def first_contact_responsable_id=(param)
-		@first_contact_responsable_id = param.to_i
+		@first_contact_responsable_id = param.to_i unless param.nil?
 	end
 
 	# Getter for epi_date of the Global Talent
@@ -485,13 +490,14 @@ class GlobalTalent < PodioAppControl
 	# @return [String] epi_date of the Global Talent
 	def epi_date(index)
 		i = get_field_index_by_external_id(index, @fields[:epi_date])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for epi_date of the Global Talent
 	# @param param [String] The value you want to set
 	def epi_date=(param)
-		@epi_date = param.strftime('%Y-%m-%d %H:%M:%S')
+		@epi_date = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for epi_date date format of the Global Talent
@@ -515,7 +521,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for epi_responsable_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def epi_responsable_id=(param)
-		@epi_responsable_id = param.to_i
+		@epi_responsable_id = param.to_i unless param.nil?
 	end
 
 	# Getter for ep_manager_id of the Global Talent
@@ -529,7 +535,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for ep_manager_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def ep_manager_id=(param)
-		@ep_manager_id = param.to_i
+		@ep_manager_id = param.to_i unless param.nil?
 	end
 
 	# Getter for link_to_expa of the Global Talent
@@ -573,13 +579,14 @@ class GlobalTalent < PodioAppControl
 	# @return [String] ops_date of the Global Talent
 	def ops_date(index)
 		i = get_field_index_by_external_id(index, @fields[:ops_date])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for ops_date of the Global Talent
 	# @param param [String] The value you want to set
 	def ops_date=(param)
-		@ops_date = param.strftime('%Y-%m-%d %H:%M:%S')
+		@ops_date = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for ops_date date format of the Global Talent
@@ -618,13 +625,14 @@ class GlobalTalent < PodioAppControl
 	# @return [String] match_date of the Global Talent
 	def match_date(index)
 		i = get_field_index_by_external_id(index, @fields[:match_date])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for match_date of the Global Talent
 	# @param param [String] The value you want to set
 	def match_date=(param)
-		@match_date = param.strftime('%Y-%m-%d %H:%M:%S')
+		@match_date = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for match_date date format of the Global Talent
@@ -642,13 +650,14 @@ class GlobalTalent < PodioAppControl
 	# @return [String] realize_date of the Global Talent
 	def realize_date(index)
 		i = get_field_index_by_external_id(index, @fields[:realize_date])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for realize_date of the Global Talent
 	# @param param [String] The value you want to set
 	def realize_date=(param)
-		@realize_date = param.strftime('%Y-%m-%d %H:%M:%S')
+		@realize_date = param.strftime('%Y-%m-%d %H:%M:%S') unless param.nil?
 	end
 
 	# Setter for realize_date date format of the Global Talent
@@ -661,25 +670,25 @@ class GlobalTalent < PodioAppControl
 		@realize_date = DateTime.new(year,month,day,hour,minute,second).strftime('%Y-%m-%d %H:%M:%S')
 	end
 
-	# Getter for delete of the Global Talent == True
+	# Getter for erase of the Global Talent == True
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If Global Talent was 
-    def delete?(index)
-  		delete(index) == $enum_boolean.key($enum_boolean[:sim])
+    def erase?(index)
+  		erase(index) == $enum_boolean.key($enum_boolean[:sim])
     end
 
-	# Getter for delete of the Global Talent
+	# Getter for erase of the Global Talent
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [Boolean] If Global Talent was 
-	def delete(index)
-		i = get_field_index_by_external_id(index, @fields[:delete])
+	def erase(index)
+		i = get_field_index_by_external_id(index, @fields[:erase])
 		$enum_boolean.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
-	# Setter for delete of the Global Talent
+	# Setter for erase of the Global Talent
 	# @param param [Integer] The value you want to set
-	def delete=(param)
-		@delete = $enum_boolean[param]
+	def erase=(param)
+		@erase = $enum_boolean[param]
 	end
 
 	# Getter for link_to_mc_id of the Global Talent
@@ -693,7 +702,7 @@ class GlobalTalent < PodioAppControl
 	# Setter for link_to_mc_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def link_to_mc_id=(param)
-		@link_to_mc_id = param.to_i
+		@link_to_mc_id = param.to_i unless param.nil?
 	end
 
 	# Getter for link_to_local_id of the Global Talent
@@ -707,49 +716,50 @@ class GlobalTalent < PodioAppControl
 	# Setter for link_to_local_id of the Global Talent
 	# @param param [Integer] The value you want to set
 	def link_to_local_id=(param)
-		@link_to_local_id = param.to_i
+		@link_to_local_id = param.to_i unless param.nil?
 	end
 
 	# Populate self variables with the values of intervield fields
 	# @param entrevistado [App4Entrevistado] Reference of the intervield other
 	# @param i [Integer] Index of the item you want to retrieve the value
 	def populate(other,i)
-		name = other.name i
-		sex = other.sex i
-		birthdate = other.birthdate i
-		phones = other.phones i
-		carrier = other.carrier i
-		email = other.emails i
-		address = other.address i
-		city = other.city i
-		state_id = other.state_id i
-		study_stage = other.study_stage i
-		course = other.course i
-		semester = other.semester i
-		university = other.university i
-		english_level = other.english_level i
-		spanish_level = other.spanish_level i
-		best_moment = other.best_moment i
-		local_aiesec_id = other.local_aiesec_id i
-		interest = other.interest i
-		marketing_channel = other.marketing_channel i
-		indication = other.indication i
-		specific_opportunity = other.specific_opportunity i
+		self.name = other.name i
+		self.sex = other.sex i
+		self.birthdate = other.birthdate i
+		self.phones = other.phones i
+		self.carrier = other.carrier i
+		self.emails = other.emails i
+		self.address = other.address i
+		self.zip_code = other.zip_code i
+		self.city = other.city i
+		self.state_id = other.state_id i
+		self.study_stage = other.study_stage i
+		self.course = other.course i
+		self.semester = other.semester i
+		self.university = other.university i
+		self.english_level = other.english_level i
+		self.spanish_level = other.spanish_level i
+		self.best_moment = other.best_moment i
+		self.local_aiesec_id = other.local_aiesec_id i
+		self.interest = other.interest i
+		self.marketing_channel = other.marketing_channel i
+		self.indication = other.indication i
+		self.specific_opportunity = other.specific_opportunity i
 		#TODO CV
-		moment = other.moment i
-		priority = other.priority i
-		first_contact_date = other.first_contact_date i
-		first_contact_responsable_id = other.first_contact_responsable_id i
-		epi_date = other.epi_date i
-		epi_responsable_id = other.epi_responsable_id i
-		ep_manager_id = other.ep_manager_id i
-		link_to_expa = other.link_to_expa i
-		applying = other.applying i
-		ops_date = other.ops_date i
-		was_in_ops = other.was_in_ops i
-		match_date = other.match_date i
-		realize_date = other.realize_date i
-		delete = other.delete i
+		self.moment = other.moment i
+		self.priority = other.priority i
+		self.first_contact_date = other.first_contact_date i
+		self.first_contact_responsable_id = other.first_contact_responsable_id i
+		self.epi_date = other.epi_date i
+		self.epi_responsable_id = other.epi_responsable_id i
+		self.ep_manager_id = other.ep_manager_id i
+		self.link_to_expa = other.link_to_expa i
+		self.applying = other.applying i
+		self.ops_date = other.ops_date i
+		self.was_in_ops = other.was_in_ops i
+		self.match_date = other.match_date i
+		self.realize_date = other.realize_date i
+		self.erase = other.erase i
 		#link_to_mc_id = other.link_to_mc_id i
 		#link_to_local_id = other.link_to_local_id i
 	end
@@ -796,7 +806,7 @@ class GlobalTalent < PodioAppControl
 		hash_fields.merge!(@fields[:was_in_ops] => @was_in_ops || was_in_ops(index))
 		hash_fields.merge!(@fields[:match_date] => {'start' => @match_date || match_date(index)})
 		hash_fields.merge!(@fields[:realize_date] => {'start' => @realize_date || realize_date(index)})
-		hash_fields.merge!(@fields[:delete] => @delete || delete(index))
+		hash_fields.merge!(@fields[:erase] => @erase || erase(index))
 		hash_fields.merge!(@fields[:link_to_mc] => @link_to_mc_id || link_to_mc_id(index))
 		hash_fields.merge!(@fields[:link_to_local] => @link_to_local_id || link_to_local_id(index))
 
@@ -817,6 +827,7 @@ class GlobalTalent < PodioAppControl
 		hash_fields.merge!(@fields[:email] => @emails) unless @emails.nil?
 		#hash_fields.merge!(@fields[:email_old] => @email_text) unless @email_text.nil?
 		hash_fields.merge!(@fields[:address] => @address) unless @address.nil?
+		hash_fields.merge!(@fields[:zip_code] => @zip_code) unless @zip_code.nil?
 		hash_fields.merge!(@fields[:city] => @city) unless @city.nil?
 		hash_fields.merge!(@fields[:state] => @state_id) unless @state_id.nil?
 		hash_fields.merge!(@fields[:study_stage] => @study_stage) unless @study_stage.nil?
@@ -844,14 +855,14 @@ class GlobalTalent < PodioAppControl
 		hash_fields.merge!(@fields[:was_in_ops] => @was_in_ops) unless @was_in_ops.nil?
 		hash_fields.merge!(@fields[:match_date] => {'start' => @match_date}) unless @match_date.nil?
 		hash_fields.merge!(@fields[:realize_date] => {'start' => @realize_date}) unless @realize_date.nil?
-		hash_fields.merge!(@fields[:delete] => @delete) unless @delete.nil?
+		hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
 		hash_fields.merge!(@fields[:link_to_mc] => @link_to_mc_id) unless @link_to_mc_id.nil?
 		hash_fields.merge!(@fields[:link_to_local] => @link_to_local_id) unless @link_to_local_id.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
 	end
 
-	# Delete register on Podio database
+	# delete register on Podio database
 	# @param index [Integer] Index of the item you want to delete the value
 	def delete(index)
 		Podio::Item.delete(item_id(index))

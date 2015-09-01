@@ -114,7 +114,7 @@ class Enums
     :posters => 3,
     :class_room => 4,
     :junior_company => 5,
-    :evente => 6,
+    :events => 6,
     :newspaper => 7,
     :mailing => 8,
     :flyer => 9,
