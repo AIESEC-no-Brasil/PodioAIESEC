@@ -114,6 +114,11 @@ class PodioAppControl
     at_index(index)[:fields][label_position]['values'][0]['value']
   end
 
+  # @private
+  # Shortcut on the Podio item json array to get to it field values. Used just for Phone and Email fields.
+  # @param index [Integer] Index of the item you want to retrieve
+  # @param label_position [Integer] Index of the label you want to retrieve
+  # @return [Array] Array of hashs with field values
   def values(index, label_position)
     at_index(index)[:fields][label_position]['values']
   end
