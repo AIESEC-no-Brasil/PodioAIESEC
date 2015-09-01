@@ -8,7 +8,7 @@ require_relative '../enums'
 # * 1. ORS ( 1 x )
 # * 2. Local ( Number of entities x )
 # * 3. National ( 1 x )
-class oGIP
+class OGX_GIP
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(spaces, apps)
@@ -91,7 +91,7 @@ class oGIP
           end
         end
 
-        @local_apps_ids[entity] = app
+        @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7]
       end
     end
 
@@ -99,7 +99,7 @@ class oGIP
 
   def configNational(spaces, apps)
     limit = spaces.total_count-1
-    for i in 0..limit
+    (0..limit).each do |i|
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
         @national_space_id = spaces.id(i)
         break
@@ -107,8 +107,8 @@ class oGIP
     end
 
     limit = apps.total_count-1
-    for i in 0..limit
-      if apps.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
+    (0..limit).each do |i|
+      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogip]
         @national_app_id = apps.id(i)
         break
       end
@@ -123,14 +123,15 @@ class oGIP
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
+    limit = @ors_app.total_count
     for entity in @entities do
-      for i in 0..@ors_app.total_count-1
-        if @ors_app.entidade_id(i) == entity
-          inscrito = @local_apps_ids[entity][0]
-          abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
+      (0..limit-1).each do |i|
+        if @ors_app.local_aiesec_id(i) == entity
+          leads = @local_apps_ids[entity][0]
+          abort('Wrong parameter for leads') unless leads.is_a?(GlobalTalent)
 
-          inscrito.populate(@ors_app,i)
-          inscrito.create
+          leads.populate(@ors_app,i)
+          leads.create
         end
       end
     end
@@ -139,51 +140,73 @@ class oGIP
   # For all local apps, move the registers through customer flow.
   def local_to_local
     for entity in @entities do
-      inscrito = @local_apps_ids[entity][0]
-      abordado = @local_apps_ids[entity][1]
-      dinamico = @local_apps_ids[entity][2]
-      entrevistado = @local_apps_ids[entity][3]
-      membro = @local_apps_ids[entity][4]
+      leads = @local_apps_ids[entity][0]
+      contacteds = @local_apps_ids[entity][1]
+      epis = @local_apps_ids[entity][2]
+      opens = @local_apps_ids[entity][3]
+      in_progress = @local_apps_ids[entity][4]
+      matchs = @local_apps_ids[entity][5]
+      realizes = @local_apps_ids[entity][6]
 
-      abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
-      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
-      abort('Wrong parameter for spaces') unless dinamico.is_a?(App3Dinamica)
-      abort('Wrong parameter for spaces') unless entrevistado.is_a?(App4Entrevista)
-      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
+      abort('Wrong parameter for leads') unless leads.is_a?(GlobalTalent)
+      abort('Wrong parameter for contacteds') unless contacteds.is_a?(GlobalTalent)
+      abort('Wrong parameter for epis') unless epis.is_a?(GlobalTalent)
+      abort('Wrong parameter for opens') unless opens.is_a?(GlobalTalent)
+      abort('Wrong parameter for in_progress') unless in_progress.is_a?(GlobalTalent)
+      abort('Wrong parameter for matchs') unless matchs.is_a?(GlobalTalent)
+      abort('Wrong parameter for realizes') unless realizes.is_a?(GlobalTalent)
 
       limit = inscrito.total_count
-      for i in 0..limit-1
-        if inscrito.is_abordado?(i)
-          abordado.populate(inscrito,i)
-          abordado.create
-          inscrito.delete(i)
+      (0..limit-1).each do |i|
+        if test_lead_to_contacted(leads)
+          contacteds.populate(leads,i)
+          contacteds.create
+          leads.delete(i)
         end
       end
       
-      limit = abordado.total_count
-      for i in 0..limit-1
-        if abordado.is_compareceu_dinamica?(i)
-          dinamico.populate(abordado,i)
-          dinamico.create
-          abordado.delete(i)
+      limit = epis.total_count
+      (0..limit-1).each do |i|
+        if test_contacted_to_EPI(contacteds)
+          epis.populate(contacteds,i)
+          epis.create
+          contacteds.delete(i)
         end
       end
 
-      limit = dinamico.total_count
-      for i in 0..limit-1
-        if dinamico.is_entrevistado?(i)
-          entrevistado.populate(dinamico,i)
-          entrevistado.create
-          dinamico.delete(i)
+      limit = epis.total_count
+      (0..limit-1).each do |i|
+        if test_EPI_to_open(epis)
+          opens.populate(epis,i)
+          opens.create
+          epis.delete(i)
         end
       end
 
-      limit = entrevistado.total_count
-      for i in 0..limit-1
-        if entrevistado.is_virou_membro?(i)
-          membro.populate(entrevistado,i)
-          membro.create
-          entrevistado.delete(i)
+      limit = opens.total_count
+      (0..limit-1).each do |i|
+        if test_open_to_ip(opens)
+          in_progress.populate(opens,i)
+          in_progress.create
+          opens.delete(i)
+        end
+      end
+
+      limit = in_progress.total_count
+      (0..limit-1).each do |i|
+        if test_ip_to_ma(in_progress)
+          matchs.populate(in_progress,i)
+          matchs.create
+          in_progress.delete(i)
+        end
+      end
+
+      limit = matchs.total_count
+      (0..limit-1).each do |i|
+        if test_ma_to_re(matchs)
+          realizes.populate(matchs,i)
+          realizes.create
+          matchs.delete(i)
         end
       end
     end
@@ -197,26 +220,26 @@ class oGIP
   end
 
   def test_lead_to_contacted(youth_leader)
-    true
+    true unless youth_leader.first_contact_date.nil? or youth_leader.first_contact_responsable_id.nil?
   end
 
   def test_contacted_to_EPI(youth_leader)
-    true
+    true unless youth_leader.epi_date.nil? or youth_leader.epi_responsable_id.nil?
   end
 
   def test_EPI_to_open(youth_leader)
-    true
+    true unless youth_leader.link_to_expa.nil? or youth_leader.ep_manager_id.nil?
   end
 
   def test_open_to_ip(youth_leader)
-    true
+    youth_leader.applying?
   end
 
   def test_ip_to_ma(youth_leader)
-    true
+    true unless youth_leader.match_date.nil?
   end
 
   def test_ma_to_re(youth_leader)
-    true
+    true unless youth_leader.ops_date.nil? or youth_leader.realize_date.nil?
   end
 end

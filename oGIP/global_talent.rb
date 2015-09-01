@@ -715,13 +715,14 @@ class GlobalTalent < PodioAppControl
 	# @param i [Integer] Index of the item you want to retrieve the value
 	def populate(other,i)
 		name = other.name i
-		sex = other.sexo i
+		sex = other.sex i
 		birthdate = other.birthdate i
 		phones = other.phones i
 		carrier = other.carrier i
 		email = other.emails i
 		address = other.address i
 		city = other.city i
+		state_id = other.state_id i
 		study_stage = other.study_stage i
 		course = other.course i
 		semester = other.semester i
@@ -729,7 +730,7 @@ class GlobalTalent < PodioAppControl
 		english_level = other.english_level i
 		spanish_level = other.spanish_level i
 		best_moment = other.best_moment i
-		local_aiesec = other.local_aiesec i
+		local_aiesec_id = other.local_aiesec_id i
 		interest = other.interest i
 		marketing_channel = other.marketing_channel i
 		indication = other.indication i
@@ -742,13 +743,15 @@ class GlobalTalent < PodioAppControl
 		epi_date = other.epi_date i
 		epi_responsable_id = other.epi_responsable_id i
 		ep_manager_id = other.ep_manager_id i
+		link_to_expa = other.link_to_expa i
+		applying = other.applying i
 		ops_date = other.ops_date i
 		was_in_ops = other.was_in_ops i
 		match_date = other.match_date i
 		realize_date = other.realize_date i
 		delete = other.delete i
-		link_to_mc_id = other.link_to_mc_id i
-		link_to_local_id = other.link_to_local_id i
+		#link_to_mc_id = other.link_to_mc_id i
+		#link_to_local_id = other.link_to_local_id i
 	end
 
 	# Update register on Podio database
@@ -787,6 +790,8 @@ class GlobalTalent < PodioAppControl
 		hash_fields.merge!(@fields[:epi_date] => {'start' => @epi_date || epi_date(index)})
 		hash_fields.merge!(@fields[:epi_responsable] => @epi_responsable_id || epi_responsable_id(index))
 		hash_fields.merge!(@fields[:ep_manager] => @ep_manager_id || ep_manager_id(index))
+		hash_fields.merge!(@fields[:link_to_expa] => @link_to_expa || link_to_expa(index))
+		hash_fields.merge!(@fields[:applying] => @applying || applying(index))
 		hash_fields.merge!(@fields[:ops_date] => {'start' => @ops_date || ops_date(index)})
 		hash_fields.merge!(@fields[:was_in_ops] => @was_in_ops || was_in_ops(index))
 		hash_fields.merge!(@fields[:match_date] => {'start' => @match_date || match_date(index)})
@@ -813,6 +818,7 @@ class GlobalTalent < PodioAppControl
 		#hash_fields.merge!(@fields[:email_old] => @email_text) unless @email_text.nil?
 		hash_fields.merge!(@fields[:address] => @address) unless @address.nil?
 		hash_fields.merge!(@fields[:city] => @city) unless @city.nil?
+		hash_fields.merge!(@fields[:state] => @state_id) unless @state_id.nil?
 		hash_fields.merge!(@fields[:study_stage] => @study_stage) unless @study_stage.nil?
 		hash_fields.merge!(@fields[:course] => @course) unless @course.nil?
 		hash_fields.merge!(@fields[:semester] => @semester) unless @semester.nil?
@@ -832,6 +838,8 @@ class GlobalTalent < PodioAppControl
 		hash_fields.merge!(@fields[:epi_date] => {'start' => @epi_date}) unless @epi_date.nil?
 		hash_fields.merge!(@fields[:epi_responsable] => @epi_responsable_id) unless @epi_responsable_id.nil?
 		hash_fields.merge!(@fields[:ep_manager] => @ep_manager_id) unless @ep_manager_id.nil?
+		hash_fields.merge!(@fields[:link_to_expa] => @link_to_expa) unless @link_to_expa.nil?
+		hash_fields.merge!(@fields[:applying] => @applying) unless @applying.nil?
 		hash_fields.merge!(@fields[:ops_date] => {'start' => @ops_date}) unless @ops_date.nil?
 		hash_fields.merge!(@fields[:was_in_ops] => @was_in_ops) unless @was_in_ops.nil?
 		hash_fields.merge!(@fields[:match_date] => {'start' => @match_date}) unless @match_date.nil?

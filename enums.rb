@@ -7,14 +7,22 @@ class Enums
     :app2 => '2. Abordagem',
     :app3 => '3. Dinâmica de grupo',
     :app4 => '4. Entrevista',
-    :app5 => '5. Membros',
-    :ogip => 'Pessoas'
+    :app5 => '5. Membros'
+  }
+  $enum_oGIP_apps_name = {
+    :leads => '1. Inscritos',
+    :contacteds => '2. Abordados',
+    :epi => '3. EPI',
+    :open => '4. Open',
+    :ip => '5. In Progress',
+    :ma => '6. Match',
+    :re => '7. Realize'
   }
   $enum_type = { :ors => 1,
                  :national => 2,
                  :local => 3 }
   $enum_area = { :tm => 306775522,
-                 :ogip => 30677463,
+                 :ogip => 306774653,
                  :ogcdp => 306774783,
                  :mkt => 306775660,
                  :fin => 306775701,
@@ -87,20 +95,39 @@ class Enums
     :s8 => 8,
     :s9 => 9,
     :s10 => 10,
-    :completo => 11,
-    :outro => 12,
+    :complete => 11,
+    :other => 12,
   }
   $enum_moment = {
 
   }
   $enum_priority = {
-    
+    :p1 => 1,
+    :p2 => 2,
+    :p3 => 3,
+    :p4 => 4,
+    :p5 => 5
   }
   $enum_marketing_channel ={
-
+    :postal => 1,
+    :friends => 2,
+    :posters => 3,
+    :class_room => 4,
+    :junior_company => 5,
+    :evente => 6,
+    :newspaper => 7,
+    :mailing => 8,
+    :flyer => 9,
+    :facebook => 10,
+    :global_village => 11,
+    :other => 12
   }
   $enum_interest = {
-
+    :managerment => 1,
+    :teaching => 2,
+    :marketing => 3,
+    :engineering => 4,
+    :startups => 5
   }
   $enum_abordado = {:nao => 1,
                     :sim => 2}
