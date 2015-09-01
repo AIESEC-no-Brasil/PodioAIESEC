@@ -37,7 +37,8 @@ class App3Dinamica < PodioAppControl
 			:responsavel => 'responsavel-local',
 			:data_abordagem => 'data-da-abordagem',
 			:data_dinamica => 'data-da-dinamica',
-			:foi_entrevistado => 'foi-entrevistado',
+			:foi_aprovado => 'foi-entrevistado',
+      :data_entrevista => 'data-da-entrevista',
 		}
 	end
 
@@ -464,15 +465,29 @@ class App3Dinamica < PodioAppControl
   # Getter for foi_entrevistado of the pushful
   # @param index [Integer] Index of the item you want to retrieve the value
   # @return [enum_compareceu_dinamica] If pushful was in group selection
-  def foi_entrevistado(index)
-    i = get_field_index_by_external_id(index, @fields[:foi_entrevistado])
-    $enum_entrevistado.key(fields(index, i)['id'].to_i) unless i.nil?
+  def foi_aprovado(index)
+    i = get_field_index_by_external_id(index, @fields[:foi_aprovado])
+    $enum_aprovado_dinamica.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 
   # Setter for foi_entrevistado of the addressed
   # @param param [Symbol] The value you want to set
-  def foi_entrevistado=(param)
-    @entrevistado = $enum_entrevistado[param]
+  def foi_aprovado=(param)
+    @foi_aprovado = $enum_aprovado_dinamica[param]
+  end
+
+  # Getter for interview date of the pushful
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] interview date of the pushful
+  def data_entrevista(index)
+    i = get_field_index_by_external_id(index, @fields[:data_entrevista])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
+
+  # Setter for interview date
+  # @param param [DateTime] interview date
+  def data_entrevista=(param)
+    @data_entrevista = param.strftime('%Y-%m-%d %H:%M:%S')
   end
 
 	# Populate self variables with the values of an approached object
@@ -498,7 +513,7 @@ class App3Dinamica < PodioAppControl
 		self.faculdade=(abordado.faculdade(i))
 		self.ingles=(abordado.ingles(i))
 		self.espanhol=(abordado.espanhol(i))
-		self.entidade=(abordado.entidade_id(i))
+		self.entidade=(abordado.entidade(i))
 		self.turno=(abordado.turno(i))
 		self.programa_interesse=(abordado.programa_interesse(i))
 		self.conheceu_aiesec=(abordado.conheceu_aiesec(i))
@@ -507,8 +522,8 @@ class App3Dinamica < PodioAppControl
 		self.projeto_especifico=(abordado.projeto_especifico(i))
 		self.responsavel_id=(abordado.responsavel_id(i))
 		self.data_abordagem=(abordado.data_abordagem(i))
-    self.data_dinamica=(DateTime.current)
-    self.foi_entrevistado=($enum_entrevistado[:nao])
+    self.data_dinamica=(abordado.data_dinamica(i))
+    self.foi_aprovado=($enum_aprovado_dinamica[:nao])
 	end
 
 	# Update register on Podio database
@@ -544,7 +559,8 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
     hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_abordagem(index))
     hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica || data_dinamica(index))
-    hash_fields.merge!(@fields[:foi_entrevistado] => @entrevistado || foi_entrevistado(index))
+    hash_fields.merge!(@fields[:foi_aprovado] => @foi_aprovado || foi_aprovado(index))
+    hash_fields.merge!(@fields[:data_entrevista] => @data_entrevista || data_entrevista(index))
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
 	end
@@ -581,7 +597,8 @@ class App3Dinamica < PodioAppControl
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
     hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem) unless @data_abordagem.nil?
     hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica) unless @data_dinamica.nil?
-    hash_fields.merge!(@fields[:foi_entrevistado] => @entrevistado) unless @entrevistado.nil?
+    hash_fields.merge!(@fields[:foi_aprovado] => @foi_aprovado) unless @foi_aprovado.nil?
+    hash_fields.merge!(@fields[:data_entrevista] => @data_entrevista) unless @data_entrevista.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
   end

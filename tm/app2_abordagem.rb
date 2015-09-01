@@ -36,7 +36,8 @@ class App2Abordagem < PodioAppControl
 			:vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 			:responsavel => 'responsavel-local',
       :data_abordagem => 'data-da-abordagem',
-			:compareceu_dinamica => 'compareceu-a-dinamica'
+			:dinamica_marcada => 'compareceu-a-dinamica',
+      :data_dinamica => 'data_da_dinamica'
 		}
 	end
 
@@ -456,16 +457,30 @@ class App2Abordagem < PodioAppControl
 	# Getter for compareceu_dinamica of the addressed
 	# @param index [Integer] Index of the item you want to retrieve the value
 	# @return [enum_compareceu_dinamica] If addressed was in group selection
-	def compareceu_dinamica(index)
-		i = get_field_index_by_external_id(index, @fields[:compareceu_dinamica])
-    $enum_compareceu_dinamica.key(fields(index, i)['id'].to_i) unless i.nil?
+	def dinamica_marcada(index)
+		i = get_field_index_by_external_id(index, @fields[:dinamica_marcada])
+    $enum_dinamica_marcada.key(fields(index, i)['id'].to_i) unless i.nil?
 	end
 
 	# Setter for compareceu_dinamica of the addressed
 	# @param param [Symbol] The value you want to set
-	def compareceu_dinamica=(param)
-		@compareceu_dinamica = $enum_compareceu_dinamica[param]
-	end
+	def dinamica_marcada=(param)
+		@dinamica_marcada = $enum_dinamica_marcada[param]
+  end
+
+  # Getter for approached date of the addressed
+  # @param index [Integer] Index of the item you want to retrieve the value
+  # @return [String] Approached date of the addressed
+  def data_dinamica(index)
+    i = get_field_index_by_external_id(index, @fields[:data_abordagem])
+    DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+  end
+
+  # Setter for approached date
+  # @param param [DateTime] Approached date
+  def data_dinamica=(param)
+    @data_dinamica = param.strftime('%Y-%m-%d %H:%M:%S')
+  end
 
 	# Populate self variables with the values of intervield fields
 	# @param inscrito [App1Inscrito] Reference of the intervield object
@@ -491,7 +506,7 @@ class App2Abordagem < PodioAppControl
 		self.faculdade=(inscrito.faculdade(i))
 		self.ingles=(inscrito.ingles(i))
 		self.espanhol=(inscrito.espanhol(i))
-		self.entidade=(inscrito.entidade_id(i))
+		self.entidade=(inscrito.entidade(i))
 		self.turno=(inscrito.turno(i))
 		self.programa_interesse=(inscrito.programa_interesse(i))
 		self.conheceu_aiesec=(inscrito.conheceu_aiesec(i))
@@ -499,7 +514,7 @@ class App2Abordagem < PodioAppControl
 		self.voluntario_ferias=(inscrito.voluntario_ferias?(i))
 		self.projeto_especifico=(inscrito.projeto_especifico(i))
 		self.responsavel_id=(inscrito.responsavel_id(i))
-    self.compareceu_dinamica=($enum_compareceu_dinamica[:nao])
+    self.dinamica_marcada=($enum_dinamica_marcada[:nao])
     self.data_abordagem=(DateTime.current)
 	end
 
@@ -535,7 +550,8 @@ class App2Abordagem < PodioAppControl
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico || projeto_especifico(index))
 		hash_fields.merge!(@fields[:responsavel] => @responsavel || responsavel_id(index))
 		hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem || data_abordagem(index))
-    hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica || compareceu_dinamica(index))
+    hash_fields.merge!(@fields[:dinamica_marcada] => @dinamica_marcada || dinamica_marcada(index))
+    hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica || data_dinamica(index))
 
 		Podio::Item.update(item_id(index), { :fields => hash_fields })
 	end
@@ -571,7 +587,8 @@ class App2Abordagem < PodioAppControl
 		hash_fields.merge!(@fields[:vaga_especifica] => @projeto_especifico) unless @projeto_especifico.nil?
 		hash_fields.merge!(@fields[:responsavel] => @responsavel) unless @responsavel.nil?
     hash_fields.merge!(@fields[:data_abordagem] => @data_abordagem) unless @data_abordagem.nil?
-		hash_fields.merge!(@fields[:compareceu_dinamica] => @compareceu_dinamica) unless @compareceu_dinamica.nil?
+		hash_fields.merge!(@fields[:dinamica_marcada] => @dinamica_marcada) unless @dinamica_marcada.nil?
+    hash_fields.merge!(@fields[:data_dinamica] => @data_dinamica) unless @data_dinamica.nil?
 
 		Podio::Item.create(@app_id, { :fields => hash_fields })
   end

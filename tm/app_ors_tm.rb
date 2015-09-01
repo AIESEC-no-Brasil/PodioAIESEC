@@ -30,7 +30,9 @@ class AppORSTM < PodioAppControl
                :como_conheceu_aiesec => 'como-conheceu-a-aiesec',
                :pessoa_que_indicou => 'nome-da-pessoaentidade-que-lhe-indicou',
                :voluntario_ferias => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
-               :vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe'}
+               :vaga_especifica => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
+               :transferido => 'controle-interno-robozinho-foi-transferido'
+    }
   end
 
   def nome_completo(index)
@@ -161,5 +163,10 @@ class AppORSTM < PodioAppControl
   def projeto_especifico(index)
     i = get_field_index_by_external_id(index, @fields[:vaga_especifica])
     fields(index, i).to_s unless i.nil?
+  end
+
+  def foi_transferido?(index)
+    i = get_field_index_by_external_id(index, @fields[:transferido])
+    $enum_foi_transferido_ors.key(fields(index, i)['id'].to_i) unless i.nil?
   end
 end

@@ -73,12 +73,14 @@ class Enums
   $enum_foi_transferido_ors = {:sim => 1,
                                :nao => 2}
 
-  $enum_compareceu_dinamica = {:nao => 1,
+  $enum_dinamica_marcada = {:nao => 1,
                                :sim => 2}
 
-  $enum_entrevistado = {:nao => 1,
+  $enum_aprovado_dinamica = {:nao => 1,
                         :sim => 2}
 
-  $enum_virou_membro = {:nao => 1,
-                        :sim => 2}
+  $enum_resultado_entrevista = {:nao_compareceu => 1,
+                                :compareceu_nao_aprovado => 2,
+                                :nao_aprovado => 2,
+                                :aprovado => 3}
 end

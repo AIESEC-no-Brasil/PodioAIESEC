@@ -112,7 +112,7 @@ class TM
 
     limit = apps.total_count-1
     for i in 0..limit
-      if apps.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:tm]
+      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:tm]
         @national_app_id = apps.id(i)
         break
       end
@@ -131,7 +131,7 @@ class TM
       limit = @ors_app.total_count-1
       for i in 0..limit
         if @ors_app.entidade_id(i) == entity &&
-            $enum_foi_transferido_ors[@ors_app.foi_transferido?(i)] != $enum_foi_transferido_ors[:sim]
+        $enum_foi_transferido_ors[@ors_app.foi_transferido?(i)] != $enum_foi_transferido_ors[:sim]
 
           inscrito = @local_apps_ids[entity][0]
           abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
@@ -168,6 +168,8 @@ class TM
         end
         inscrito.refresh_item_list
         abordado.refresh_item_list
+        @local_apps_ids[entity][0] = inscrito
+        @local_apps_ids[entity][1] = abordado
       end
     end
   end
@@ -181,13 +183,17 @@ class TM
 
       limit = abordado.total_count-1
       for i in 0..limit
-        if $enum_compareceu_dinamica[abordado.compareceu_dinamica(i)] == $enum_compareceu_dinamica[:sim]
+        if $enum_dinamica_marcada[abordado.dinamica_marcada(i)] == $enum_dinamica_marcada[:sim] &&
+        abordado.data_dinamica.nil? == false
+
           dinamica.populate(abordado,i)
           dinamica.create
           abordado.delete(i)
         end
         abordado.refresh_item_list
         dinamica.refresh_item_list
+        @local_apps_ids[entity][1] = abordado
+        @local_apps_ids[entity][2] = dinamica
       end
     end
   end
@@ -201,7 +207,8 @@ class TM
 
       limit = dinamica.total_count-1
       for i in 0..limit
-        if $enum_entrevistado[dinamica.foi_entrevistado(i)] == $enum_entrevistado[:sim]
+        if $enum_aprovado_dinamica[dinamica.foi_aprovado(i)] == $enum_aprovado_dinamica[:sim] &&
+        dinamica.data_entrevista.nil? == false
           entrevista.populate(dinamica,i)
           entrevista.create
           dinamica.delete(i)
@@ -209,6 +216,8 @@ class TM
       end
       dinamica.refresh_item_list
       entrevista.refresh_item_list
+      @local_apps_ids[entity][2] = dinamica
+      @local_apps_ids[entity][3] = entrevista
     end
   end
 
@@ -221,13 +230,17 @@ class TM
 
       limit = entrevista.total_count-1
       for i in 0..limit
-        if $enum_virou_membro[entrevista.virou_membro(i)] == $enum_virou_membro[:sim]
+        if $enum_resultado_entrevista[entrevista.resultado_entrevista(i)] == $enum_resultado_entrevista[:aprovado]
           membro.populate(entrevista,i)
           membro.create
           entrevista.delete(i)
         end
       end
     end
+    entrevista.refresh_item_list
+    membro.refresh_item_list
+    @local_apps_ids[entity][3] = entrevista
+    @local_apps_ids[entity][4] = membro
   end
 
   def local_to_national
