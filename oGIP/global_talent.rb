@@ -85,8 +85,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String]  of the Global Talent
 	def birthdate(index)
 		i = get_field_index_by_external_id(index, @fields[:birthdate])
-		date = values(index, i)['values'][0]['start_date'] unless i.nil?
-		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
+		date = values(index, i)[0]['start'] unless i.nil?
+		DateTime.strptime(date,'%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for birthdate of the Global Talent
@@ -448,8 +448,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String]  of the Global Talent
 	def first_contact_date(index)
 		i = get_field_index_by_external_id(index, @fields[:first_contact_date])
-		date = values(index, i)[0]['start_date'] unless i.nil?
-		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
+		date = values(index, i)[0]['start'] unless i.nil?
+		DateTime.strptime(date,'%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for first_contact_date of the Global Talent
@@ -540,7 +540,8 @@ class GlobalTalent < PodioAppControl
 	# @return [Integer] Id of referene of ep_manager_id of the Global Talent
 	def link_to_expa(index)
 		i = get_field_index_by_external_id(index, @fields[:link_to_expa])
-		fields(index, i)['profile_id'].to_s unless i.nil?
+		field = values(index, i) unless i.nil?
+		field[0]["embed"] unless field.nil?
 	end
 
 	# Setter for link_to_expa of the Global Talent
@@ -576,8 +577,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String] ops_date of the Global Talent
 	def ops_date(index)
 		i = get_field_index_by_external_id(index, @fields[:ops_date])
-		date = values(index, i)[0]['start_date'] unless i.nil?
-		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
+		date = values(index, i)[0]['start'] unless i.nil?
+		DateTime.strptime(date,'%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for ops_date of the Global Talent
@@ -622,8 +623,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String] match_date of the Global Talent
 	def match_date(index)
 		i = get_field_index_by_external_id(index, @fields[:match_date])
-		date = values(index, i)[0]['start_date'] unless i.nil?
-		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
+		date = values(index, i)[0]['start'] unless i.nil?
+		DateTime.strptime(date,'%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for match_date of the Global Talent
@@ -647,8 +648,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String] realize_date of the Global Talent
 	def realize_date(index)
 		i = get_field_index_by_external_id(index, @fields[:realize_date])
-		date = values(index, i)['values'][0]['start_date'] unless i.nil?
-		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
+		date = values(index, i)[0]['start'] unless i.nil?
+		DateTime.strptime(date,'%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for realize_date of the Global Talent

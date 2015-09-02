@@ -131,6 +131,7 @@ class OGX_GIP
 
           leads.populate(@ors_app,i)
           leads.create
+          @ors_app.delete(i)
         end
       end
     end
@@ -160,7 +161,7 @@ class OGX_GIP
         if test_lead_to_contacted(leads,i)
           contacteds.populate(leads,i)
           contacteds.create
-          #leads.delete(i)
+          leads.delete(i)
         end
       end
       
@@ -169,7 +170,7 @@ class OGX_GIP
         if test_contacted_to_EPI(contacteds,i)
           epis.populate(contacteds,i)
           epis.create
-          #contacteds.delete(i)
+          contacteds.delete(i)
         end
       end
 
@@ -178,7 +179,7 @@ class OGX_GIP
         if test_EPI_to_open(epis,i)
           opens.populate(epis,i)
           opens.create
-          #epis.delete(i)
+          epis.delete(i)
         end
       end
 
@@ -186,8 +187,9 @@ class OGX_GIP
       (0..limit).each do |i|
         if test_open_to_ip(opens,i)
           in_progress.populate(opens,i)
+          in_progress.applying = nil
           in_progress.create
-          #opens.delete(i)
+          opens.delete(i)
         end
       end
 
@@ -196,7 +198,7 @@ class OGX_GIP
         if test_ip_to_ma(in_progress,i)
           matchs.populate(in_progress,i)
           matchs.create
-          #in_progress.delete(i)
+          in_progress.delete(i)
         end
       end
 
@@ -205,7 +207,7 @@ class OGX_GIP
         if test_ma_to_re(matchs,i)
           realizes.populate(matchs,i)
           realizes.create
-          #matchs.delete(i)
+          matchs.delete(i)
         end
       end
     end
