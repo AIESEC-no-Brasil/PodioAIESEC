@@ -155,7 +155,6 @@ class OGX_GIP
       abort('Wrong parameter for matchs') unless matchs.is_a?(GlobalTalent)
       abort('Wrong parameter for realizes') unless realizes.is_a?(GlobalTalent)
 
-      puts leads.at_index(1).to_s
       limit = leads.total_count - 1
       (0..limit).each do |i|
         if test_lead_to_contacted(leads,i)
@@ -220,10 +219,6 @@ class OGX_GIP
   end
 
   def test_lead_to_contacted(youth_leader,i)
-    /puts 'Test'
-    puts youth_leader.name(i)
-    puts youth_leader.first_contact_date(i)
-    puts youth_leader.first_contact_responsable_id(i)/
     true unless youth_leader.first_contact_date(i).nil? or youth_leader.first_contact_responsable_id(i).nil?
   end
 

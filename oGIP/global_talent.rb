@@ -85,7 +85,8 @@ class GlobalTalent < PodioAppControl
 	# @return [String]  of the Global Talent
 	def birthdate(index)
 		i = get_field_index_by_external_id(index, @fields[:birthdate])
-		DateTime.strptime(@item[0][0][:fields][i]['values'][0]['start_date'] + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless i.nil?
+		date = values(index, i)['values'][0]['start_date'] unless i.nil?
+		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
 	# Setter for birthdate of the Global Talent
@@ -447,11 +448,7 @@ class GlobalTalent < PodioAppControl
 	# @return [String]  of the Global Talent
 	def first_contact_date(index)
 		i = get_field_index_by_external_id(index, @fields[:first_contact_date])
-		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
-		/puts 'get'
-		puts i
-		puts @item[0][0][:fields][i] unless i.nil?
-		puts date/
+		date = values(index, i)[0]['start_date'] unless i.nil?
 		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
@@ -490,7 +487,7 @@ class GlobalTalent < PodioAppControl
 	# @return [String] epi_date of the Global Talent
 	def epi_date(index)
 		i = get_field_index_by_external_id(index, @fields[:epi_date])
-		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		date = values(index, i)[0]['start_date'] unless i.nil?
 		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
@@ -579,7 +576,7 @@ class GlobalTalent < PodioAppControl
 	# @return [String] ops_date of the Global Talent
 	def ops_date(index)
 		i = get_field_index_by_external_id(index, @fields[:ops_date])
-		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		date = values(index, i)[0]['start_date'] unless i.nil?
 		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
@@ -625,7 +622,7 @@ class GlobalTalent < PodioAppControl
 	# @return [String] match_date of the Global Talent
 	def match_date(index)
 		i = get_field_index_by_external_id(index, @fields[:match_date])
-		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		date = values(index, i)[0]['start_date'] unless i.nil?
 		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
@@ -650,7 +647,7 @@ class GlobalTalent < PodioAppControl
 	# @return [String] realize_date of the Global Talent
 	def realize_date(index)
 		i = get_field_index_by_external_id(index, @fields[:realize_date])
-		date = @item[0][0][:fields][i]['values'][0]['start_date'] unless i.nil?
+		date = values(index, i)['values'][0]['start_date'] unless i.nil?
 		DateTime.strptime(date + ' 00:00:00','%Y-%m-%d %H:%M:%S') unless date.nil?
 	end
 
