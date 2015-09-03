@@ -5,7 +5,6 @@ require_relative 'podio_app_control'
 class ControlDatabaseApp < PodioAppControl
   # @param app_id [Integer] Id of the 'app' app
   def initialize(app_id)
-    super(app_id)
     @fields = {:name => 'title',
                :id => 'id-2',
                :workspace => 'relationship'}
@@ -14,6 +13,7 @@ class ControlDatabaseApp < PodioAppControl
                      :area => 'area-2',
                      :type => 'type',
                      :year => 'year'}
+    super(app_id,@fields)
   end
 
   # Get name of the app

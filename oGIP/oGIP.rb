@@ -1,7 +1,8 @@
 require_relative '../control/control_database_workspace'
 require_relative '../control/control_database_app'
-require_relative 'global_talent'
 require_relative '../enums'
+require_relative '../utils'
+require_relative 'global_talent'
 
 # This class initializes, configure and take care of the TM module.
 # The module is divided in 3 categories:

@@ -4,7 +4,6 @@ require_relative 'podio_app_control'
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class ControlDatabaseWorkspace < PodioAppControl
   def initialize(app_id)
-    super(app_id)
     @fields = {:name => 'title',
                :id => 'id-2',
                :entity => 'entity',
@@ -12,6 +11,7 @@ class ControlDatabaseWorkspace < PodioAppControl
                :type => 'type',
                :robot => 'robottype',
                :year => 'year'}
+    super(app_id,@fields)
   end
 
   # Get name of the workspace
