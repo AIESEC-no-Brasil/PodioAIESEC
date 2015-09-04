@@ -9,8 +9,9 @@ class PodioAppControl
                    :contact  => 'contact'}
 
   # @param app_id [Integer] Id of the app
-  def initialize(app_id)
+  def initialize(app_id, fields)
     @app_id = app_id
+    @fields = fields
     @max = 500 # Maximum number of elements per podio request
   end
 

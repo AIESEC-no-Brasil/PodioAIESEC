@@ -1,7 +1,8 @@
 require_relative '../control/control_database_workspace'
 require_relative '../control/control_database_app'
-require_relative 'global_talent'
 require_relative '../enums'
+require_relative '../utils'
+require_relative 'global_talent'
 
 # This class initializes, configure and take care of the TM module.
 # The module is divided in 3 categories:
@@ -131,6 +132,7 @@ class OGX_GIP
 
           leads.populate(@ors_app,i)
           leads.create
+          @ors_app.delete(i)
         end
       end
     end
@@ -155,13 +157,12 @@ class OGX_GIP
       abort('Wrong parameter for matchs') unless matchs.is_a?(GlobalTalent)
       abort('Wrong parameter for realizes') unless realizes.is_a?(GlobalTalent)
 
-      puts leads.at_index(1).to_s
       limit = leads.total_count - 1
       (0..limit).each do |i|
         if test_lead_to_contacted(leads,i)
           contacteds.populate(leads,i)
           contacteds.create
-          #leads.delete(i)
+          leads.delete(i)
         end
       end
       
@@ -170,7 +171,7 @@ class OGX_GIP
         if test_contacted_to_EPI(contacteds,i)
           epis.populate(contacteds,i)
           epis.create
-          #contacteds.delete(i)
+          contacteds.delete(i)
         end
       end
 
@@ -179,7 +180,7 @@ class OGX_GIP
         if test_EPI_to_open(epis,i)
           opens.populate(epis,i)
           opens.create
-          #epis.delete(i)
+          epis.delete(i)
         end
       end
 
@@ -187,8 +188,9 @@ class OGX_GIP
       (0..limit).each do |i|
         if test_open_to_ip(opens,i)
           in_progress.populate(opens,i)
+          in_progress.applying = nil
           in_progress.create
-          #opens.delete(i)
+          opens.delete(i)
         end
       end
 
@@ -197,7 +199,7 @@ class OGX_GIP
         if test_ip_to_ma(in_progress,i)
           matchs.populate(in_progress,i)
           matchs.create
-          #in_progress.delete(i)
+          in_progress.delete(i)
         end
       end
 
@@ -206,7 +208,7 @@ class OGX_GIP
         if test_ma_to_re(matchs,i)
           realizes.populate(matchs,i)
           realizes.create
-          #matchs.delete(i)
+          matchs.delete(i)
         end
       end
     end
@@ -220,10 +222,6 @@ class OGX_GIP
   end
 
   def test_lead_to_contacted(youth_leader,i)
-    /puts 'Test'
-    puts youth_leader.name(i)
-    puts youth_leader.first_contact_date(i)
-    puts youth_leader.first_contact_responsable_id(i)/
     true unless youth_leader.first_contact_date(i).nil? or youth_leader.first_contact_responsable_id(i).nil?
   end
 
