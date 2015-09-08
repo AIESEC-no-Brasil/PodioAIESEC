@@ -2,15 +2,17 @@
 # Must be inherited by another class.
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class PodioAppControl
-  $type_of_data = {:category => 'category',
-                   :app      => 'app',
-                   :number   => 'number',
-                   :text     => 'text',
-                   :contact  => 'contact'}
+  $type_of_data = {
+    :category => 'category',
+    :app      => 'app',
+    :number   => 'number',
+    :text     => 'text',
+    :contact  => 'contact'
+  }
 
   # @param app_id [Integer] Id of the app
   def initialize(app_id, fields)
-    @app_id = app_id
+    @app_id = app_ida
     @fields = fields
     @max = 500 # Maximum number of elements per podio request
   end

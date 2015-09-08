@@ -8,7 +8,7 @@ class YouthLeader < PodioAppControl
 	date_attr_accessor :birthdate
 	boolean_attr_accessor :erase
 	category_attr_accessor :sex, :study_stage, :semester, :english_level, :spanish_level, :best_moment
-	category_attr_accessor :interest, :marketing_channel, :carrier
+	category_attr_accessor :marketing_channel, :carrier
 	multiple_attr_accessor :phones, :emails
 	reference_attr_accessor :state, :local_aiesec
 
@@ -35,7 +35,6 @@ class YouthLeader < PodioAppControl
 			:spanish_level => 'nivel-de-espanhol',
 			:best_moment => 'melhor-turno-para-a-aiesec-entrar-em-contato',
 			:local_aiesec => 'aiesec-mais-proxima',
-			:interest => 'programa-de-intersesse',
 			:marketing_channel => 'categoria',
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
 			:erase => 'apagar',
@@ -66,7 +65,6 @@ class YouthLeader < PodioAppControl
 		self.spanish_level = other.spanish_level i
 		self.best_moment = other.best_moment i
 		self.local_aiesec_id = other.local_aiesec_id i
-		self.interest = other.interest i
 		self.marketing_channel = other.marketing_channel i
 		self.indication = other.indication i
 		self.erase = other.erase i
@@ -95,7 +93,6 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:spanish_level] => @spanish_level || spanish_level(index))
 		hash_fields.merge!(@fields[:best_moment] => @best_moment || best_moment(index)) unless @best_moment.nil?
 		hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec_id || local_aiesec_id(index))
-		hash_fields.merge!(@fields[:interest] => @interest || interest(index))
 		hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel || marketing_channel(index))
 		hash_fields.merge!(@fields[:indication] => @indication || indication(index))
 		hash_fields.merge!(@fields[:erase] => @erase || erase(index))
@@ -125,7 +122,6 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:spanish_level] => @spanish_level) unless @spanish_level.nil?
 		hash_fields.merge!(@fields[:best_moment] => @best_moment) unless @best_moment.nil?
 		hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec_id) unless @local_aiesec_id.nil?
-		hash_fields.merge!(@fields[:interest] => @interest) unless @interest.nil?
 		hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
 		hash_fields.merge!(@fields[:indication] => @indication) unless @indication.nil?
 		hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
