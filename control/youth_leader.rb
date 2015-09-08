@@ -12,16 +12,16 @@ class YouthLeader < PodioAppControl
 	multiple_attr_accessor :phones, :emails
 	reference_attr_accessor :state, :local_aiesec
 
-	def initialize(app_id, fields)
-		@fields = {
+	def initialize(app_id, extra_fields)
+		basic_fields = {
 			:name => 'titulo',
 			:sex => 'sexo',
 			:birthdate => 'data-de-nascimento',
-			:phone => 'telefone',
+			:phones => 'telefone',
 			:telefone_old => 'telefone-3',#TODO exluir
 			:celular => 'celular-2',#TODO exluir
 			:carrier => 'operadoras', #TODO aceitar múltiplas
-			:email => 'email',
+			:emails => 'email',
 			:email_old => 'email-2',#TODO exluir
 			:address => 'endereco-completo',
 			:zip_code => 'cep',
@@ -40,8 +40,8 @@ class YouthLeader < PodioAppControl
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
 			:erase => 'apagar',
 		}
-		@fields.merge!(fields) unless fields.nil?
-		super(app_id, @fields)
+		basic_fields.merge!(extra_fields) unless extra_fields.nil?
+		super(app_id, basic_fields)
 	end
 
 	# Populate self variables with the values of intervield fields
@@ -77,11 +77,11 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:name] => @name || name(index))
 		hash_fields.merge!(@fields[:sex] => @sex || sex(index))
 		hash_fields.merge!(@fields[:birthdate] => {'start' => @birthdate || birthdate(index)})
-		hash_fields.merge!(@fields[:phone] => @phones || phones(index))
+		hash_fields.merge!(@fields[:phones] => @phones || phones(index))
 		#hash_fields.merge!(@fields[:telefone_old] => @telefone || telefone(index))
 		#hash_fields.merge!(@fields[:celular] => @celular || celular(index))
 		hash_fields.merge!(@fields[:carrier] => @carrier || carrier(index))
-		hash_fields.merge!(@fields[:email] => @emails || emails(index))
+		hash_fields.merge!(@fields[:emails] => @emails || emails(index))
 		#hash_fields.merge!(@fields[:email_old] => @email_text || email_text(index))
 		hash_fields.merge!(@fields[:address] => @address || address(index))
 		hash_fields.merge!(@fields[:zip_code] => @zip_code || zip_code(index))
@@ -102,16 +102,16 @@ class YouthLeader < PodioAppControl
 		hash_fields
 	end
 
-	def hashing_to_create()
+	def hashing_to_create
 		hash_fields = {}
 		hash_fields.merge!(@fields[:name] => @name) unless @name.nil?
 		hash_fields.merge!(@fields[:sex] => @sex) unless @sex.nil?
 		hash_fields.merge!(@fields[:birthdate] => {'start' => @birthdate}) unless @birthdate.nil?
-		hash_fields.merge!(@fields[:phone] => @phones) unless @phones.nil?
+		hash_fields.merge!(@fields[:phones] => @phones) unless @phones.nil?
 		#hash_fields.merge!(@fields[:telefone_old] => @telefone) unless @telefone.nil?
 		#hash_fields.merge!(@fields[:celular] => @celular) unless @celular.nil?
 		hash_fields.merge!(@fields[:carrier] => @carrier) unless @carrier.nil?
-		hash_fields.merge!(@fields[:email] => @emails) unless @emails.nil?
+		hash_fields.merge!(@fields[:emails] => @emails) unless @emails.nil?
 		#hash_fields.merge!(@fields[:email_old] => @email_text) unless @email_text.nil?
 		hash_fields.merge!(@fields[:address] => @address) unless @address.nil?
 		hash_fields.merge!(@fields[:zip_code] => @zip_code) unless @zip_code.nil?
