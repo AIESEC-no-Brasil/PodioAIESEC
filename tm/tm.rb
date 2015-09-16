@@ -1,13 +1,9 @@
 require_relative '../control/control_database_workspace'
 require_relative '../control/control_database_app'
-require_relative 'app_ors_tm'
-require_relative 'app1_inscritos'
-require_relative 'app2_abordagem'
-require_relative 'app3_dinamica'
-require_relative 'app4_entrevista'
-require_relative 'app5_membros'
 require_relative 'app_nacional_tm'
 require_relative '../enums'
+require_relative '../utils'
+require_relative 'youth_leader'
 
 # This class initializes, configure and take care of the TM module.
 # The module is divided in 3 categories:
@@ -46,7 +42,7 @@ class TM
     limit = apps.total_count-1
     for i in 0..limit
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:tm]
-        @ors_app = AppORSTM.new(apps.id(i))
+        @ors_app = YouthTalent.new(apps.id(i))
         break
       end
     end
@@ -87,11 +83,11 @@ class TM
       for i in 0..apps.total_count-1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:tm]
           case apps.name(i)
-            when $enum_apps_name[:app1] then app1 = App1Inscritos.new(apps.id(i))
-            when $enum_apps_name[:app2] then app2 = App2Abordagem.new(apps.id(i))
-            when $enum_apps_name[:app3] then app3 = App3Dinamica.new(apps.id(i))
-            when $enum_apps_name[:app4] then app4 = App4Entrevista.new(apps.id(i))
-            when $enum_apps_name[:app5] then app5 = App5Membros.new(apps.id(i))
+            when $enum_apps_name[:app1] then app1 = YouthTalent.new(apps.id(i))
+            when $enum_apps_name[:app2] then app2 = YouthTalent.new(apps.id(i))
+            when $enum_apps_name[:app3] then app3 = YouthTalent.new(apps.id(i))
+            when $enum_apps_name[:app4] then app4 = YouthTalent.new(apps.id(i))
+            when $enum_apps_name[:app5] then app5 = YouthTalent.new(apps.id(i))
           end
         end
 
@@ -130,15 +126,14 @@ class TM
     for entity in @entities do
       limit = @ors_app.total_count-1
       for i in 0..limit
-        if @ors_app.entidade_id(i) == entity &&
-        $enum_foi_transferido_ors[@ors_app.foi_transferido?(i)] != $enum_foi_transferido_ors[:sim]
+        if @ors_app.local_aiesec_id(i) == entity && @ors_app.can_be_local?(i,entity)
+          lead = @local_apps_ids[entity][0]
+          abort('Wrong parameter for spaces') unless lead.is_a?(YouthTalent)
 
-          inscrito = @local_apps_ids[entity][0]
-          abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
-
-          inscrito.populate(@ors_app,i)
-          inscrito.create
-          @ors_app.update_transferido(i)
+          lead.populate(@ors_app,i)
+          lead.create
+          @ors_app.sync_with_local = $enum_boolean[:sim]
+          @ors_app.update(i)
         end
       end
     end
@@ -146,101 +141,98 @@ class TM
 
   # For all local apps, move the registers through customer flow.
   def local_to_local
-    inscrito_to_abordado
-    abordado_to_dinamica
-    dinamica_to_entrevista
-    entrevista_to_membros
+    lead_to_contacted
+    contacted_to_dynamics
+    dynamics_to_interview
+    interview_to_member
   end
 
-  def inscrito_to_abordado
+  def lead_to_contacted
     for entity in @entities do
-      inscrito = @local_apps_ids[entity][0]
-      abordado = @local_apps_ids[entity][1]
-      abort('Wrong parameter for spaces') unless inscrito.is_a?(App1Inscritos)
-      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
+      lead = @local_apps_ids[entity][0]
+      contacted = @local_apps_ids[entity][1]
+      abort('Wrong parameter for spaces') unless lead.is_a?(YouthTalent)
+      abort('Wrong parameter for spaces') unless contacted.is_a?(YouthTalent)
 
-      limit = inscrito.total_count-1
+      limit = lead.total_count-1
       for i in 0..limit
-        if $enum_abordado[inscrito.abordado(i)] == $enum_abordado[:sim]
-          abordado.populate(inscrito,i)
-          abordado.create
-          inscrito.delete(i)
+        if lead.can_be_contacted?(i)
+          contacted.populate(lead,i)
+          contacted.create
+          lead.delete(i)
         end
-        inscrito.refresh_item_list
-        abordado.refresh_item_list
-        @local_apps_ids[entity][0] = inscrito
-        @local_apps_ids[entity][1] = abordado
+        lead.refresh_item_list
+        contacted.refresh_item_list
+        @local_apps_ids[entity][0] = lead
+        @local_apps_ids[entity][1] = contacted
       end
     end
   end
 
-  def abordado_to_dinamica
+  def contacted_to_dynamics
     for entity in @entities do
-      abordado = @local_apps_ids[entity][1]
-      dinamica = @local_apps_ids[entity][2]
-      abort('Wrong parameter for spaces') unless abordado.is_a?(App2Abordagem)
-      abort('Wrong parameter for spaces') unless dinamica.is_a?(App3Dinamica)
+      contacted = @local_apps_ids[entity][1]
+      dynamics = @local_apps_ids[entity][2]
+      abort('Wrong parameter for spaces') unless contacted.is_a?(YouthTalent)
+      abort('Wrong parameter for spaces') unless dynamics.is_a?(YouthTalent)
 
-      limit = abordado.total_count-1
+      limit = contacted.total_count-1
       for i in 0..limit
-        if $enum_dinamica_marcada[abordado.dinamica_marcada(i)] == $enum_dinamica_marcada[:sim] &&
-        abordado.data_dinamica.nil? == false
-
-          dinamica.populate(abordado,i)
-          dinamica.create
-          abordado.delete(i)
+        if contacted.can_be_dynamics?(i) 
+          dynamics.populate(contacted,i)
+          dynamics.create
+          contacted.delete(i)
         end
-        abordado.refresh_item_list
-        dinamica.refresh_item_list
-        @local_apps_ids[entity][1] = abordado
-        @local_apps_ids[entity][2] = dinamica
+        contacted.refresh_item_list
+        dynamics.refresh_item_list
+        @local_apps_ids[entity][1] = contacted
+        @local_apps_ids[entity][2] = dynamics
       end
     end
   end
 
-  def dinamica_to_entrevista
+  def dynamics_to_interview
     for entity in @entities do
-      dinamica = @local_apps_ids[entity][2]
-      entrevista = @local_apps_ids[entity][3]
-      abort('Wrong parameter for spaces') unless dinamica.is_a?(App3Dinamica)
-      abort('Wrong parameter for spaces') unless entrevista.is_a?(App4Entrevista)
+      dynamics = @local_apps_ids[entity][2]
+      interview = @local_apps_ids[entity][3]
+      abort('Wrong parameter for spaces') unless dynamics.is_a?(YouthTalent)
+      abort('Wrong parameter for spaces') unless interview.is_a?(YouthTalent)
 
-      limit = dinamica.total_count-1
+      limit = dynamics.total_count-1
       for i in 0..limit
-        if $enum_aprovado_dinamica[dinamica.foi_aprovado(i)] == $enum_aprovado_dinamica[:sim] &&
-        dinamica.data_entrevista.nil? == false
-          entrevista.populate(dinamica,i)
-          entrevista.create
-          dinamica.delete(i)
+        if dynamics.can_be_interviewed?(i)
+          interview.populate(dynamics,i)
+          interview.create
+          dynamics.delete(i)
         end
       end
-      dinamica.refresh_item_list
-      entrevista.refresh_item_list
-      @local_apps_ids[entity][2] = dinamica
-      @local_apps_ids[entity][3] = entrevista
+      dynamics.refresh_item_list
+      interview.refresh_item_list
+      @local_apps_ids[entity][2] = dynamics
+      @local_apps_ids[entity][3] = interview
     end
   end
 
-  def entrevista_to_membros
+  def interview_to_member
     for entity in @entities do
-      entrevista = @local_apps_ids[entity][3]
-      membro = @local_apps_ids[entity][4]
-      abort('Wrong parameter for spaces') unless entrevista.is_a?(App4Entrevista)
-      abort('Wrong parameter for spaces') unless membro.is_a?(App5Membros)
+      interview = @local_apps_ids[entity][3]
+      member = @local_apps_ids[entity][4]
+      abort('Wrong parameter for spaces') unless interview.is_a?(YouthTalent)
+      abort('Wrong parameter for spaces') unless member.is_a?(YouthTalent)
 
-      limit = entrevista.total_count-1
+      limit = interview.total_count-1
       for i in 0..limit
-        if $enum_resultado_entrevista[entrevista.resultado_entrevista(i)] == $enum_resultado_entrevista[:aprovado]
-          membro.populate(entrevista,i)
-          membro.create
-          entrevista.delete(i)
+        if interview.can_be_member?(i)
+          member.populate(interview,i)
+          member.create
+          interview.delete(i)
         end
       end
     end
-    entrevista.refresh_item_list
-    membro.refresh_item_list
-    @local_apps_ids[entity][3] = entrevista
-    @local_apps_ids[entity][4] = membro
+    interview.refresh_item_list
+    member.refresh_item_list
+    @local_apps_ids[entity][3] = interview
+    @local_apps_ids[entity][4] = member
   end
 
   def local_to_national

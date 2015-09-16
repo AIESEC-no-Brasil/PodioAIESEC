@@ -132,7 +132,8 @@ class OGX_GIP
 
           leads.populate(@ors_app,i)
           leads.create
-          @ors_app.delete(i)
+          @ors_app.sync_with_local = $enum_boolean[:sim]
+          @ors_app.update(i)
         end
       end
     end
@@ -159,7 +160,7 @@ class OGX_GIP
 
       limit = leads.total_count - 1
       (0..limit).each do |i|
-        if test_lead_to_contacted(leads,i)
+        if leads.can_be_contacted(i)
           contacteds.populate(leads,i)
           contacteds.create
           leads.delete(i)
@@ -168,7 +169,7 @@ class OGX_GIP
       
       limit = contacteds.total_count - 1
       (0..limit).each do |i|
-        if test_contacted_to_EPI(contacteds,i)
+        if contacteds.can_be_EPI(i)
           epis.populate(contacteds,i)
           epis.create
           contacteds.delete(i)
@@ -177,7 +178,7 @@ class OGX_GIP
 
       limit = epis.total_count - 1
       (0..limit).each do |i|
-        if test_EPI_to_open(epis,i)
+        if epis.can_be_open(i)
           opens.populate(epis,i)
           opens.create
           epis.delete(i)
@@ -186,7 +187,7 @@ class OGX_GIP
 
       limit = opens.total_count - 1
       (0..limit).each do |i|
-        if test_open_to_ip(opens,i)
+        if opens.can_be_ip(i)
           in_progress.populate(opens,i)
           in_progress.applying = nil
           in_progress.create
@@ -196,7 +197,7 @@ class OGX_GIP
 
       limit = in_progress.total_count - 1
       (0..limit).each do |i|
-        if test_ip_to_ma(in_progress,i)
+        if in_progress.can_be_ma(i)
           matchs.populate(in_progress,i)
           matchs.create
           in_progress.delete(i)
@@ -205,7 +206,7 @@ class OGX_GIP
 
       limit = matchs.total_count - 1
       (0..limit).each do |i|
-        if test_ma_to_re(matchs,i)
+        if matchs.can_be_re(i)
           realizes.populate(matchs,i)
           realizes.create
           matchs.delete(i)
@@ -215,33 +216,5 @@ class OGX_GIP
   end
 
   def local_to_national
-  end
-
-  def test_ORS_to_Local(youth_leader,i)
-    true
-  end
-
-  def test_lead_to_contacted(youth_leader,i)
-    true unless youth_leader.first_contact_date(i).nil? or youth_leader.first_contact_responsable_id(i).nil?
-  end
-
-  def test_contacted_to_EPI(youth_leader,i)
-    true unless youth_leader.epi_date(i).nil? or youth_leader.epi_responsable_id(i).nil?
-  end
-
-  def test_EPI_to_open(youth_leader,i)
-    true unless youth_leader.link_to_expa(i).nil? or youth_leader.ep_manager_id(i).nil?
-  end
-
-  def test_open_to_ip(youth_leader,i)
-    youth_leader.applying?(i)
-  end
-
-  def test_ip_to_ma(youth_leader,i)
-    true unless youth_leader.match_date(i).nil?
-  end
-
-  def test_ma_to_re(youth_leader,i)
-    true unless youth_leader.ops_date(i).nil? or youth_leader.realize_date(i).nil?
   end
 end

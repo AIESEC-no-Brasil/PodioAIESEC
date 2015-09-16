@@ -8,16 +8,14 @@ class YouthTalent < YouthLeader
 
 	date_attr_accessor :first_contact_date, :dynamics_date, :interview_date
 	boolean_attr_accessor :vacation_volunteer, :interview_result, :intervield, :specific_opportunity, :was_in_dynamics
-	category_attr_accessor :interest
-	reference_attr_accessor :responsable_id
+	reference_attr_accessor :responsable
 
 	def initialize(app_id)
 		fields = {
-			:interest => 'programa-de-interesse2',
 			:vacation_volunteer => 'voce-esta-se-inscrevendo-para-o-programa-de-trabalho-vo',
 			:specific_opportunity => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
-			:responsable_id => 'responsavel-local',
-			:first_contact_date => 'data-da-abordagem'
+			:responsable => 'responsavel-pelo-primeiro-contato',
+			:first_contact_date => 'data-do-primeiro-contato',
 			:dynamics_date => 'data-da-dinamica',
 			:was_in_dynamics => 'compareceu-a-dinamica',
 			:intervield => 'foi-entrevistado',
@@ -32,7 +30,6 @@ class YouthTalent < YouthLeader
 	# @param i [Integer] Index of the item you want to retrieve the value
 	def populate(other,i)
 		super(other,i)
-		self.interest = other.interest i
 		self.vacation_volunteer = other.vacation_volunteer i
 		self.specific_opportunity = other.specific_opportunity i
 		self.responsable_id = other.responsable_id i
@@ -46,7 +43,6 @@ class YouthTalent < YouthLeader
 
 	def hashing_to_update(index)
 		hash_fields = super(index)
-		hash_fields.merge!(@fields[:interest] => @interest || interest(index))
 		hash_fields.merge!(@fields[:vacation_volunteer] => @vacation_volunteer || vacation_volunteer(index))
 		hash_fields.merge!(@fields[:specific_opportunity] => @specific_opportunity || specific_opportunity(index))
 		hash_fields.merge!(@fields[:responsable_id] => @responsable_id || responsable_id(index))
@@ -61,7 +57,6 @@ class YouthTalent < YouthLeader
 
 	def hashing_to_create
 		hash_fields = super
-		hash_fields.merge!(@fields[:interest] => @interest) unless @interest.nil?
 		hash_fields.merge!(@fields[:vacation_volunteer] => @vacation_volunteer) unless @vacation_volunteer.nil?
 		hash_fields.merge!(@fields[:specific_opportunity] => @specific_opportunity) unless @specific_opportunity.nil?
 		hash_fields.merge!(@fields[:responsable_id] => @responsable_id) unless @responsable_id.nil?
@@ -72,5 +67,25 @@ class YouthTalent < YouthLeader
 		hash_fields.merge!(@fields[:interview_date] => {'start' => @interview_date}) unless @interview_date.nil?
 		hash_fields.merge!(@fields[:interview_result] => @interview_result) unless @interview_result.nil?
 		hash_fields
+	end
+
+	def can_be_local?(i, entity)
+		true unless self.sync_with_local?(i)
+	end
+
+	def can_be_contacted?(i)
+		true unless self.first_contact_date(i).nil?
+	end
+
+	def can_be_dynamics?(i)
+		true unless self.dynamics_date(i).nil?
+	end
+
+	def can_be_interviewed?(i)
+		true unless not self.was_in_dynamics?(i) or self.interview_date(i).nil?
+	end
+
+	def can_be_member?(i)
+		self.interview_result?(i)
 	end
 end

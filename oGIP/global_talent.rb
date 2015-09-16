@@ -2,17 +2,20 @@ require_relative '../control/podio_app_control'
 require_relative '../control/youth_leader'
 require_relative '../enums'
 
+# Generic App at oGIP workspaces
+# @author Luan Corumba <luan.corumba@aiesec.net>
 class GlobalTalent < YouthLeader
 
 	date_attr_accessor :first_contact_date, :epi_date, :match_date, :realize_date, :ops_date
 	boolean_attr_accessor :applying, :was_in_ops, :specific_opportunity, :erase
-	category_attr_accessor :priority
+	category_attr_accessor :interest, :priority
 	reference_attr_accessor :first_contact_responsable, :epi_responsable, :ep_manager
 	link_attr_accessor :link_to_expa
 	#img_attr_accessor :cv #TODO
 
 	def initialize(app_id)
 		fields = {
+			:interest => 'programa-de-intersesse',
 			:specific_opportunity => 'esta-se-candidatando-a-algum-projetovaga-especifica',
 			:cv => 'cv',
 			:priority => 'prioridade',
@@ -37,6 +40,7 @@ class GlobalTalent < YouthLeader
 	# @param i [Integer] Index of the item you want to retrieve the value
 	def populate(other,i)
 		super(other,i)
+		self.interest = other.interest i
 		self.specific_opportunity = other.specific_opportunity i
 		#TODO CV
 		self.priority = other.priority i
@@ -55,6 +59,7 @@ class GlobalTalent < YouthLeader
 
 	def hashing_to_update(index)
 		hash_fields = super(index)
+		hash_fields.merge!(@fields[:interest] => @interest || interest(index))
 		hash_fields.merge!(@fields[:specific_opportunity] => @specific_opportunity || specific_opportunity(index))
 		hash_fields.merge!(@fields[:moment] => @moment || moment(index))
 		hash_fields.merge!(@fields[:priority] => @priority || priority(index))
@@ -74,6 +79,7 @@ class GlobalTalent < YouthLeader
 
 	def hashing_to_create
 		hash_fields = super
+		hash_fields.merge!(@fields[:interest] => @interest) unless @interest.nil?
 		hash_fields.merge!(@fields[:specific_opportunity] => @specific_opportunity) unless @specific_opportunity.nil?
 		hash_fields.merge!(@fields[:moment] => @moment) unless @moment.nil?
 		hash_fields.merge!(@fields[:priority] => @priority) unless @priority.nil?
@@ -89,5 +95,33 @@ class GlobalTalent < YouthLeader
 		hash_fields.merge!(@fields[:match_date] => {'start' => @match_date}) unless @match_date.nil?
 		hash_fields.merge!(@fields[:realize_date] => {'start' => @realize_date}) unless @realize_date.nil?
 		hash_fields
+	end
+
+	def can_be_local?(i)
+		true
+	end
+
+	def can_be_contacted?(i)
+		true unless self.first_contact_date(i).nil? or self.first_contact_responsable_id(i).nil?
+	end
+
+	def can_be_EPI?(i)
+		true unless self.epi_date(i).nil? or self.epi_responsable_id(i).nil?
+	end
+
+	def can_be_open?(i)
+		true unless self.link_to_expa(i).nil? or self.ep_manager_id(i).nil?
+	end
+
+	def can_be_ip?(i)
+		self.applying?(i)
+	end
+
+	def can_be_ma?(i)
+		true unless self.match_date(i).nil?
+	end
+
+	def can_be_re?(i)
+		true unless self.ops_date(i).nil? or self.realize_date(i).nil?
 	end
 end

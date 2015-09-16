@@ -1,12 +1,13 @@
 require_relative '../control/podio_app_control'
 require_relative '../enums'
+require_relative '../utils'
 
 class YouthLeader < PodioAppControl
 
 	text_attr_accessor :name, :address, :city, :course, :university, :indication
 	number_attr_accessor :zip_code
 	date_attr_accessor :birthdate
-	boolean_attr_accessor :erase
+	boolean_attr_accessor :erase, :sync_with_local
 	category_attr_accessor :sex, :study_stage, :semester, :english_level, :spanish_level, :best_moment
 	category_attr_accessor :marketing_channel, :carrier
 	multiple_attr_accessor :phones, :emails
@@ -38,6 +39,7 @@ class YouthLeader < PodioAppControl
 			:marketing_channel => 'categoria',
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
 			:erase => 'apagar',
+			:sync_with_local => 'transferido-para-area-local'
 		}
 		basic_fields.merge!(extra_fields) unless extra_fields.nil?
 		super(app_id, basic_fields)
@@ -91,11 +93,12 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:university] => @university || university(index))
 		hash_fields.merge!(@fields[:english_level] => @english_level || english_level(index))
 		hash_fields.merge!(@fields[:spanish_level] => @spanish_level || spanish_level(index))
-		hash_fields.merge!(@fields[:best_moment] => @best_moment || best_moment(index)) unless @best_moment.nil?
+		hash_fields.merge!(@fields[:best_moment] => @best_moment || best_moment(index))
 		hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec_id || local_aiesec_id(index))
 		hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel || marketing_channel(index))
 		hash_fields.merge!(@fields[:indication] => @indication || indication(index))
 		hash_fields.merge!(@fields[:erase] => @erase || erase(index))
+		hash_fields.merge!(@fields[:sync_with_local] => @sync_with_local || sync_with_local(index))
 		hash_fields
 	end
 
