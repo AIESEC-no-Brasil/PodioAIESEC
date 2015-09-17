@@ -4,7 +4,9 @@ require 'json'
 require 'podio'
 
 require_relative 'control/control_database'
-require_relative 'tm/tm'
+require_relative 'areas/tm/tm'
+require_relative 'areas/ogip/ogip'
+require_relative 'areas/ogcdp/ogcdp'
 
 # This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
 # areas of AIESEC in Brazil's Podio. It also automate procedures by controled data manipulation/duplication.
@@ -13,14 +15,14 @@ require_relative 'tm/tm'
 
 # = This class initialize and start the batch script
 # == Priority of functional areas to work:
-# * 1. TM
-# * 2. oGIP
-# * 3. oGCDP
-# * 4. MKT
-# * 5. FIN
-# * 6. iGIP
-# * 7. iGCDP
-# * 8. PR/BD (Alumnus)
+# * 1. tm
+# * 2. ogip
+# * 3. ogcdp
+# * 4. mkt
+# * 5. fin
+# * 6. igip
+# * 7. igcdp
+# * 8. bd (Alumnus)
 class PodioBAZI
   def initialize
     data = File.read('senha').each_line()
@@ -36,13 +38,13 @@ class PodioBAZI
     authenticate
     podioDatabase = ControlDatabase.new(test)
     TM.new(podioDatabase.workspaces, podioDatabase.apps)
-    #TODO GIPo
-    #TODO GCDPo
-    #TODO MKT
-    #TODO FIN
-    #TODO GIPi
+    OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+    #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
     #TODO GCDPi
-    #TODO BD/PR
+    #TODO GIPi
+    #TODO mkt
+    #TODO fin
+    #TODO bd/PR
   end
 
   # Authenticate at Podio with robozinho credentials

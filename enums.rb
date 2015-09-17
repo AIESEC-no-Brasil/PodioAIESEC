@@ -2,13 +2,15 @@
 # Class with all enums used at the project
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesedc.net>
 class Enums
-  $enum_apps_name = {
+  $enum_TM_apps_name = {
     :app1 => '1. Inscritos',
     :app2 => '2. Abordagem',
     :app3 => '3. Dinâmica de grupo',
     :app4 => '4. Entrevista',
-    :app5 => '5. Membros'
+    :app5 => '5. Membros',
+    :cards => 'Cards Layout'
   }
+
   $enum_oGIP_apps_name = {
     :leads => '1. Inscritos',
     :contacteds => '2. Abordados',
@@ -16,8 +18,22 @@ class Enums
     :open => '4. Open',
     :ip => '5. In Progress',
     :ma => '6. Match',
-    :re => '7. Realize'
+    :re => '7. Realize',
+    :co => '8. Completed',
+    :cards => 'Cards Layout'
   }
+
+  $enum_oGCDP_apps_name = {
+      :leads => '1. Inscritos',
+      :contacteds => '2. Abordados',
+      :epi => '3. EPI',
+      :open => '4. Open',
+      :ip => '5. In Progress',
+      :ma => '6. Match',
+      :re => '7. Realize',
+      :co => '8. Completed'
+  }
+
   $enum_type = { :ors => 1,
                  :national => 2,
                  :local => 3 }
@@ -33,7 +49,7 @@ class Enums
                   :regular => 2,
                   :light => 3 }
 
-  $enum_sexo = {:masculino => 1,
+  $enum_sex = {:masculino => 1,
                 :feminino => 2}
   $enum_operadora = {:claro => 1,
                      :tim => 2,
