@@ -1,6 +1,6 @@
 require 'test/unit'
 
-class MyTest < Test::Unit::TestCase
+class TestPodioBazi < Test::Unit::TestCase
 
   # Called before every test method runs. Can be used
   # to set up fixture information.
