@@ -188,6 +188,14 @@ class Class
               val = MarketingChannel.statuses[MarketingChannel.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
             when 'carrier'
               val = Carrier.statuses[Carrier.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
+            when 'approach_interruption_reason'
+              val = ApproachInterruptionReason.statuses[ApproachInterruptionReason.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
+            when 'rapprochement_notes'
+              val = RapprochementNotes.statuses[RapprochementNotes.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
+            when 'rapprochement_reason'
+              val = RapprochementReason.statuses[RapprochementReason.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
+            when 'selection_type'
+              val = SelectionType.statuses[SelectionType.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
           end
           val
         end

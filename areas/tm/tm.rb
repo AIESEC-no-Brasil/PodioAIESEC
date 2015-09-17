@@ -1,6 +1,5 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative '../../enums'
 require_relative 'youth_talent'
 
 # This class initializes, configure and take care of the tm module.
@@ -86,10 +85,12 @@ class TM
             when $enum_TM_apps_name[:app3] then app3 = YouthTalent.new(apps.id(i))
             when $enum_TM_apps_name[:app4] then app4 = YouthTalent.new(apps.id(i))
             when $enum_TM_apps_name[:app5] then app5 = YouthTalent.new(apps.id(i))
+            when $enum_TM_apps_name[:app1_5] then app1_5 = YouthTalent.new(apps.id(i))
+            when $enum_TM_apps_name[:cards] then cards = YouthTalent.new(apps.id(i))
           end
         end
 
-        @local_apps_ids[entity] = [app1, app2, app3, app4, app5]
+        @local_apps_ids[entity] = [app1, app2, app3, app4, app5, app1_5, cards]
       end
     end
 
@@ -115,8 +116,19 @@ class TM
 
   def flow
     ors_to_local
-    local_to_local
-    #local_to_national
+
+    lead_to_approach
+    approach_to_rapproach
+    stop_rapproach
+    rapproach_to_selection
+    approach_to_selection
+
+    selection_to_rapproach
+    stop_selection
+    selection_to_induction
+
+
+    induction_to_local_crm
   end
 
   # Migrate leads from the ORS app to all Local Leads Apps
@@ -126,7 +138,7 @@ class TM
 
       limit = @ors_app.total_count
       for i in 0...limit
-        if @ors_app.local_aiesec(i) == entity && @ors_app.can_be_local?(i,entity)
+        if @ors_app.business_rule_ors_to_local_lead?(i,entity)
           lead = @local_apps_ids[entity][0]
           abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless lead.is_a?(YouthTalent)
 
@@ -139,103 +151,200 @@ class TM
     end
   end
 
-  # For all local apps, move the registers through customer flow.
-  def local_to_local
-    lead_to_contacted
-    contacted_to_dynamics
-    dynamics_to_interview
-    interview_to_member
-  end
-
-  def lead_to_contacted
+  def lead_to_approach
     for entity in @entities do
       lead = @local_apps_ids[entity][0]
-      contacted = @local_apps_ids[entity][1]
+      approach = @local_apps_ids[entity][1]
       abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless lead.is_a?(YouthTalent)
-      abort('Wrong parameter for contacted in ' + self.class.name + '.' + __method__.to_s) unless contacted.is_a?(YouthTalent)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
 
       limit = lead.total_count
       for i in 0...limit
-        if lead.can_be_contacted?(i)
-          contacted.populate(lead,i)
-          contacted.create
+        if lead.business_rule_lead_to_approach?(i)
+          approach.populate(lead,i)
+          approach.create
           lead.delete(i)
         end
         lead.refresh_item_list
-        contacted.refresh_item_list
+        approach.refresh_item_list
         @local_apps_ids[entity][0] = lead
-        @local_apps_ids[entity][1] = contacted
+        @local_apps_ids[entity][1] = approach
       end
     end
   end
 
-  def contacted_to_dynamics
+  def approach_to_rapproach
     for entity in @entities do
-      contacted = @local_apps_ids[entity][1]
-      dynamics = @local_apps_ids[entity][2]
-      abort('Wrong parameter for contacted in ' + self.class.name + '.' + __method__.to_s) unless contacted.is_a?(YouthTalent)
-      abort('Wrong parameter for dynamics in ' + self.class.name + '.' + __method__.to_s) unless dynamics.is_a?(YouthTalent)
+      approach = @local_apps_ids[entity][1]
+      rapproach = @local_apps_ids[entity][5]
 
-      limit = contacted.total_count
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+
+      limit = approach.total_count
       for i in 0...limit
-        if contacted.can_be_dynamics?(i) 
-          dynamics.populate(contacted,i)
-          dynamics.create
-          contacted.delete(i)
+        if approach.business_rule_approach_to_rapproach?(i)
+          rapproach.populate(approach,i)
+          rapproach.approaches_number=(1)
+          rapproach.create
+          approach.delete(i)
         end
-        contacted.refresh_item_list
-        dynamics.refresh_item_list
-        @local_apps_ids[entity][1] = contacted
-        @local_apps_ids[entity][2] = dynamics
+        approach.refresh_item_list
+        rapproach.refresh_item_list
+        @local_apps_ids[entity][1] = approach
+        @local_apps_ids[entity][5] = rapproach
       end
     end
   end
 
-  def dynamics_to_interview
+  def stop_rapproach
     for entity in @entities do
-      dynamics = @local_apps_ids[entity][2]
-      interview = @local_apps_ids[entity][3]
-      abort('Wrong parameter for dynamics in ' + self.class.name + '.' + __method__.to_s) unless dynamics.is_a?(YouthTalent)
-      abort('Wrong parameter for interview in ' + self.class.name + '.' + __method__.to_s) unless interview.is_a?(YouthTalent)
+      rapproach = @local_apps_ids[entity][5]
 
-      limit = dynamics.total_count
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+
+      limit = rapproach.total_count
       for i in 0...limit
-        if dynamics.can_be_interviewed?(i)
-          interview.populate(dynamics,i)
-          interview.create
-          dynamics.delete(i)
+        if rapproach.business_rule_stop_rapproach?(i)
+          rapproach.delete(i)
         end
+
+        rapproach.refresh_item_list
+        @local_apps_ids[entity][5] = rapproach
       end
-      dynamics.refresh_item_list
-      interview.refresh_item_list
-      @local_apps_ids[entity][2] = dynamics
-      @local_apps_ids[entity][3] = interview
     end
   end
 
-  def interview_to_member
+  def rapproach_to_selection
     for entity in @entities do
-      interview = @local_apps_ids[entity][3]
-      member = @local_apps_ids[entity][4]
-      abort('Wrong parameter for interview in ' + self.class.name + '.' + __method__.to_s) unless interview.is_a?(YouthTalent)
-      abort('Wrong parameter for member in ' + self.class.name + '.' + __method__.to_s) unless member.is_a?(YouthTalent)
+      rapproach = @local_apps_ids[entity][5]
+      selection = @local_apps_ids[entity][2]
 
-      limit = interview.total_count
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+
+      limit = rapproach.total_count
       for i in 0...limit
-        if interview.can_be_member?(i)
-          member.populate(interview,i)
-          member.create
-          interview.delete(i)
+        if rapproach.business_rule_rapproach_to_selection?(i)
+          selection.populate(rapproach,i)
+          selection.create
+          rapproach.delete(i)
+        end
+
+        rapproach.refresh_item_list
+        selection.refresh_item_list
+        @local_apps_ids[entity][5] = rapproach
+        @local_apps_ids[entity][2] = selection
+      end
+    end
+  end
+
+  def approach_to_selection
+    for entity in @entities do
+      approach = @local_apps_ids[entity][1]
+      selection = @local_apps_ids[entity][2]
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+
+      limit = approach.total_count
+      for i in 0...limit
+        if approach.business_rule_approach_to_selection?(i)
+          selection.populate(approach,i)
+          selection.create
+          approach.delete(i)
+        end
+        approach.refresh_item_list
+        selection.refresh_item_list
+        @local_apps_ids[entity][1] = approach
+        @local_apps_ids[entity][2] = selection
+      end
+    end
+  end
+
+  def selection_to_rapproach
+    for entity in @entities do
+      selection = @local_apps_ids[entity][2]
+      rapproach = @local_apps_ids[entity][5]
+
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+
+      limit = rapproach.total_count
+      for i in 0...limit
+        if selection.business_rule_selection_to_rapproach?(i)
+          rapproach.populate(selection,i)
+          rapproach.create
+          selection.delete(i)
+        end
+
+        selection.refresh_item_list
+        rapproach.refresh_item_list
+        @local_apps_ids[entity][2] = selection
+        @local_apps_ids[entity][5] = rapproach
+      end
+    end
+  end
+
+  def stop_selection
+    for entity in @entities do
+      selection = @local_apps_ids[entity][2]
+
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+
+      limit = selection.total_count
+      for i in 0...limit
+        if selection.business_rule_delete_selection?(i)
+          selection.delete(i)
+        end
+
+        selection.refresh_item_list
+        @local_apps_ids[entity][2] = selection
+      end
+    end
+  end
+
+  def selection_to_induction
+    for entity in @entities do
+      selection = @local_apps_ids[entity][2]
+      induction = @local_apps_ids[entity][3]
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalent)
+
+      limit = selection.total_count
+      for i in 0...limit
+        if selection.business_rule_selection_to_induction?(i)
+          induction.populate(selection,i)
+          induction.create
+          selection.delete(i)
+        end
+      end
+      selection.refresh_item_list
+      induction.refresh_item_list
+      @local_apps_ids[entity][2] = selection
+      @local_apps_ids[entity][3] = induction
+    end
+  end
+
+  def induction_to_local_crm
+    for entity in @entities do
+      induction = @local_apps_ids[entity][3]
+      local_crm = @local_apps_ids[entity][4]
+      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalent)
+      abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalent)
+
+      limit = induction.total_count
+      for i in 0...limit
+        if induction.business_rule_induction_to_local_crm?(i)
+          local_crm.populate(induction,i)
+          local_crm.create
+          induction.delete(i)
         end
       end
     end
-    interview.refresh_item_list
-    member.refresh_item_list
-    @local_apps_ids[entity][3] = interview
-    @local_apps_ids[entity][4] = member
-  end
-
-  def local_to_national
+    induction.refresh_item_list
+    local_crm.refresh_item_list
+    @local_apps_ids[entity][3] = induction
+    @local_apps_ids[entity][4] = local_crm
   end
 
 end

@@ -4,7 +4,7 @@ require_relative '../../utils/youth_leader'
 # @author Luan Corumba <luan.corumba@aiesec.net>
 class GlobalCitizen < YouthLeader
 
-	date_attr_accessor :first_contact_date, :epi_date, :match_date, :realize_date, :ops_date
+	date_attr_accessor :first_approach_date, :epi_date, :match_date, :realize_date, :ops_date
 	boolean_attr_accessor :applying, :was_in_ops, :specific_opportunity, :erase
 	category_attr_accessor :interest, :priority
 	reference_attr_accessor :first_contact_responsable, :epi_responsable, :ep_manager
@@ -17,7 +17,7 @@ class GlobalCitizen < YouthLeader
 			:specific_opportunity => 'esta-se-candidatando-a-algum-projetovaga-especifica',
 			:cv => 'cv',
 			:priority => 'prioridade',
-			:first_contact_date => 'data-do-primeiro-contato',
+			:first_approach_date => 'data-do-primeiro-contato',
 			:first_contact_responsable => 'responsavel-pelo-primeiro-contato',
 			:epi_date => 'data-da-epi',
 			:epi_responsable => 'responsavel-pela-epi',
@@ -91,7 +91,7 @@ class GlobalCitizen < YouthLeader
 		hash_fields.merge!(@fields[:specific_opportunity] => @specific_opportunity) unless @specific_opportunity.nil?
 		hash_fields.merge!(@fields[:moment] => @moment) unless @moment.nil?
 		hash_fields.merge!(@fields[:priority] => @priority) unless @priority.nil?
-		hash_fields.merge!(@fields[:first_contact_date] => {'start' => @first_contact_date}) unless @first_contact_date.nil?
+		hash_fields.merge!(@fields[:first_approach_date] => {'start' => @first_contact_date}) unless @first_contact_date.nil?
 		hash_fields.merge!(@fields[:first_contact_responsable] => @first_contact_responsable) unless @first_contact_responsable.nil?
 		hash_fields.merge!(@fields[:epi_date] => {'start' => @epi_date}) unless @epi_date.nil?
 		hash_fields.merge!(@fields[:epi_responsable] => @epi_responsable) unless @epi_responsable.nil?

@@ -1,6 +1,5 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative '../../enums'
 require_relative 'global_talent'
 
 # This class initializes, configure and take care of the tm module.
@@ -159,7 +158,7 @@ class OGX_GIP
 
       limit = leads.total_count - 1
       (0..limit).each do |i|
-        if leads.can_be_contacted?(i)
+        if leads.business_rule_lead_to_approach?(i)
           contacteds.populate(leads,i)
           contacteds.create
           leads.delete(i)

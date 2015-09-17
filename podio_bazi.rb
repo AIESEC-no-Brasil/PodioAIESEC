@@ -15,6 +15,51 @@ require_relative 'areas/ogcdp/ogcdp'
 
 # = This class initialize and start the batch script
 class PodioBAZI
+  $enum_TM_apps_name = {
+      :app1 => '1. Inscritos',
+      :app1_5 => '1.5 Re-abordagem',
+      :app2 => '2. Abordados',
+      :app3 => '3. Seleções',
+      :app4 => '4. Induções',
+      :app5 => '5. CRM',
+      :cards => 'Cards Layout'
+  }
+
+  $enum_oGIP_apps_name = {
+      :leads => '1. Inscritos',
+      :contacteds => '2. Abordados',
+      :epi => '3. EPI',
+      :open => '4. Open',
+      :ip => '5. In Progress',
+      :ma => '6. Match',
+      :re => '7. Realize',
+      :co => '8. Completed',
+      :cards => 'Cards Layout'
+  }
+
+  $enum_oGCDP_apps_name = {
+      :leads => '1. Inscritos',
+      :contacteds => '2. Abordados',
+      :epi => '3. EPI',
+      :open => '4. Open',
+      :ip => '5. In Progress',
+      :ma => '6. Match',
+      :re => '7. Realize',
+      :co => '8. Completed'
+  }
+
+  $enum_type = { :ors => 1,
+                 :national => 2,
+                 :local => 3 }
+  $enum_area = { :tm => 306775522,
+                 :ogip => 306774653,
+                 :ogcdp => 306774783,
+                 :mkt => 306775660,
+                 :fin => 306775701,
+                 :igip => 306774699,
+                 :igcdp => 306774749,
+                 :bd => 306775405}
+
   def initialize(test = true, loop = false)
     data = File.read('senha').each_line()
     username = data.next.gsub("\n",'')
@@ -29,13 +74,14 @@ class PodioBAZI
 
     begin
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
-      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+      #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GCDPi
       #TODO GIPi
       #TODO mkt
       #TODO fin
       #TODO bd
+      authenticate
     end while loop
   end
 

@@ -1,5 +1,4 @@
 require_relative '../control/podio_app_control'
-require_relative '../enums'
 require_relative 'utils'
 
 class YouthLeader < PodioAppControl
@@ -115,7 +114,7 @@ class YouthLeader < PodioAppControl
     hash_fields.merge!(@fields[:best_moment] => @best_moment) unless @best_moment.nil?
     hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec) unless @local_aiesec.nil?
     hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
-    hash_fields.merge!(@fields[:indication] => @indication) unless @indication.nil? #TODO This field is required, but must be optional
+    hash_fields.merge!(@fields[:indication] => @indication) unless @indication.blank?
     hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
     hash_fields
   end
