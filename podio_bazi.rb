@@ -14,17 +14,8 @@ require_relative 'areas/ogcdp/ogcdp'
 # @author Marcus Vinicius de Carvalho (marcus.carvalho@aiesec.net)
 
 # = This class initialize and start the batch script
-# == Priority of functional areas to work:
-# * 1. tm
-# * 2. ogip
-# * 3. ogcdp
-# * 4. mkt
-# * 5. fin
-# * 6. igip
-# * 7. igcdp
-# * 8. bd (Alumnus)
 class PodioBAZI
-  def initialize
+  def initialize(test = true, loop = false)
     data = File.read('senha').each_line()
     username = data.next.gsub("\n",'')
     password = data.next.gsub("\n",'')
@@ -33,21 +24,22 @@ class PodioBAZI
 
     @enum_robot = {:username => username, :password => password, :api_key => api_key, :api_secret => api_secret}
 
-    test = true
-
     authenticate
     podioDatabase = ControlDatabase.new(test)
-    TM.new(podioDatabase.workspaces, podioDatabase.apps)
-    OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
-    #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-    #TODO GCDPi
-    #TODO GIPi
-    #TODO mkt
-    #TODO fin
-    #TODO bd/PR
+
+    begin
+      TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+      #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      #TODO GCDPi
+      #TODO GIPi
+      #TODO mkt
+      #TODO fin
+      #TODO bd
+    end while loop
   end
 
-  # Authenticate at Podio with robozinho credentials
+  # Authenticate at Podio with script credentials
   def authenticate
     Podio.setup(:api_key => @enum_robot[:api_key], :api_secret => @enum_robot[:api_secret])
     Podio.client.authenticate_with_credentials(@enum_robot[:username], @enum_robot[:password])
@@ -55,9 +47,6 @@ class PodioBAZI
 
 end
 
-loop = true
-while(loop)
-  PodioBAZI.new
-  loop = false
-end
+PodioBAZI.new(true, false)
+
 

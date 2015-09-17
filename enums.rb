@@ -4,10 +4,10 @@
 class Enums
   $enum_TM_apps_name = {
     :app1 => '1. Inscritos',
-    :app2 => '2. Abordagem',
-    :app3 => '3. Dinâmica de grupo',
-    :app4 => '4. Entrevista',
-    :app5 => '5. Membros',
+    :app2 => '2. Abordados',
+    :app3 => '3. Seleções',
+    :app4 => '4. Induções',
+    :app5 => '5. CRM',
     :cards => 'Cards Layout'
   }
 
