@@ -5,6 +5,8 @@ require 'podio'
 
 require_relative 'control/control_database'
 require_relative 'tm/tm'
+require_relative 'oGIP/oGIP'
+require_relative 'utils'
 
 # This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
 # areas of AIESEC in Brazil's Podio. It also automate procedures by controled data manipulation/duplication.
@@ -35,14 +37,27 @@ class PodioBAZI
 
     authenticate
     podioDatabase = ControlDatabase.new(test)
+    
+    /tm = Thread.new {
+      while true
+        TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      end
+    }
+    oGIP = Thread.new {
+      while true
+        
+      end
+    }/
     TM.new(podioDatabase.workspaces, podioDatabase.apps)
-    #TODO GIPo
+    #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
     #TODO GCDPo
     #TODO MKT
     #TODO FIN
     #TODO GIPi
     #TODO GCDPi
     #TODO BD/PR
+    #tm.join()
+    #oGIP.join()
   end
 
   # Authenticate at Podio with robozinho credentials
@@ -53,9 +68,4 @@ class PodioBAZI
 
 end
 
-loop = true
-while(loop)
-  PodioBAZI.new
-  loop = false
-end
-
+PodioBAZI.new

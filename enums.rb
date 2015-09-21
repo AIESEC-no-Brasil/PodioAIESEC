@@ -84,6 +84,42 @@ class Enums
                     :nao => 2}
   $enum_boolean = {:sim => 2,
                     :nao => 1}
+
+  $enum_sex = {
+    :masculino => 1,
+    :feminino => 2
+  }
+  $enum_carrier = {
+    :claro => 1,
+    :tim => 2,
+    :oi => 3,
+    :vivo => 4,
+    :outra => 5
+  }
+  $enum_english_level = {
+    :desconhecido => 4,
+    :basico => 1,
+    :intermediario => 2,
+    :avancado => 3
+  }
+  $enum_spanish_level = {
+    :desconhecido => 4,
+    :basico => 1,
+    :intermediario => 2,
+    :avancado => 3
+  }
+  $enum_study_stage = {
+    :superior_incompleto => 1,
+    :superior_completo => 2,
+    :pos_graduacao_incompleta => 3,
+    :pos_graduacao_completa => 4,
+    :mestrado_doutorado => 5
+  }
+  $enum_best_moment = {
+    :manha => 1,
+    :tarde => 2,
+    :noite => 3
+  }
   $enum_semester = {
     :s1 => 1,
     :s2 => 2,
@@ -97,9 +133,6 @@ class Enums
     :s10 => 10,
     :complete => 11,
     :other => 12,
-  }
-  $enum_moment = {
-
   }
   $enum_priority = {
     :p1 => 1,
