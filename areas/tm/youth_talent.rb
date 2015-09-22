@@ -4,9 +4,10 @@ require_relative '../../utils/youth_leader'
 # @author Luan Corumba <luan.corumba@aiesec.net>
 class YouthTalent < YouthLeader
 
-  category_attr_accessor :rapprochement_notes, :rapprochement_reason, :approach_interruption_reason, :selection_type
   boolean_attr_accessor :send_to_selection, :stop_approach, :send_to_rapproachement, :join_selection, :was_selected
   boolean_attr_accessor :has_volunteer_term, :has_organizational_induction, :has_functional_induction
+  category_attr_accessor :rapprochement_notes, :rapprochement_reason, :approach_interruption_reason
+  category_attr_accessor :approach_channel, :selection_type
   date_attr_accessor :organizational_induction_date, :functional_induction_date
   date_attr_accessor :first_approach_date, :selection_date, :next_contact_date
   reference_attr_accessor :responsable, :responsable_new_contact
@@ -36,7 +37,8 @@ class YouthTalent < YouthLeader
         :has_organizational_induction => 'inducao-organizacional',
         :has_functional_induction => 'inducao-funcional',
         :organizational_induction_date => 'data-da-inducao-organizacional',
-        :functional_induction_date => 'data-da-inducao-funcional'
+        :functional_induction_date => 'data-da-inducao-funcional',
+        :approach_channel => 'canal-de-comunicacao-utilizado-no-primeiro-contato'
 		}
 		super(app_id, fields)
 	end
@@ -67,6 +69,7 @@ class YouthTalent < YouthLeader
     self.has_functional_induction=(other.has_functional_induction(i))
     self.organizational_induction_date=(other.organizational_induction_date(i))
     self.functional_induction_date=(other.functional_induction_date(i))
+    self.approach_channel=(other.approach_channel(i))
 	end
 
 	def business_rule_ors_to_local_lead?(i, entity)
@@ -74,48 +77,45 @@ class YouthTalent < YouthLeader
 	end
 
 	def business_rule_lead_to_approach?(i)
-		true unless first_approach_date(i).nil?
+		true unless first_approach_date(i).nil? && responsable(i).nil?
   end
 
   def business_rule_approach_to_rapproach?(i)
-    true unless send_to_rapproachement?(i) && rapprochement_notes(i).nil? && rapprochement_reason(i).nil?
+    true unless !send_to_rapproachement?(i) && rapprochement_notes(i).nil? && rapprochement_reason(i).nil?
   end
 
   def business_rule_stop_rapproach?(i)
-    true unless stop_approach?(i) && approach_interruption_reason(i).nil?
+    true unless !stop_approach?(i) && approach_interruption_reason(i).nil?
   end
 
   def business_rule_rapproach_to_selection?(i)
-    true unless responsable_new_contact(i).ni? && send_to_selection?(i)
+    true unless !send_to_selection?(i) && responsable_new_contact(i).ni?
   end
 
 	def business_rule_approach_to_selection?(i)
 		true unless selection_date(i).nil?
   end
 
-
   def business_rule_selection_to_rapproach?(i)
-    true unless not join_selection?(i) && send_to_rapproachement?(i)
+    true unless !send_to_rapproachement?(i) && join_selection?(i)
   end
 
   def business_rule_delete_selection?(i)
-    true unless as_selected?(i) && feedback(i).nil?
+    true unless was_selected?(i) && feedback(i).nil?
   end
 
 	def business_rule_selection_to_induction?(i)
-    true unless join_selection?(i) && selection_type(i).nil?
+    true unless !join_selection?(i) && selection_type(i).nil?
   end
 
 	def business_rule_induction_to_local_crm?(i)
-    true unless has_volunteer_term?(i) && has_functional_induction?(i) && has_organizational_induction?(i) && organizational_induction_date(i).nil? && functional_induction_date(i).nil?
+    true unless !has_volunteer_term?(i) && !has_functional_induction?(i) && !has_organizational_induction?(i) && organizational_induction_date(i).nil? && functional_induction_date(i).nil?
   end
-
-  private
 
   def hashing
     hash_fields = super
     hash_fields.merge!(@fields[:responsable] => @responsable) unless @responsable.nil?
-    hash_fields.merge!(@fields[:first_approach_date] => {'start' => @first_contact_date}) unless @first_contact_date.nil?
+    hash_fields.merge!(@fields[:first_approach_date] => {'start' => @first_approach_date}) unless @first_approach_date.nil?
     hash_fields.merge!(@fields[:selection_date] => {'start' => @selection_date}) unless @selection_date.nil?
     hash_fields.merge!(@fields[:next_contact_date] => @next_contact_date) unless @next_contact_date.nil?
     hash_fields.merge!(@fields[:rapprochement_notes] => @rapprochement_notes) unless @rapprochement_notes.nil?
@@ -135,6 +135,7 @@ class YouthTalent < YouthLeader
     hash_fields.merge!(@fields[:has_functional_induction] => @has_functional_induction) unless @has_functional_induction.nil?
     hash_fields.merge!(@fields[:organizational_induction_date] => @organizational_induction_date) unless @organizational_induction_date.nil?
     hash_fields.merge!(@fields[:functional_induction_date] => @functional_induction_date) unless @functional_induction_date.nil?
+    hash_fields.merge!(@fields[:approach_channel] => @approach_channel) unless @approach_channel.nil?
     hash_fields
   end
 end

@@ -77,6 +77,8 @@ class TM
       app3 = nil
       app4 = nil
       app5 = nil
+      app1_5 = nil
+      cards = nil
       for i in 0..apps.total_count-1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:tm]
           case apps.name(i)
@@ -118,15 +120,16 @@ class TM
     ors_to_local
 
     lead_to_approach
+
     approach_to_rapproach
+    selection_to_rapproach
     stop_rapproach
+
     rapproach_to_selection
     approach_to_selection
-
-    selection_to_rapproach
     stop_selection
-    selection_to_induction
 
+    selection_to_induction
 
     induction_to_local_crm
   end
@@ -144,7 +147,7 @@ class TM
 
           lead.populate(@ors_app,i)
           lead.create
-          @ors_app.sync_with_local = true
+          @ors_app.sync_with_local=BooleanEnum.statuses[:yes]
           @ors_app.update(i)
         end
       end
@@ -157,6 +160,8 @@ class TM
       approach = @local_apps_ids[entity][1]
       abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless lead.is_a?(YouthTalent)
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
+      lead.refresh_item_list
+      approach.refresh_item_list
 
       limit = lead.total_count
       for i in 0...limit
@@ -177,9 +182,10 @@ class TM
     for entity in @entities do
       approach = @local_apps_ids[entity][1]
       rapproach = @local_apps_ids[entity][5]
-
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+      approach.refresh_item_list
+      rapproach.refresh_item_list
 
       limit = approach.total_count
       for i in 0...limit
@@ -200,8 +206,8 @@ class TM
   def stop_rapproach
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
-
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+      rapproach.refresh_item_list
 
       limit = rapproach.total_count
       for i in 0...limit
@@ -219,9 +225,10 @@ class TM
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
       selection = @local_apps_ids[entity][2]
-
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+      rapproach.refresh_item_list
+      selection.refresh_item_list
 
       limit = rapproach.total_count
       for i in 0...limit
@@ -245,6 +252,8 @@ class TM
       selection = @local_apps_ids[entity][2]
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+      approach.refresh_item_list
+      selection.refresh_item_list
 
       limit = approach.total_count
       for i in 0...limit
@@ -253,6 +262,7 @@ class TM
           selection.create
           approach.delete(i)
         end
+
         approach.refresh_item_list
         selection.refresh_item_list
         @local_apps_ids[entity][1] = approach
@@ -265,11 +275,12 @@ class TM
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       rapproach = @local_apps_ids[entity][5]
-
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
+      selection.refresh_item_list
+      rapproach.refresh_item_list
 
-      limit = rapproach.total_count
+      limit = selection .total_count
       for i in 0...limit
         if selection.business_rule_selection_to_rapproach?(i)
           rapproach.populate(selection,i)
@@ -288,8 +299,8 @@ class TM
   def stop_selection
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
-
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
+      selection.refresh_item_list
 
       limit = selection.total_count
       for i in 0...limit

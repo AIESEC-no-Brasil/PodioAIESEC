@@ -54,6 +54,60 @@ class PodioAppControl
     prepare_item(0)
   end
 
+  def hashing
+    hash_fields = {}
+    hash_fields
+  end
+
+  # Update register on Podio database
+  # @param index [Integer] Index of the item you want to retrieve
+  def update(index)
+    #Podio::Item.update(item_id(index), { :fields => hashing })
+    response = Podio.connection.put do |req|
+      req.url("/item/#{item_id(index)}", {})
+      req.body = { :fields => self.hashing }
+    end
+    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      sleep(3600)
+    end
+    #TODO take care of errors
+
+    self.instance_variables.each do |variable|
+      if variable != :@item && variable != :@app_id && variable != :@fields && variable != :@max then
+        self.instance_variable_set(variable, nil)
+      end
+    end
+  end
+
+  # Create register on Podio database
+  def create
+    #Podio::Item.create(@app_id, { :fields => hashing })
+    response = Podio.connection.post do |req|
+      req.url("/item/app/#{@app_id}/", {})
+      req.body = { :fields => self.hashing }
+    end
+    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      sleep(3600)
+    end
+    #TODO take care of errors
+
+    self.instance_variables.each do |variable|
+      if variable != :@item && variable != :@app_id && variable != :@fields && variable != :@max then
+        self.instance_variable_set(variable, nil)
+      end
+    end
+  end
+
+  # Delete register on Podio database
+  # @param index [Integer] Index of the item you want to delete
+  def delete(index)
+    #Podio::Item.delete(item_id(index))
+    if (Podio.connection.delete("/item/#{item_id(index)}").env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      sleep(3600)
+    end
+    #TODO take care of errors
+  end
+
   private
 
   # @private
@@ -106,6 +160,9 @@ class PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [nil]
   def prepare_item(index)
+    if (Podio.connection.get("/item/app/#{@app_id}", {}).env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      sleep(3600)
+    end
     @item = Podio::Item.find_all(@app_id, :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on') if @index.nil? || @index != (index/@max)*@max
     @index = (index/@max)*@max
     nil
@@ -138,6 +195,9 @@ class PodioAppControl
   # @return [Integer] if field is a contact/profile (contact id)
   # @return [String]  if field is text (text)
   def get_field_from_relationship(relationship_id, external_id)
+    if (Podio.connection.get("/item/#{relationship_id}", {}).env[:response_headers]["x-rate-limit-remaining"].to_i <= 50) then
+      sleep(3600)
+    end
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
 

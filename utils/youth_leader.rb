@@ -37,7 +37,7 @@ class YouthLeader < PodioAppControl
         :local_aiesec => 'aiesec-mais-proxima',
         :marketing_channel => 'categoria',
         :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-        #:erase => 'apagar', #TODO descobrir o que fazer com isso aqui
+        :erase => 'apagar',
         :sync_with_local => 'transferido-para-area-local'
     }
     basic_fields.merge!(extra_fields) unless extra_fields.nil?
@@ -68,30 +68,12 @@ class YouthLeader < PodioAppControl
     self.local_aiesec=(other.local_aiesec(i))
     self.marketing_channel=(other.marketing_channel(i))
     self.indication=(other.indication(i))
-    #self.erase=(other.erase(i))
+    self.erase=(other.erase(i))
+    self.sync_with_local=(other.sync_with_local(i))
   end
-
-  # Update register on Podio database
-  # @param index [Integer] Index of the item you want to retrieve
-  def update(index)
-    Podio::Item.update(item_id(index), { :fields => hashing })
-  end
-
-  # Create register on Podio database
-  def create
-    Podio::Item.create(@app_id, { :fields => hashing })
-  end
-
-  # delete register on Podio database
-  # @param index [Integer] Index of the item you want to delete
-  def delete(index)
-    Podio::Item.delete(item_id(index))
-  end
-
-  private
 
   def hashing
-    hash_fields = {}
+    hash_fields = super
     hash_fields.merge!(@fields[:name] => @name) unless @name.nil?
     hash_fields.merge!(@fields[:sex] => @sex) unless @sex.nil?
     hash_fields.merge!(@fields[:birthdate] => {'start' => @birthdate}) unless @birthdate.nil?
@@ -115,7 +97,8 @@ class YouthLeader < PodioAppControl
     hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec) unless @local_aiesec.nil?
     hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
     hash_fields.merge!(@fields[:indication] => @indication) unless @indication.blank?
-    #hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
+    hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
+    hash_fields.merge!(@fields[:sync_with_local] => @sync_with_local) unless @sync_with_local.nil?
     hash_fields
   end
 

@@ -69,10 +69,10 @@ class PodioBAZI
 
     @enum_robot = {:username => username, :password => password, :api_key => api_key, :api_secret => api_secret}
 
-    authenticate
-    podioDatabase = ControlDatabase.new(test)
-
     begin
+      authenticate
+      podioDatabase = ControlDatabase.new(test)
+
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
@@ -81,7 +81,6 @@ class PodioBAZI
       #TODO mkt
       #TODO fin
       #TODO bd
-      authenticate
     end while loop
   end
 
@@ -93,4 +92,6 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new(true, false)
+PodioBAZI.new(true, true)
+
+

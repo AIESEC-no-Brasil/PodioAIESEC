@@ -1,3 +1,5 @@
+require_relative '../categories/approach_channel'
+require_relative '../categories/approach_interruption_reason'
 require_relative '../categories/best_moment'
 require_relative '../categories/boolean_enum'
 require_relative '../categories/carrier'
@@ -6,6 +8,9 @@ require_relative '../categories/interest'
 require_relative '../categories/language_level'
 require_relative '../categories/marketing_channel'
 require_relative '../categories/priority'
+require_relative '../categories/rapprochement_notes'
+require_relative '../categories/rapprochement_reason'
+require_relative '../categories/selection_type'
 require_relative '../categories/semester'
 require_relative '../categories/study_stage'
 
@@ -168,6 +173,8 @@ class Class
         def #{arg}(index)
           i = get_field_index_by_external_id(index, @fields[:#{arg}])
           case '#{arg}'
+            when 'approach_channel'
+              val = ApproachChannel.statuses[ApproachChannel.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
             when 'interest'
               val = Interest.statuses[Interest.statuses.key(fields(index, i)['id'].to_i)] unless i.nil?
             when 'priority'
