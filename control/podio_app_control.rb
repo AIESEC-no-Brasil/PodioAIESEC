@@ -24,7 +24,7 @@ class PodioAppControl
   # @return [array]
   def at_index(index)
     prepare_item(index) if @item.nil?
-    @item[0][index%@max]
+    @item[0][index % @max]
   end
 
   # Get item_id of item at index

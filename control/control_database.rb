@@ -7,7 +7,7 @@ require_relative 'control_database_app'
 # @author Marcus Vinicius de Carvalo <marcus.carvalho@aiesec.net>
 class ControlDatabase
 
-  # @param test [Boolean] Is this a test run?
+  # @param test [BooleanEnum] Is this a test run?
   def initialize(test = false)
     workspace_control = nil
     app_control = nil

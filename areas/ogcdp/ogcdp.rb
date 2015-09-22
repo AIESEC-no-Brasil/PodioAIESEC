@@ -1,20 +1,18 @@
-require_relative '../control/control_database_workspace'
-require_relative '../control/control_database_app'
-require_relative '../enums'
-require_relative '../utils'
-require_relative 'global_talent'
+require_relative '../../control/control_database_workspace'
+require_relative '../../control/control_database_app'
+require_relative 'global_citizen'
 
-# This class initializes, configure and take care of the TM module.
+# This class initializes, configure and take care of the tm module.
 # The module is divided in 3 categories:
 # * 1. ORS ( 1 x )
 # * 2. Local ( Number of entities x )
 # * 3. National ( 1 x )
-class OGX_GIP
+class OGX_GCDP
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(spaces, apps)
-    abort('Wrong parameter for spaces') unless spaces.is_a?(ControlDatabaseWorkspace)
-    abort('Wrong parameter for apps') unless apps.is_a?(ControlDatabaseApp)
+    abort('Wrong parameter for spaces in ' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
+    abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
     configORS(spaces,apps)
     configLocals(spaces, apps)
@@ -22,7 +20,7 @@ class OGX_GIP
     flow
   end
 
-  # Detect and configure every ORS workspace and ORS app that is linked to TM
+  # Detect and configure every ORS workspace and ORS app that is linked to tm
   # @todo research how to raise global variable ors_space_id
   # @todo research how to raise global variable ors_app
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
@@ -30,7 +28,7 @@ class OGX_GIP
   def configORS(spaces, apps)
     limit = spaces.total_count-1
     for i in 0..limit
-      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogcdp]
         @ors_space_id = spaces.id(i)
         break
       end
@@ -38,14 +36,14 @@ class OGX_GIP
 
     limit = apps.total_count-1
     for i in 0..limit
-      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
+      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogcdp]
         @ors_app = GlobalTalent.new(apps.id(i))
         break
       end
     end
   end
 
-  # Detect and configure every Locals workspaces and Locals apps taht are linkted to TM
+  # Detect and configure every Locals workspaces and Locals apps taht are linkted to tm
   # @todo research how to raise global array local_spaces_ids
   # @todo research how to raise global hash local_apps_ids
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
@@ -56,7 +54,7 @@ class OGX_GIP
 
     limit = spaces.total_count - 1
     for i in 0..limit
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogcdp]
         @local_spaces_ids << spaces.id(i)
       end
     end
@@ -64,7 +62,7 @@ class OGX_GIP
     @entities = []
     limit = apps.total_count - 1
     for i in 0..limit
-      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogip]
+      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogcdp]
         @entities << apps.entity(i)
       end
     end
@@ -80,15 +78,15 @@ class OGX_GIP
       app6 = nil
       app7 = nil
       for i in 0..apps.total_count - 1
-        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
+        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogcdp]
           case apps.name(i)
-            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:leads] then app1 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:contacteds] then app2 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:epi] then app3 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:open] then app4 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:ip] then app5 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:ma] then app6 = GlobalTalent.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:re] then app7 = GlobalTalent.new(apps.id(i))
           end
         end
       end
@@ -100,7 +98,7 @@ class OGX_GIP
   def configNational(spaces, apps)
     limit = spaces.total_count - 1
     (0..limit).each do |i|
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogcdp]
         @national_space_id = spaces.id(i)
         break
       end
@@ -108,7 +106,7 @@ class OGX_GIP
 
     limit = apps.total_count - 1
     (0..limit).each do |i|
-      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogip]
+      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogcdp]
         @national_app_id = apps.id(i)
         break
       end
@@ -123,12 +121,13 @@ class OGX_GIP
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
-    limit = @ors_app.total_count - 1
+    #TODO Não dar erro quando não tiver nenhum regitro nBD
+    limit = @ors_app.total_count
     for entity in @entities do
-      (0..limit).each do |i|
-        if @ors_app.local_aiesec_id(i) == entity
+      (0...limit).each do |i|
+        if @ors_app.local_aiesec(i) == entity
           leads = @local_apps_ids[entity][0]
-          abort('Wrong parameter for leads') unless leads.is_a?(GlobalTalent)
+          abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalent)
 
           leads.populate(@ors_app,i)
           leads.create
@@ -150,44 +149,44 @@ class OGX_GIP
       matchs = @local_apps_ids[entity][5]
       realizes = @local_apps_ids[entity][6]
 
-      abort('Wrong parameter for leads') unless leads.is_a?(GlobalTalent)
-      abort('Wrong parameter for contacteds') unless contacteds.is_a?(GlobalTalent)
-      abort('Wrong parameter for epis') unless epis.is_a?(GlobalTalent)
-      abort('Wrong parameter for opens') unless opens.is_a?(GlobalTalent)
-      abort('Wrong parameter for in_progress') unless in_progress.is_a?(GlobalTalent)
-      abort('Wrong parameter for matchs') unless matchs.is_a?(GlobalTalent)
-      abort('Wrong parameter for realizes') unless realizes.is_a?(GlobalTalent)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalent)
+      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalent)
+      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalent)
+      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalent)
+      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalent)
+      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalent)
+      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalent)
 
-      limit = leads.total_count - 1
-      (0..limit).each do |i|
-        if leads.can_be_contacted(i)
+      limit = leads.total_count
+      (0...limit).each do |i|
+        if leads.business_rule_lead_to_approach?(i)
           contacteds.populate(leads,i)
           contacteds.create
           leads.delete(i)
         end
       end
       
-      limit = contacteds.total_count - 1
-      (0..limit).each do |i|
-        if contacteds.can_be_EPI(i)
+      limit = contacteds.total_count
+      (0...limit).each do |i|
+        if contacteds.can_be_EPI?(i)
           epis.populate(contacteds,i)
           epis.create
           contacteds.delete(i)
         end
       end
 
-      limit = epis.total_count - 1
-      (0..limit).each do |i|
-        if epis.can_be_open(i)
+      limit = epis.total_count
+      (0...limit).each do |i|
+        if epis.can_be_open?(i)
           opens.populate(epis,i)
           opens.create
           epis.delete(i)
         end
       end
 
-      limit = opens.total_count - 1
-      (0..limit).each do |i|
-        if opens.can_be_ip(i)
+      limit = opens.total_count
+      (0...limit).each do |i|
+        if opens.can_be_ip?(i)
           in_progress.populate(opens,i)
           in_progress.applying = nil
           in_progress.create
@@ -195,18 +194,18 @@ class OGX_GIP
         end
       end
 
-      limit = in_progress.total_count - 1
-      (0..limit).each do |i|
-        if in_progress.can_be_ma(i)
+      limit = in_progress.total_count
+      (0...limit).each do |i|
+        if in_progress.can_be_ma?(i)
           matchs.populate(in_progress,i)
           matchs.create
           in_progress.delete(i)
         end
       end
 
-      limit = matchs.total_count - 1
-      (0..limit).each do |i|
-        if matchs.can_be_re(i)
+      limit = matchs.total_count
+      (0...limit).each do |i|
+        if matchs.can_be_re?(i)
           realizes.populate(matchs,i)
           realizes.create
           matchs.delete(i)
