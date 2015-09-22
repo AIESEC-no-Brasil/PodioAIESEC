@@ -37,7 +37,7 @@ class YouthLeader < PodioAppControl
         :local_aiesec => 'aiesec-mais-proxima',
         :marketing_channel => 'categoria',
         :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-        :erase => 'apagar',
+        #:erase => 'apagar', #TODO descobrir o que fazer com isso aqui
         :sync_with_local => 'transferido-para-area-local'
     }
     basic_fields.merge!(extra_fields) unless extra_fields.nil?
@@ -68,7 +68,7 @@ class YouthLeader < PodioAppControl
     self.local_aiesec=(other.local_aiesec(i))
     self.marketing_channel=(other.marketing_channel(i))
     self.indication=(other.indication(i))
-    self.erase=(other.erase(i))
+    #self.erase=(other.erase(i))
   end
 
   # Update register on Podio database
@@ -115,7 +115,7 @@ class YouthLeader < PodioAppControl
     hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec) unless @local_aiesec.nil?
     hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
     hash_fields.merge!(@fields[:indication] => @indication) unless @indication.blank?
-    hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
+    #hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
     hash_fields
   end
 
