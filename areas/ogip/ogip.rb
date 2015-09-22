@@ -1,6 +1,7 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
 require_relative 'global_talent'
+require_relative 'global_talent_dao'
 
 # This class initializes, configure and take care of the tm module.
 # The module is divided in 3 categories:
@@ -38,6 +39,7 @@ class OGX_GIP
     for i in 0..limit
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
         @ors_app = GlobalTalent.new(apps.id(i))
+        @ors_test = GlobalTalentDAO.new(apps.id(i))
         break
       end
     end
@@ -114,6 +116,8 @@ class OGX_GIP
   end
 
   def flow
+    puts @ors_test.find_ors_to_local_lead.count
+    puts 'BOOOORAAA'
     ors_to_local
     local_to_local
     #local_to_national
