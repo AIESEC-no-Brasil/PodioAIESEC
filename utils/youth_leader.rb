@@ -68,8 +68,6 @@ class YouthLeader < PodioAppControl
     self.local_aiesec=(other.local_aiesec(i))
     self.marketing_channel=(other.marketing_channel(i))
     self.indication=(other.indication(i))
-    self.erase=(other.erase(i))
-    self.sync_with_local=(other.sync_with_local(i))
   end
 
   def hashing
@@ -97,8 +95,6 @@ class YouthLeader < PodioAppControl
     hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec) unless @local_aiesec.nil?
     hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
     hash_fields.merge!(@fields[:indication] => @indication) unless @indication.blank?
-    hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
-    hash_fields.merge!(@fields[:sync_with_local] => @sync_with_local) unless @sync_with_local.nil?
     hash_fields
   end
 

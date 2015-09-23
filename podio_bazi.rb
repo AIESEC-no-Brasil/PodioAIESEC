@@ -73,8 +73,8 @@ class PodioBAZI
       authenticate
       podioDatabase = ControlDatabase.new(test)
 
-      #TM.new(podioDatabase.workspaces, podioDatabase.apps)
-      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+       TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GCDPi
       #TODO GIPi
@@ -92,6 +92,6 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new(true, true)
+PodioBAZI.new(true, false)
 
 
