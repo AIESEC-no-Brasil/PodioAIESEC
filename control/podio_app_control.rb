@@ -8,15 +8,19 @@ class PodioAppControl
     :app      => 'app',
     :number   => 'number',
     :text     => 'text',
-    :contact  => 'contact'
+    :contact  => 'contact',
+    :date     => 'date'
   }
 
   # @param app_id [Integer] Id of the app
   def initialize(app_id, fields)
     @app_id = app_id
+    @app = Podio::Application.find(app_id)
     @fields = fields
     @max = 500 # Maximum number of elements per podio request
     @item = nil
+    mapping_fields
+    generate_model
   end
 
   # Get item at index
@@ -52,11 +56,6 @@ class PodioAppControl
   def refresh_item_list
     @index = nil
     prepare_item(0)
-  end
-
-  def hashing
-    hash_fields = {}
-    hash_fields
   end
 
   # Update register on Podio database
@@ -108,7 +107,94 @@ class PodioAppControl
     #TODO take care of errors
   end
 
+  def hashing(model)
+    hash_fields = {}
+    @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => model[k]) unless model[k].nil? }
+    hash_fields
+  end
+
   private
+
+  def mapping_fields
+    @fields_name_map = {}
+    @fields_id_map = {}
+    @app.fields.each { |f|
+      key = @fields.select{|k,v| v.eql? f['external_id']}.keys[0]
+      @fields_name_map[key] = {
+        :id => f['field_id'],
+        :external_id => f['external_id'],
+        :type => f['type']
+      }
+      @fields_id_map[f['field_id']] = key
+    }
+    @fields_name_map.delete(nil)
+    @fields_id_map.delete(nil)
+  end
+
+  def generate_model
+    Struct.new('Model',*@fields_name_map.keys) do
+      # Override the initialize to handle hashes of named parameters
+      def initialize *args
+        return super unless (args.length == 1 and args.first.instance_of? Hash)
+        args.first.each_pair do |k, v|
+          self[k] = v if members.map {|x| x.intern}.include? k
+        end
+      end
+      def populate(other)
+        other.members.each { |m|
+          self[m] = other[m]
+        }
+      end
+      def create
+        Podio::Item.create(@app.app_id, {:fields => hashing})
+      end
+      def update
+        Podio::Item.update(@app.app_id, {:fields => hashing})
+      end
+      def delete
+        Podio::Item.delete(self.id)
+      end
+      def hashing
+        hash_fields = {}
+        @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => self[k]) unless self[k].nil?}
+        hash_fields
+      end
+    end
+  end
+
+  def create_models(list)
+    list.map { |item|
+      Struct::Model.new( item[:fields].map{ |f|
+        [@fields_id_map[f['field_id']],field_values(f)]
+      }.to_h.merge!({:id => item[:item_id]}))
+    }
+  end
+
+  def field_values(json_field)
+    if json_field['values'].size == 1
+      get_value(json_field, 0)
+    elsif json_field['values'].size > 1
+      json_field['values'].map.with_index { |v, i| get_value(json_field, i) }
+    end
+  end
+
+  def get_value(field,i)
+    case field['type']
+      when $type_of_data[:category] then field['values'][i]['value']['id'].to_i
+      when $type_of_data[:app]      then field['values'][i]['value']['item_id'].to_i
+      when $type_of_data[:number]   then field['values'][i]['value'].to_i
+      when $type_of_data[:contact]  then field['values'][i]['value']['profile_id'].to_i
+      when $type_of_data[:text]     then field['values'][i]['value'].to_s
+      when $type_of_data[:embed]    then field['values'][i]['embed']
+      when $type_of_data[:date]     then
+        if field['values'][i]['end'].nil?
+          {'start' => field['values'][i]['start'].to_s}
+        else
+          {'start' => field['values'][i]['start'].to_s, 'end' => field['values'][i]['end'].to_s}
+        end
+      else field['values'][i]
+    end
+  end
 
   # @private
   # Count number of filled fields at index

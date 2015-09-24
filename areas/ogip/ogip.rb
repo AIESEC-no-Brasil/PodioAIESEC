@@ -116,8 +116,6 @@ class OGX_GIP
   end
 
   def flow
-    puts @ors_test.find_ors_to_local_lead.count
-    puts 'BOOOORAAA'
     ors_to_local
     local_to_local
     #local_to_national

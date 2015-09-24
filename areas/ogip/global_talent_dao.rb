@@ -26,10 +26,6 @@ class GlobalTalentDAO < YouthLeaderDAO
 		super(app_id, fields)
 	end
 
-	def can_be_local?(i)
-		true
-	end
-
 	def can_be_contacted?(i)
 		true unless self.first_contact_date(i).nil? or self.first_contact_responsable(i).nil?
 	end
