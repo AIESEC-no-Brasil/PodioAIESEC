@@ -5,14 +5,15 @@ require_relative '../../utils/youth_leader'
 class YouthTalent < YouthLeader
 
   boolean_attr_accessor :send_to_selection, :stop_approach, :send_to_rapproachement, :join_selection, :was_selected
-  boolean_attr_accessor :has_volunteer_term, :has_organizational_induction, :has_functional_induction
+  boolean_attr_accessor :has_volunteer_term, :has_organizational_induction, :has_functional_induction, :had_internship
   category_attr_accessor :rapprochement_notes, :rapprochement_reason, :approach_interruption_reason
-  category_attr_accessor :approach_channel, :selection_type
-  date_attr_accessor :organizational_induction_date, :functional_induction_date
+  category_attr_accessor :approach_channel, :selection_type, :current_position, :status, :leave_reason
+  date_attr_accessor :organizational_induction_date, :functional_induction_date, :leave_date
   date_attr_accessor :first_approach_date, :selection_date, :next_contact_date
-  reference_attr_accessor :responsable, :responsable_new_contact
+  reference_attr_accessor :responsable, :responsable_new_contact, :area
   number_attr_accessor :approaches_number
-  text_attr_accessor :feedback
+  text_attr_accessor :feedback, :position_history, :internship_history
+  link_attr_accessor :facebook, :linkedin
 
 	def initialize(app_id)
 		fields = {
@@ -32,13 +33,22 @@ class YouthTalent < YouthLeader
         :selection_type => 'tipo-de-selecao',
         :was_selected => 'foi-selecionado',
         :feedback => 'feedback',
-
         :has_volunteer_term => 'termo-de-voluntariado',
         :has_organizational_induction => 'inducao-organizacional',
         :has_functional_induction => 'inducao-funcional',
         :organizational_induction_date => 'data-da-inducao-organizacional',
         :functional_induction_date => 'data-da-inducao-funcional',
-        :approach_channel => 'canal-de-comunicacao-utilizado-no-primeiro-contato'
+        :approach_channel => 'canal-de-comunicacao-utilizado-no-primeiro-contato',
+        :facebook => 'facebook-profile',
+        :linkedin => 'linkedin-profile',
+        :area => 'area',
+        :current_position => 'cargo-atual',
+        :position_history => 'historico-de-cargos',
+        :had_internship => 'ja-realizou-um-intercambio-pela-aiesec',
+        :internship_history => 'se-sim-especifique-pais-duracao-mesano-de-conclusao',
+        :status => 'status',
+        :leave_date => 'data-de-saida',
+        :leave_reason => 'motivo-de-saisa'
 		}
 		super(app_id, fields)
 	end
@@ -70,6 +80,16 @@ class YouthTalent < YouthLeader
     self.organizational_induction_date=(other.organizational_induction_date(i))
     self.functional_induction_date=(other.functional_induction_date(i))
     self.approach_channel=(other.approach_channel(i))
+    self.facebook=(other.facebook(i))
+    self.linkedin=(other.linkedin(i))
+    self.area=(other.area(i))
+    self.current_position=(other.current_position(i))
+    self.position_history=(other.position_history(i))
+    self.had_internship=(other.had_internship(i))
+    self.internship_history=(other.internship_history(i))
+    self.status=(other.status(i))
+    self.leave_date=(other.leave_date(i))
+    self.leave_reason=(other.leave_reason(i))
 	end
 
 	def business_rule_ors_to_local_lead?(i, entity)
@@ -77,7 +97,7 @@ class YouthTalent < YouthLeader
 	end
 
 	def business_rule_lead_to_approach?(i)
-		true unless first_approach_date(i).nil? && responsable(i).nil?
+		true unless first_approach_date(i).nil? && responsable(i).nil? && approach_channel(i).nil?
   end
 
   def business_rule_approach_to_rapproach?(i)
@@ -136,6 +156,16 @@ class YouthTalent < YouthLeader
     hash_fields.merge!(@fields[:organizational_induction_date] => @organizational_induction_date) unless @organizational_induction_date.nil?
     hash_fields.merge!(@fields[:functional_induction_date] => @functional_induction_date) unless @functional_induction_date.nil?
     hash_fields.merge!(@fields[:approach_channel] => @approach_channel) unless @approach_channel.nil?
+    hash_fields.merge!(@fields[:facebook] => @facebook) unless @facebook.nil?
+    hash_fields.merge!(@fields[:linkedin] => @linkedin) unless @linkedin.nil?
+    hash_fields.merge!(@fields[:area] => @area) unless @area.nil?
+    hash_fields.merge!(@fields[:current_position] => @current_position) unless @current_position.nil?
+    hash_fields.merge!(@fields[:position_history] => @position_history) unless @position_history.blank?
+    hash_fields.merge!(@fields[:had_internship] => @had_internship) unless @had_internship.nil?
+    hash_fields.merge!(@fields[:internship_history] => @internship_history) unless @internship_history.blank?
+    hash_fields.merge!(@fields[:status] => @status) unless @status.nil?
+    hash_fields.merge!(@fields[:leave_date] => @leave_date) unless @leave_date.nil?
+    hash_fields.merge!(@fields[:leave_reason] => @leave_reason) unless @leave_reason.nil?
     hash_fields
   end
 end

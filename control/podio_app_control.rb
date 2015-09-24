@@ -72,10 +72,15 @@ class PodioAppControl
     #TODO take care of errors
 
     self.instance_variables.each do |variable|
-      if variable != :@item && variable != :@app_id && variable != :@fields && variable != :@max then
-        self.instance_variable_set(variable, nil)
+      case variable.to_s
+        when '@item' then nil
+        when '@app_id' then nil
+        when '@fields' then nil
+        when '@max' then nil
+        else self.remove_instance_variable(variable)
       end
     end
+
   end
 
   # Create register on Podio database
@@ -91,10 +96,15 @@ class PodioAppControl
     #TODO take care of errors
 
     self.instance_variables.each do |variable|
-      if variable != :@item && variable != :@app_id && variable != :@fields && variable != :@max then
-        self.instance_variable_set(variable, nil)
-      end
+        case variable.to_s
+          when '@item' then nil
+          when '@app_id' then nil
+          when '@fields' then nil
+          when '@max' then nil
+          else self.remove_instance_variable(variable)
+        end
     end
+
   end
 
   # Delete register on Podio database
