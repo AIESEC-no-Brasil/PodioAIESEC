@@ -1,6 +1,5 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative 'global_talent'
 require_relative 'global_talent_dao'
 
 # This class initializes, configure and take care of the tm module.
@@ -27,6 +26,7 @@ class OGX_GIP
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
+    puts 'configORS'
     limit = spaces.total_count-1
     for i in 0..limit
       if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
@@ -37,9 +37,10 @@ class OGX_GIP
 
     limit = apps.total_count-1
     for i in 0..limit
+
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
-        @ors_app = GlobalTalent.new(apps.id(i))
-        @ors_test = GlobalTalentDAO.new(apps.id(i))
+        #@ors_app = GlobalTalent.new(apps.id(i))
+        @ors = GlobalTalentDAO.new(apps.id(i))
         break
       end
     end
@@ -51,6 +52,7 @@ class OGX_GIP
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configLocals(spaces, apps)
+    puts 'configLocals'
     @local_spaces_ids = []
     @local_apps_ids = {}
 
@@ -82,13 +84,13 @@ class OGX_GIP
       for i in 0..apps.total_count - 1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
           case apps.name(i)
-            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalent.new(apps.id(i))
-            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalent.new(apps.id(i))
+            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(i))
           end
         end
       end
@@ -98,6 +100,7 @@ class OGX_GIP
   end
 
   def configNational(spaces, apps)
+    puts 'configNational'
     limit = spaces.total_count - 1
     (0..limit).each do |i|
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
@@ -123,19 +126,17 @@ class OGX_GIP
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
-    limit = @ors_app.total_count - 1
-    for entity in @entities do
-      (0..limit).each do |i|
-        if @ors_app.local_aiesec(i) == entity
-          leads = @local_apps_ids[entity][0]
-          abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalent)
+    puts 'ors_to_local'
+    models_list = @ors.find_ors_to_local_lead
+    models_list.each do |national_lead|
+      local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
-          leads.populate(@ors_app,i)
-          leads.create
-          @ors_app.sync_with_local = $enum_boolean[:sim]
-          @ors_app.update(i)
-        end
-      end
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
+
+      local_lead = local_leads.new_model(national_lead.to_h)
+      local_lead.create
+      national_lead.sync_with_local = 2
+      national_lead.update
     end
   end
 
@@ -150,66 +151,60 @@ class OGX_GIP
       matchs = @local_apps_ids[entity][5]
       realizes = @local_apps_ids[entity][6]
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalent)
-      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalent)
-      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalent)
-      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalent)
-      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalent)
-      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalent)
-      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalent)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalentDAO)
 
-      limit = leads.total_count - 1
-      (0..limit).each do |i|
-        if leads.can_be_contacted(i)
-          contacteds.populate(leads,i)
-          contacteds.create
-          leads.delete(i)
+      leads.find_all.each do |lead|
+        if leads.can_be_contacted?(lead)
+          contacted = contacteds.new_model(lead.to_h)
+          contacted.create
+          lead.delete
         end
       end
       
-      limit = contacteds.total_count - 1
-      (0..limit).each do |i|
-        if contacteds.can_be_EPI?(i)
-          epis.populate(contacteds,i)
-          epis.create
-          contacteds.delete(i)
+      contacteds.find_all.each do |contacted|
+        if contacteds.can_be_EPI?(contacted)
+          epi = epis.new_model(contacted.to_h)
+          epi.create
+          contacted.delete
         end
       end
 
-      limit = epis.total_count - 1
-      (0..limit).each do |i|
-        if epis.can_be_open?(i)
-          opens.populate(epis,i)
-          opens.create
-          epis.delete(i)
+      epis.find_all.each do |epi|
+        if epis.can_be_open?(epi)
+          open = opens.new_model(epi.to_h)
+          open.create
+          epi.delete
         end
       end
 
-      limit = opens.total_count - 1
-      (0..limit).each do |i|
-        if opens.can_be_ip?(i)
-          in_progress.populate(opens,i)
-          in_progress.applying = nil
-          in_progress.create
-          opens.delete(i)
+      opens.find_all.each do |open|
+        if opens.can_be_ip?(open)
+          ip = in_progress.new_model(epi.to_h)
+          ip.applying = nil
+          ip.create
+          open.delete
         end
       end
 
-      limit = in_progress.total_count - 1
-      (0..limit).each do |i|
-        if in_progress.can_be_ma?(i)
-          matchs.populate(in_progress,i)
-          matchs.create
-          in_progress.delete(i)
+      in_progress.find_all.each do |ip|
+        if in_progress.can_be_ma?(ip)
+          ma = matchs.new_model(ip.to_h)
+          ma.create
+          ip.delete
         end
       end
 
-      limit = matchs.total_count - 1
-      (0..limit).each do |i|
-        if matchs.can_be_re?(i)
-          realizes.populate(matchs,i)
-          realizes.create
-          matchs.delete(i)
+      matchs.find_all.each do |ma|
+        if matchs.can_be_re?(ma)
+          re = realizes.new_model(ma.to_h)
+          re.create
+          ma.delete
         end
       end
     end

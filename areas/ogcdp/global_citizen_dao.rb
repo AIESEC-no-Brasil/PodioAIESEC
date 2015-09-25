@@ -2,7 +2,7 @@ require_relative '../../utils/youth_leader_dao'
 
 # Generic App at ogip workspaces
 # @author Luan Corumba <luan.corumba@aiesec.net>
-class GlobalTalentDAO < YouthLeaderDAO
+class GlobalCitizenDAO < YouthLeaderDAO
 
 	def initialize(app_id)
 		fields = {
@@ -30,27 +30,27 @@ class GlobalTalentDAO < YouthLeaderDAO
         create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
     end
 
-	def can_be_contacted?(global_talent)
-		true unless global_talent.first_approach_date.nil? or global_talent.first_contact_responsable.nil?
+	def can_be_contacted?(global_citizen)
+		true unless global_citizen.first_approach_date.nil? or global_citizen.first_contact_responsable.nil?
 	end
 
-	def can_be_EPI?(global_talent)
-		true unless global_talent.epi_date.nil? or global_talent.epi_responsable.nil?
+	def can_be_EPI?(global_citizen)
+		true unless global_citizen.epi_date.nil? or global_citizen.epi_responsable.nil?
 	end
 
-	def can_be_open?(global_talent)
-		true unless global_talent.link_to_expa.nil? or global_talent.ep_manager.nil?
+	def can_be_open?(global_citizen)
+		true unless global_citizen.link_to_expa.nil? or global_citizen.ep_manager.nil?
 	end
 
-	def can_be_ip?(global_talent)
-		global_talent.applying == 2
+	def can_be_ip?(global_citizen)
+		global_citizen.applying == 2
 	end
 
-	def can_be_ma?(global_talent)
-		true unless global_talent.match_date.nil?
+	def can_be_ma?(global_citizen)
+		true unless global_citizen.match_date.nil?
 	end
 
-	def can_be_re?(global_talent)
-		true unless global_talent.ops_date.nil? or global_talent.realize_date.nil?
+	def can_be_re?(global_citizen)
+		true unless global_citizen.ops_date.nil? or global_citizen.realize_date.nil?
 	end
 end

@@ -1,6 +1,6 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative 'youth_talent'
+require_relative 'youth_talent_dao'
 
 # This class initializes, configure and take care of the tm module.
 # The module is divided in 3 categories:
@@ -39,7 +39,7 @@ class TM
     limit = apps.total_count-1
     for i in 0..limit
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:tm]
-        @ors_app = YouthTalent.new(apps.id(i))
+        @ors = YouthTalentDAO.new(apps.id(i))
         break
       end
     end
@@ -82,13 +82,13 @@ class TM
       for i in 0..apps.total_count-1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:tm]
           case apps.name(i)
-            when $enum_TM_apps_name[:app1] then app1 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:app2] then app2 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:app3] then app3 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:app4] then app4 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:app5] then app5 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:app1_5] then app1_5 = YouthTalent.new(apps.id(i))
-            when $enum_TM_apps_name[:cards] then cards = YouthTalent.new(apps.id(i))
+            when $enum_TM_apps_name[:app1] then app1 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app2] then app2 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app3] then app3 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app1_5] then app1_5 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:cards] then cards = YouthTalentDAO.new(apps.id(i))
           end
         end
 
@@ -136,44 +136,33 @@ class TM
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
-    for entity in @entities do
-      abort('Wrong parameter for @ors_app in ' + self.class.name + '.' + __method__.to_s) unless @ors_app.is_a?(YouthTalent)
+    puts 'ors_to_local'
+    models_list = @ors.find_ors_to_local_lead
+    models_list.each do |national_lead|
+      local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
-      limit = @ors_app.total_count
-      for i in 0...limit
-        if @ors_app.business_rule_ors_to_local_lead?(i,entity)
-          lead = @local_apps_ids[entity][0]
-          abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless lead.is_a?(YouthTalent)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
 
-          lead.populate(@ors_app,i)
-          lead.create
-          @ors_app.sync_with_local=BooleanEnum.statuses[:yes]
-          @ors_app.update(i)
-        end
-      end
+      local_lead = local_leads.new_model(national_lead.to_h)
+      local_lead.create
+      national_lead.sync_with_local = 2
+      national_lead.update
     end
   end
 
   def lead_to_approach
     for entity in @entities do
-      lead = @local_apps_ids[entity][0]
+      leads = @local_apps_ids[entity][0]
       approach = @local_apps_ids[entity][1]
-      abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless lead.is_a?(YouthTalent)
-      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
-      lead.refresh_item_list
-      approach.refresh_item_list
+      abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
 
-      limit = lead.total_count
-      for i in 0...limit
-        if lead.business_rule_lead_to_approach?(i)
-          approach.populate(lead,i)
-          approach.create
-          lead.delete(i)
+      leads.find_all.each do |lead|
+        if leads.business_rule_lead_to_approach?(lead)
+          approached = approach.new_model(lead.to_h)
+          approached.create
+          lead.delete
         end
-        lead.refresh_item_list
-        approach.refresh_item_list
-        @local_apps_ids[entity][0] = lead
-        @local_apps_ids[entity][1] = approach
       end
     end
   end
@@ -182,23 +171,16 @@ class TM
     for entity in @entities do
       approach = @local_apps_ids[entity][1]
       rapproach = @local_apps_ids[entity][5]
-      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
-      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
-      approach.refresh_item_list
-      rapproach.refresh_item_list
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
-      limit = approach.total_count
-      for i in 0...limit
-        if approach.business_rule_approach_to_rapproach?(i)
-          rapproach.populate(approach,i)
-          rapproach.approaches_number=(1)
-          rapproach.create
-          approach.delete(i)
+      approach.find_all.each do |approached|
+        if approach.business_rule_approach_to_rapproach?(approached)
+          rapproached = rapproach.new_model(approached.to_h)
+          rapproached.approaches_number = 1
+          rapproached.create
+          approached.delete
         end
-        approach.refresh_item_list
-        rapproach.refresh_item_list
-        @local_apps_ids[entity][1] = approach
-        @local_apps_ids[entity][5] = rapproach
       end
     end
   end
@@ -206,17 +188,12 @@ class TM
   def stop_rapproach
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
-      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
-      rapproach.refresh_item_list
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
-      limit = rapproach.total_count
-      for i in 0...limit
-        if rapproach.business_rule_stop_rapproach?(i)
-          rapproach.delete(i)
+      rapproach.find_all.each do |rapproached|
+        if rapproach.business_rule_stop_rapproach?(rapproached)
+          rapproached.delete
         end
-
-        rapproach.refresh_item_list
-        @local_apps_ids[entity][5] = rapproach
       end
     end
   end
@@ -225,23 +202,15 @@ class TM
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
       selection = @local_apps_ids[entity][2]
-      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
-      rapproach.refresh_item_list
-      selection.refresh_item_list
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
-      limit = rapproach.total_count
-      for i in 0...limit
-        if rapproach.business_rule_rapproach_to_selection?(i)
-          selection.populate(rapproach,i)
-          selection.create
-          rapproach.delete(i)
+      rapproach.find_all.each do |rapproached|
+        if rapproach.business_rule_rapproach_to_selection?(rapproached)
+          selected = selection.new_model(rapproached.to_h)
+          selected.create
+          rapproached.delete
         end
-
-        rapproach.refresh_item_list
-        selection.refresh_item_list
-        @local_apps_ids[entity][5] = rapproach
-        @local_apps_ids[entity][2] = selection
       end
     end
   end
@@ -250,23 +219,15 @@ class TM
     for entity in @entities do
       approach = @local_apps_ids[entity][1]
       selection = @local_apps_ids[entity][2]
-      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalent)
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
-      approach.refresh_item_list
-      selection.refresh_item_list
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
-      limit = approach.total_count
-      for i in 0...limit
-        if approach.business_rule_approach_to_selection?(i)
-          selection.populate(approach,i)
-          selection.create
-          approach.delete(i)
+      approach.find_all.each do |approached|
+        if approach.business_rule_approach_to_selection?(approached)
+          selected = selection.new_model(approached.to_h)
+          selected.create
+          approached.delete
         end
-
-        approach.refresh_item_list
-        selection.refresh_item_list
-        @local_apps_ids[entity][1] = approach
-        @local_apps_ids[entity][2] = selection
       end
     end
   end
@@ -275,23 +236,15 @@ class TM
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       rapproach = @local_apps_ids[entity][5]
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
-      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalent)
-      selection.refresh_item_list
-      rapproach.refresh_item_list
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
-      limit = selection .total_count
-      for i in 0...limit
-        if selection.business_rule_selection_to_rapproach?(i)
-          rapproach.populate(selection,i)
-          rapproach.create
-          selection.delete(i)
+      selection.find_all.each do |selected|
+        if selection.business_rule_selection_to_rapproach?(selected)
+          rapproached = rapproach.new_model(selected.to_h)
+          rapproached.create
+          selected.delete
         end
-
-        selection.refresh_item_list
-        rapproach.refresh_item_list
-        @local_apps_ids[entity][2] = selection
-        @local_apps_ids[entity][5] = rapproach
       end
     end
   end
@@ -299,17 +252,12 @@ class TM
   def stop_selection
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
-      selection.refresh_item_list
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
-      limit = selection.total_count
-      for i in 0...limit
-        if selection.business_rule_delete_selection?(i)
-          selection.delete(i)
+      selection.find_all.each do |selected|
+        if selection.business_rule_delete_selection?(selected)
+          selected.delete
         end
-
-        selection.refresh_item_list
-        @local_apps_ids[entity][2] = selection
       end
     end
   end
@@ -318,21 +266,16 @@ class TM
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       induction = @local_apps_ids[entity][3]
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalent)
-      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalent)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
 
-      limit = selection.total_count
-      for i in 0...limit
-        if selection.business_rule_selection_to_induction?(i)
-          induction.populate(selection,i)
-          induction.create
-          selection.delete(i)
+      selection.find_all.each do |selected|
+        if selection.business_rule_selection_to_induction?(selected)
+          inducted = induction.new_model(selected.to_h)
+          inducted.create
+          selected.delete
         end
       end
-      selection.refresh_item_list
-      induction.refresh_item_list
-      @local_apps_ids[entity][2] = selection
-      @local_apps_ids[entity][3] = induction
     end
   end
 
@@ -340,22 +283,17 @@ class TM
     for entity in @entities do
       induction = @local_apps_ids[entity][3]
       local_crm = @local_apps_ids[entity][4]
-      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalent)
-      abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalent)
+      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalentDAO)
 
-      limit = induction.total_count
-      for i in 0...limit
-        if induction.business_rule_induction_to_local_crm?(i)
-          local_crm.populate(induction,i)
-          local_crm.create
-          induction.delete(i)
+      induction.find_all.each do |inducted|
+        if induction.business_rule_induction_to_local_crm?(inducted)
+          client = local_crm.new_model(inducted.to_h)
+          client.create
+          inducted.delete
         end
       end
     end
-    induction.refresh_item_list
-    local_crm.refresh_item_list
-    @local_apps_ids[entity][3] = induction
-    @local_apps_ids[entity][4] = local_crm
   end
 
 end

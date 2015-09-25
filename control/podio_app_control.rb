@@ -2,6 +2,7 @@
 # Must be inherited by another class.
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class PodioAppControl
+  attr_reader :item, :app_id, :app, :fields_name_map
 
   $type_of_data = {
     :category => 'category',
@@ -58,69 +59,18 @@ class PodioAppControl
     prepare_item(0)
   end
 
-  # Update register on Podio database
-  # @param index [Integer] Index of the item you want to retrieve
-  def update(index)
-    #Podio::Item.update(item_id(index), { :fields => hashing })
-    response = Podio.connection.put do |req|
-      req.url("/item/#{item_id(index)}", {})
-      req.body = { :fields => self.hashing }
-    end
-    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-      sleep(3600)
-    end
-    #TODO take care of errors
-
-    self.instance_variables.each do |variable|
-      case variable.to_s
-        when '@item' then nil
-        when '@app_id' then nil
-        when '@fields' then nil
-        when '@max' then nil
-        else self.remove_instance_variable(variable)
-      end
-    end
-
-  end
-
-  # Create register on Podio database
-  def create
-    #Podio::Item.create(@app_id, { :fields => hashing })
-    response = Podio.connection.post do |req|
-      req.url("/item/app/#{@app_id}/", {})
-      req.body = { :fields => self.hashing }
-    end
-    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-      sleep(3600)
-    end
-    #TODO take care of errors
-
-    self.instance_variables.each do |variable|
-        case variable.to_s
-          when '@item' then nil
-          when '@app_id' then nil
-          when '@fields' then nil
-          when '@max' then nil
-          else self.remove_instance_variable(variable)
-        end
-    end
-
-  end
-
-  # Delete register on Podio database
-  # @param index [Integer] Index of the item you want to delete
-  def delete(index)
-    #Podio::Item.delete(item_id(index))
-    if (Podio.connection.delete("/item/#{item_id(index)}").env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-      sleep(3600)
-    end
-    #TODO take care of errors
+  def say_yes?(value)
+    value == 2
   end
 
   def hashing(model)
     hash_fields = {}
     @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => model[k]) unless model[k].nil? }
     hash_fields
+  end
+
+  def new_model(model_hash = nil)
+    @Model.new(@fields_name_map, @app_id, model_hash)
   end
 
   private
@@ -142,9 +92,11 @@ class PodioAppControl
   end
 
   def generate_model
-    Struct.new('Model',*@fields_name_map.keys) do
+    @Model = Struct.new(*(@fields_name_map.keys << :id)) do
       # Override the initialize to handle hashes of named parameters
-      def initialize *args
+      def initialize(map, app_id, *args)
+        @struct_fields_map = map
+        @app_id = app_id
         return super unless (args.length == 1 and args.first.instance_of? Hash)
         args.first.each_pair do |k, v|
           self[k] = v if members.map {|x| x.intern}.include? k
@@ -156,17 +108,17 @@ class PodioAppControl
         }
       end
       def create
-        Podio::Item.create(@app.app_id, {:fields => hashing})
+        Podio::Item.create(@app_id, {:fields => hashing})
       end
       def update
-        Podio::Item.update(@app.app_id, {:fields => hashing})
+        Podio::Item.update(self.id, {:fields => hashing})
       end
       def delete
         Podio::Item.delete(self.id)
       end
       def hashing
         hash_fields = {}
-        @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => self[k]) unless self[k].nil?}
+        @struct_fields_map.each_key { |k| hash_fields.merge!(@struct_fields_map[k][:external_id] => self[k]) unless self[k].nil?}
         hash_fields
       end
     end
@@ -174,9 +126,9 @@ class PodioAppControl
 
   def create_models(list)
     list.map { |item|
-      Struct::Model.new( item[:fields].map{ |f|
+      @Model.new(@fields_name_map, @app_id, item[:fields].map{ |f|
         [@fields_id_map[f['field_id']],field_values(f)]
-      }.to_h.merge!({:id => item[:item_id]}))
+      }.to_h.merge({:id => item[:item_id]}))
     }
   end
 
@@ -256,9 +208,6 @@ class PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [nil]
   def prepare_item(index)
-    if (Podio.connection.get("/item/app/#{@app_id}", {}).env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-      sleep(3600)
-    end
     @item = Podio::Item.find_all(@app_id, :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on') if @index.nil? || @index != (index/@max)*@max
     @index = (index/@max)*@max
     nil
@@ -291,9 +240,6 @@ class PodioAppControl
   # @return [Integer] if field is a contact/profile (contact id)
   # @return [String]  if field is text (text)
   def get_field_from_relationship(relationship_id, external_id)
-    if (Podio.connection.get("/item/#{relationship_id}", {}).env[:response_headers]["x-rate-limit-remaining"].to_i <= 50) then
-      sleep(3600)
-    end
     relationship = Podio::Item.find(relationship_id)
     limit = relationship[:fields].size
 
