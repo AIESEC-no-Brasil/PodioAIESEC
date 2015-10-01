@@ -207,8 +207,11 @@ class TM
 
       rapproach.find_all.each do |rapproached|
         if rapproach.business_rule_rapproach_to_selection?(rapproached)
+          puts selection.app_id
           selected = selection.new_model(rapproached.to_h)
-          selected.create
+          criado = selected.create
+          puts criado[:item_id].to_i
+          puts selected.name
           rapproached.delete
         end
       end
@@ -224,8 +227,12 @@ class TM
 
       approach.find_all.each do |approached|
         if approach.business_rule_approach_to_selection?(approached)
+          puts selection.find_all.size
           selected = selection.new_model(approached.to_h)
-          selected.create
+          criado = selected.create
+          puts criado[:item_id].to_i
+          puts selected.name
+          puts selection.find_all.size
           approached.delete
         end
       end

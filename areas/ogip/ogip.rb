@@ -185,8 +185,8 @@ class OGX_GIP
 
       opens.find_all.each do |open|
         if opens.can_be_ip?(open)
-          ip = in_progress.new_model(epi.to_h)
-          ip.applying = nil
+          open.applying = nil
+          ip = in_progress.new_model(open.to_h)
           ip.create
           open.delete
         end

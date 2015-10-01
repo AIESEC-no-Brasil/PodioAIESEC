@@ -10,7 +10,8 @@ class PodioAppControl
     :number   => 'number',
     :text     => 'text',
     :contact  => 'contact',
-    :date     => 'date'
+    :date     => 'date',
+    :embed    => 'embed'
   }
 
   # @param app_id [Integer] Id of the app
