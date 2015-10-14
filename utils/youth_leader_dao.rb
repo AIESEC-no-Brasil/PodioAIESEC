@@ -12,7 +12,7 @@ class YouthLeaderDAO < PodioAppControl
             :phones => 'telefone',
             :telefone_old => 'telefone-3',#TODO exluir
             :celular => 'celular-2',#TODO exluir
-            :carrier => 'operadoras', #TODO aceitar múltiplas
+            :carrier => 'operadoras',
             :emails => 'email',
             :email_old => 'email-2',#TODO exluir
             :address => 'endereco-completo',

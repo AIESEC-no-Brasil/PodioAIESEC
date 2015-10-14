@@ -1,13 +1,13 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative 'global_citizen_dao'
+require_relative 'host_dao'
 
 # This class initializes, configure and take care of the tm module.
 # The module is divided in 3 categories:
 # * 1. ORS ( 1 x )
 # * 2. Local ( Number of entities x )
 # * 3. National ( 1 x )
-class OGX_GCDP
+class HOST
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(spaces, apps)
@@ -79,15 +79,14 @@ class OGX_GCDP
       app6 = nil
       app7 = nil
       for i in 0..apps.total_count - 1
-        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogcdp]
+        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:igdcp]
           case apps.name(i)
-            when $enum_oGCDP_apps_name[:leads] then app1 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:contacteds] then app2 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:epi] then app3 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:open] then app4 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:ip] then app5 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:ma] then app6 = GlobalCitizenDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:re] then app7 = GlobalCitizenDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:leads] then app1 = HostDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:approach] then app2 = HostDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:alignment] then app4 = HostDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(i))
+            when $enum_oGCDP_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(i))
           end
         end
       end
@@ -127,7 +126,7 @@ class OGX_GCDP
     models_list.each do |national_lead|
       local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(HostDAO)
 
       local_lead = local_leads.new_model(national_lead.to_h)
       local_lead.create
@@ -140,67 +139,60 @@ class OGX_GCDP
   def local_to_local
     for entity in @entities do
       leads = @local_apps_ids[entity][0]
-      contacteds = @local_apps_ids[entity][1]
-      epis = @local_apps_ids[entity][2]
-      opens = @local_apps_ids[entity][3]
-      in_progress = @local_apps_ids[entity][4]
-      matchs = @local_apps_ids[entity][5]
-      realizes = @local_apps_ids[entity][6]
+      approach = @local_apps_ids[entity][1]
+      reapproach = @local_apps_ids[entity][2]
+      alignment = @local_apps_ids[entity][3]
+      blacklist = @local_apps_ids[entity][4]
+      whitelist = @local_apps_ids[entity][5]
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(HostDAO)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(HostDAO)
+      abort('Wrong parameter for reapproach in ' + self.class.name + '.' + __method__.to_s) unless reapproach.is_a?(HostDAO)
+      abort('Wrong parameter for alignment in ' + self.class.name + '.' + __method__.to_s) unless alignment.is_a?(HostDAO)
+      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s) unless blacklist.is_a?(HostDAO)
+      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s) unless whitelist.is_a?(HostDAO)
 
       leads.find_all.each do |lead|
-        if leads.can_be_contacted?(lead)
-          contacted = contacteds.new_model(lead.to_h)
-          contacted.create
+        if leads.go_to_approach?(lead)
+          approached = approach.new_model(lead.to_h)
+          approached.create
           lead.delete
         end
       end
       
-      contacteds.find_all.each do |contacted|
-        if contacteds.can_be_EPI?(contacted)
-          epi = epis.new_model(contacted.to_h)
-          epi.create
-          contacted.delete
+      approach.find_all.each do |approached|
+        if approach.go_to_reapproach?(approached)
+          reapproached = reapproach.new_model(approached.to_h)
+          reapproached.create
+          approached.delete
+        elsif approached.go_to_alignment?(approached)
+          aligned = alignment.new_model(approached.to_h)
+          aligned.create
+          approached.delete
         end
       end
 
-      epis.find_all.each do |epi|
-        if epis.can_be_open?(epi)
-          open = opens.new_model(epi.to_h)
-          open.create
-          epi.delete
+      alignment.find_all.each do |aligned|
+        if alignment.return_to_reapproach?(aligned)
+          reapproached = reapproach.new_model(aligned.to_h)
+          reapproached.create
+          aligned.delete
+        elsif alignment.go_to_whitelist?(aligned)
+          good_case = whitelist.new_model(aligned.to_h)
+          good_case.create
+          aligned.delete
+        elsif alignment.go_to_blacklist?(aligned)
+          bad_case = blacklist.new_model(aligned.to_h)
+          bad_case.create
+          aligned.delete
         end
       end
 
-      opens.find_all.each do |open|
-        if opens.can_be_ip?(open)
-          open.applying = nil
-          ip = in_progress.new_model(open.to_h)
-          ip.create
-          open.delete
-        end
-      end
-
-      in_progress.find_all.each do |ip|
-        if in_progress.can_be_ma?(ip)
-          ma = matchs.new_model(ip.to_h)
-          ma.create
-          ip.delete
-        end
-      end
-
-      matchs.find_all.each do |ma|
-        if matchs.can_be_re?(ma)
-          re = realizes.new_model(ma.to_h)
-          re.create
-          ma.delete
+      reapproach.find_all.each do |reapproached|
+        if reapproach.finally_go_to_alignment?(reapproached)
+          aligned = alignment.new_model(reapproached.to_h)
+          aligned.create
+          reapproached.delete
         end
       end
     end
