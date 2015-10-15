@@ -125,6 +125,7 @@ class OGX_GCDP
     puts 'ors_to_local'
     models_list = @ors.find_ors_to_local_lead
     models_list.each do |national_lead|
+      next unless not @local_apps_ids[national_lead.local_aiesec].nil?
       local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
