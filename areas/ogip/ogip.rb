@@ -81,6 +81,7 @@ class OGX_GIP
       app5 = nil
       app6 = nil
       app7 = nil
+      app8 = nil
       for i in 0..apps.total_count - 1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
           case apps.name(i)
@@ -91,10 +92,11 @@ class OGX_GIP
             when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(i))
             when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(i))
             when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(i))
+            when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(i))
           end
         end
       end
-      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7]
+      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7,app8]
     end
 
   end
@@ -151,6 +153,7 @@ class OGX_GIP
       in_progress = @local_apps_ids[entity][4]
       matchs = @local_apps_ids[entity][5]
       realizes = @local_apps_ids[entity][6]
+      completes = @local_apps_ids[entity][7]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
       abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)
@@ -159,6 +162,7 @@ class OGX_GIP
       abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalentDAO)
       abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalentDAO)
       abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s) unless completes.is_a?(GlobalTalentDAO)
 
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
@@ -208,6 +212,15 @@ class OGX_GIP
           ma.delete
         end
       end
+
+      realizes.find_all.each do |re|
+        if realizes.can_be_re?(re)
+          co = completes.new_model(re.to_h)
+          co.create
+          re.delete
+        end
+      end
+
     end
   end
 

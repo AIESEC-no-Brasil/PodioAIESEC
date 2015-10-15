@@ -40,7 +40,7 @@ class GlobalTalentDAO < YouthLeaderDAO
     end
 
 	def can_be_contacted?(global_talent)
-		true unless global_talent.first_approach_date.nil? && global_talent.first_contact_responsable.nil? && say_yes?(global_talent.approach_result) && global_contact.approach_channel.nil?
+		true unless global_talent.first_approach_date.nil? && global_talent.first_contact_responsable.nil? && say_yes?(global_talent.approach_result) && global_talent.approach_channel.nil?
 	end
 
 	def can_be_EPI?(global_talent)
@@ -48,7 +48,7 @@ class GlobalTalentDAO < YouthLeaderDAO
 	end
 
 	def can_be_open?(global_talent)
-		true unless global_talent.link_to_expa.nil? && global_talent.link_to_expa.include? 'experience.aiesec.org' && global_talent.ep_manager.nil?
+		true unless global_talent.link_to_expa.nil? && (global_talent.link_to_expa.include? 'experience.aiesec.org') && global_talent.ep_manager.nil?
 	end
 
 	def can_be_ip?(global_talent)
@@ -60,6 +60,10 @@ class GlobalTalentDAO < YouthLeaderDAO
 	end
 
 	def can_be_re?(global_talent)
-		true unless global_talent.ops_date.nil? or global_talent.realize_date.nil?
-	end
+		true unless global_talent.ops_date.nil? && global_talent.realize_date.nil? && !say_yes?(global_talent.was_in_ops)
+  end
+
+  def can_be_co?(global_talent)
+    true unless global_talent.complete_date.nil? && !say_yes(global_talent.join_ris)
+  end
 end
