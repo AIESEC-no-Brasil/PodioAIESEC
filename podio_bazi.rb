@@ -17,7 +17,7 @@ require_relative 'areas/ogcdp/ogcdp'
 class PodioBAZI
   $enum_TM_apps_name = {
       :app1 => '1. Inscritos',
-      :app1_5 => '1.5 Re-abordagem',
+      :app2_5 => '2.5 Re-abordagem',
       :app2 => '2. Abordados',
       :app3 => '3. Seleções',
       :app4 => '4. Induções',
@@ -73,7 +73,7 @@ class PodioBAZI
       authenticate
       podioDatabase = ControlDatabase.new(test)
 
-       TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      TM.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GCDPi

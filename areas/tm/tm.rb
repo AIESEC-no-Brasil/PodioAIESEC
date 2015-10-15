@@ -77,7 +77,7 @@ class TM
       app3 = nil
       app4 = nil
       app5 = nil
-      app1_5 = nil
+      app2_5 = nil
       cards = nil
       for i in 0..apps.total_count-1
         if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:tm]
@@ -87,12 +87,12 @@ class TM
             when $enum_TM_apps_name[:app3] then app3 = YouthTalentDAO.new(apps.id(i))
             when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(i))
             when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app1_5] then app1_5 = YouthTalentDAO.new(apps.id(i))
+            when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(i))
             when $enum_TM_apps_name[:cards] then cards = YouthTalentDAO.new(apps.id(i))
           end
         end
 
-        @local_apps_ids[entity] = [app1, app2, app3, app4, app5, app1_5, cards]
+        @local_apps_ids[entity] = [app1, app2, app3, app4, app5, app2_5, cards]
       end
     end
 
@@ -139,6 +139,7 @@ class TM
     puts 'ors_to_local'
     models_list = @ors.find_ors_to_local_lead
     models_list.each do |national_lead|
+      next unless not @local_apps_ids[national_lead.local_aiesec].nil?
       local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
