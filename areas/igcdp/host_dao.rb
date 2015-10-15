@@ -1,4 +1,4 @@
-require_relative '../control/podio_app_control'
+require_relative '../../control/podio_app_control'
 
 # Generic App at ogip workspaces
 # @author Luan Corumba <luan.corumba@aiesec.net>
@@ -30,7 +30,7 @@ class HostDAO < PodioAppControl
             :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
             :erase => 'apagar',
             :sync_with_local => 'transferido-para-area-local',
-            :first_contact_date => 'data-do-primeiro-contato'.
+            :first_contact_date => 'data-do-primeiro-contato',
             :first_contact_responsable => 'responsavel-pelo-primeiro-contato',
             :communication_channel => 'canal-de-comunicacao-utilizado',
             :re_approach => 'encaminhar-para-re-abordagem',
@@ -62,7 +62,7 @@ class HostDAO < PodioAppControl
     end
 
 	def go_to_approach?(host)
-		true unless host.first_contact_date.nil? || host.first_contact_responsable.nil? || host.alignment_meeting_date.nil?
+		true unless host.first_contact_date.nil? || host.first_contact_responsable.nil? || host.communication_channel.nil?
 	end
 
 	def go_to_reapproach?(host)

@@ -29,7 +29,7 @@ class HOST
     puts 'configORS'
     limit = spaces.total_count-1
     for i in 0..limit
-      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogcdp]
+      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:igcdp]
         @ors_space_id = spaces.id(i)
         break
       end
@@ -37,7 +37,7 @@ class HOST
 
     limit = apps.total_count-1
     for i in 0..limit
-      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogcdp]
+      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:igcdp]
         @ors = GlobalCitizenDAO.new(apps.id(i))
         break
       end
@@ -55,7 +55,7 @@ class HOST
 
     limit = spaces.total_count - 1
     for i in 0..limit
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogcdp]
+      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:igcdp]
         @local_spaces_ids << spaces.id(i)
       end
     end
@@ -63,7 +63,7 @@ class HOST
     @entities = []
     limit = apps.total_count - 1
     for i in 0..limit
-      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogcdp]
+      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:igcdp]
         @entities << apps.entity(i)
       end
     end
@@ -77,20 +77,19 @@ class HOST
       app4 = nil
       app5 = nil
       app6 = nil
-      app7 = nil
       for i in 0..apps.total_count - 1
-        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:igdcp]
+        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:igcdp]
           case apps.name(i)
-            when $enum_oGCDP_apps_name[:leads] then app1 = HostDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:approach] then app2 = HostDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:alignment] then app4 = HostDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(i))
-            when $enum_oGCDP_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:leads] then app1 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:approach] then app2 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:alignment] then app4 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(i))
+            when $enum_iGCDP_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(i))
           end
         end
       end
-      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7]
+      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6]
     end
 
   end
@@ -166,7 +165,7 @@ class HOST
           reapproached = reapproach.new_model(approached.to_h)
           reapproached.create
           approached.delete
-        elsif approached.go_to_alignment?(approached)
+        elsif approach.go_to_alignment?(approached)
           aligned = alignment.new_model(approached.to_h)
           aligned.create
           approached.delete
