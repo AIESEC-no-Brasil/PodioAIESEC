@@ -103,20 +103,39 @@ class PodioAppControl
           self[k] = v if members.map {|x| x.intern}.include? k
         end
       end
+
       def populate(other)
         other.members.each { |m|
           self[m] = other[m]
         }
       end
+
       def create
-        Podio::Item.create(@app_id, {:fields => hashing})
+        response = Podio.connection.post do |req|
+          req.url("/item/app/#{@app_id}/", {})
+          req.body = { :fields => hashing }
+        end
+        if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+          $podio_flag = false
+        end
       end
+
       def update
-        Podio::Item.update(self.id, {:fields => hashing})
+        response = Podio.connection.put do |req|
+          req.url("/item/#{self.id}", {})
+          req.body = { :fields => hashing }
+        end
+        if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+          $podio_flag = false
+        end
       end
+
       def delete
-        Podio::Item.delete(self.id)
+        if (Podio.connection.delete("/item/#{self.id}").env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+          $podio_flag = false
+        end
       end
+
       def hashing
         hash_fields = {}
         @struct_fields_map.each_key { |k| hash_fields.merge!(@struct_fields_map[k][:external_id] => self[k]) unless self[k].nil?}

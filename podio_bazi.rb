@@ -15,6 +15,8 @@ require_relative 'areas/ogcdp/ogcdp'
 
 # = This class initialize and start the batch script
 class PodioBAZI
+  $podio_flag = true
+
   $enum_TM_apps_name = {
       :app1 => '1. Inscritos',
       :app2_5 => '2.5 Re-abordagem',

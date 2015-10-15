@@ -139,6 +139,8 @@ class TM
     puts 'ors_to_local'
     models_list = @ors.find_ors_to_local_lead
     models_list.each do |national_lead|
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       next unless not @local_apps_ids[national_lead.local_aiesec].nil?
       local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
@@ -159,6 +161,8 @@ class TM
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
 
       leads.find_all.each do |lead|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if leads.business_rule_lead_to_approach?(lead)
           approached = approach.new_model(lead.to_h)
           approached.create
@@ -176,6 +180,8 @@ class TM
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
       approach.find_all.each do |approached|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if approach.business_rule_approach_to_rapproach?(approached)
           rapproached = rapproach.new_model(approached.to_h)
           rapproached.approaches_number = 1
@@ -192,6 +198,8 @@ class TM
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
       rapproach.find_all.each do |rapproached|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if rapproach.business_rule_stop_rapproach?(rapproached)
           rapproached.delete
         end
@@ -207,6 +215,8 @@ class TM
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
       rapproach.find_all.each do |rapproached|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if rapproach.business_rule_rapproach_to_selection?(rapproached)
           puts selection.app_id
           selected = selection.new_model(rapproached.to_h)
@@ -227,6 +237,8 @@ class TM
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
       approach.find_all.each do |approached|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if approach.business_rule_approach_to_selection?(approached)
           puts selection.find_all.size
           selected = selection.new_model(approached.to_h)
@@ -248,6 +260,8 @@ class TM
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
       selection.find_all.each do |selected|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if selection.business_rule_selection_to_rapproach?(selected)
           rapproached = rapproach.new_model(selected.to_h)
           rapproached.create
@@ -263,6 +277,8 @@ class TM
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
       selection.find_all.each do |selected|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if selection.business_rule_delete_selection?(selected)
           selected.delete
         end
@@ -278,6 +294,8 @@ class TM
       abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
 
       selection.find_all.each do |selected|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if selection.business_rule_selection_to_induction?(selected)
           inducted = induction.new_model(selected.to_h)
           inducted.create
@@ -295,6 +313,8 @@ class TM
       abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalentDAO)
 
       induction.find_all.each do |inducted|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if induction.business_rule_induction_to_local_crm?(inducted)
           client = local_crm.new_model(inducted.to_h)
           client.create

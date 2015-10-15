@@ -131,6 +131,8 @@ class OGX_GIP
     puts 'ors_to_local'
     models_list = @ors.find_ors_to_local_lead
     models_list.each do |national_lead|
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       next unless not @local_apps_ids[national_lead.local_aiesec].nil?
       local_leads = @local_apps_ids[national_lead.local_aiesec][0]
 
@@ -165,6 +167,8 @@ class OGX_GIP
       abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s) unless completes.is_a?(GlobalTalentDAO)
 
       leads.find_all.each do |lead|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if leads.can_be_contacted?(lead)
           contacted = contacteds.new_model(lead.to_h)
           contacted.create
@@ -173,6 +177,8 @@ class OGX_GIP
       end
       
       contacteds.find_all.each do |contacted|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if contacteds.can_be_EPI?(contacted)
           epi = epis.new_model(contacted.to_h)
           epi.create
@@ -181,6 +187,8 @@ class OGX_GIP
       end
 
       epis.find_all.each do |epi|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if epis.can_be_open?(epi)
           open = opens.new_model(epi.to_h)
           open.create
@@ -189,6 +197,8 @@ class OGX_GIP
       end
 
       opens.find_all.each do |open|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if opens.can_be_ip?(open)
           open.applying = nil
           ip = in_progress.new_model(open.to_h)
@@ -198,6 +208,8 @@ class OGX_GIP
       end
 
       in_progress.find_all.each do |ip|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if in_progress.can_be_ma?(ip)
           ma = matchs.new_model(ip.to_h)
           ma.create
@@ -206,6 +218,8 @@ class OGX_GIP
       end
 
       matchs.find_all.each do |ma|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if matchs.can_be_re?(ma)
           re = realizes.new_model(ma.to_h)
           re.create
@@ -214,6 +228,8 @@ class OGX_GIP
       end
 
       realizes.find_all.each do |re|
+        sleep(3600) unless $podio_flag == true
+        $podio_flag = true
         if realizes.can_be_re?(re)
           co = completes.new_model(re.to_h)
           co.create
