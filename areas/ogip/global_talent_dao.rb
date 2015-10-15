@@ -44,19 +44,19 @@ class GlobalTalentDAO < YouthLeaderDAO
 	end
 
 	def can_be_EPI?(global_talent)
-		true unless global_talent.epi_date.nil? or global_talent.epi_responsable.nil?
+		true unless global_talent.epi_date.nil? && global_talent.epi_responsable.nil?
 	end
 
 	def can_be_open?(global_talent)
-		true unless global_talent.link_to_expa.nil? or global_talent.ep_manager.nil?
+		true unless global_talent.link_to_expa.nil? && global_talent.link_to_expa.include? 'experience.aiesec.org' && global_talent.ep_manager.nil?
 	end
 
 	def can_be_ip?(global_talent)
-		global_talent.applying == 2
+		say_yes?(global_talent.applying)
 	end
 
 	def can_be_ma?(global_talent)
-		true unless global_talent.match_date.nil?
+		true unless global_talent.match_date.nil? && global_talent.country_host.nil? && global_talent.lc_host.nil? && global_talent.sub_product.nil?
 	end
 
 	def can_be_re?(global_talent)
