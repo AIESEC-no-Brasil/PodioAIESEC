@@ -36,6 +36,16 @@ class YouthLeaderDAO < PodioAppControl
         super(app_id, basic_fields)
     end
 
+    def copy_files(from, to_id)
+        if from.files > 0
+            item = Podio::Item.find(from.id)
+            item[:files].each{ |f|
+                copy = Podio::FileAttachment.copy(f['file_id'])
+                Podio::FileAttachment.attach(copy, 'item', to_id)
+            }
+        end
+    end
+
     def find_ors_to_local_lead
         create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:sync_with_local][:id] => 1}, :sort_by => 'created_on').all
     end

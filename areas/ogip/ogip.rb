@@ -204,7 +204,8 @@ class OGX_GIP
       matchs.find_all.each do |ma|
         if matchs.can_be_re?(ma)
           re = realizes.new_model(ma.to_h)
-          re.create
+          realized = re.create
+          realizes.copy_files(ma, realized['item_id'])
           ma.delete
         end
       end

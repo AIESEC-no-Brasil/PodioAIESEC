@@ -61,7 +61,7 @@ class PodioAppControl
   end
 
   def say_yes?(value)
-    value == 2
+    value == 2 unless value.nil?
   end
 
   def hashing(model)
@@ -80,6 +80,7 @@ class PodioAppControl
     @fields_name_map = {}
     @fields_id_map = {}
     @app.fields.each { |f|
+      next if f['status'] != 'active'
       key = @fields.select{|k,v| v.eql? f['external_id']}.keys[0]
       @fields_name_map[key] = {
         :id => f['field_id'],
@@ -93,7 +94,7 @@ class PodioAppControl
   end
 
   def generate_model
-    @Model = Struct.new(*(@fields_name_map.keys << :id)) do
+    @Model = Struct.new(*(@fields_name_map.keys << :id << :files)) do
       # Override the initialize to handle hashes of named parameters
       def initialize(map, app_id, *args)
         @struct_fields_map = map
@@ -129,7 +130,10 @@ class PodioAppControl
     list.map { |item|
       @Model.new(@fields_name_map, @app_id, item[:fields].map{ |f|
         [@fields_id_map[f['field_id']],field_values(f)]
-      }.to_h.merge({:id => item[:item_id]}))
+      }.to_h.merge({
+        :id => item[:item_id],
+        :files => item[:file_count]
+      }))
     }
   end
 
