@@ -48,7 +48,8 @@ class GlobalTalentDAO < YouthLeaderDAO
 	end
 
 	def can_be_open?(global_talent)
-		true unless global_talent.link_to_expa.nil? && (global_talent.link_to_expa.include? 'experience.aiesec.org') && global_talent.ep_manager.nil?
+		#TODO verificar se o link é realmente do expa. Usar include? para string
+		true unless global_talent.link_to_expa.nil? && global_talent.ep_manager.nil?
 	end
 
 	def can_be_ip?(global_talent)

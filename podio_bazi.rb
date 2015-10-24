@@ -18,13 +18,13 @@ class PodioBAZI
   $podio_flag = true
 
   $enum_TM_apps_name = {
-      :app1 => '1. Inscritos',
-      :app2_5 => '2.5 Re-abordagem',
-      :app2 => '2. Abordados',
-      :app3 => '3. Seleções',
-      :app4 => '4. Induções',
-      :app5 => '5. CRM',
-      :cards => 'Cards Layout'
+      :app1 => 'TM 1. Inscritos',
+      :app2_5 => 'TM 2.5 Re-abordagem',
+      :app2 => 'TM 2. Abordados',
+      :app3 => 'TM 3. Seleções',
+      :app4 => 'TM 4. Induções',
+      :app5 => 'TM 5. CRM',
+      :cards => 'TM Cards Layout'
   }
 
   $enum_oGIP_apps_name = {
@@ -78,22 +78,24 @@ class PodioBAZI
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-      #TODO GCDPi
+      #ICX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      #ICX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GIPi
-      #TODO mkt
       #TODO fin
+      #TODO mkt
       #TODO bd
     end while loop
   end
 
   # Authenticate at Podio with script credentials
   def authenticate
+    #TODO: tratar rate limit aqui também
     Podio.setup(:api_key => @enum_robot[:api_key], :api_secret => @enum_robot[:api_secret])
     Podio.client.authenticate_with_credentials(@enum_robot[:username], @enum_robot[:password])
   end
 
 end
 
-PodioBAZI.new(true, false)
+PodioBAZI.new(false, true)
 
 
