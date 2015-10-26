@@ -47,7 +47,8 @@ class PodioBAZI
       :ip => '5. In Progress',
       :ma => '6. Match',
       :re => '7. Realize',
-      :co => '8. Completed'
+      :co => '8. Completed',
+      :cards => 'Cards Layout'
   }
 
   $enum_type = { :ors => 1,
@@ -76,8 +77,8 @@ class PodioBAZI
       podioDatabase = ControlDatabase.new(test)
 
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
-      #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
-      #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       #ICX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       #ICX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GIPi

@@ -39,7 +39,6 @@ class OGX_GIP
     for i in 0..limit
 
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
-        #@ors_app = GlobalTalent.new(apps.id(i))
         @ors = GlobalTalentDAO.new(apps.id(i))
         break
       end
