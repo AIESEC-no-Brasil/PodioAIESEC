@@ -30,6 +30,7 @@ class HostDAO < PodioAppControl
             :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
             :erase => 'apagar',
             :sync_with_local => 'transferido-para-area-local',
+            :lead_date => 'data-da-inscricao',
             :first_contact_date => 'data-do-primeiro-contato',
             :first_contact_responsable => 'responsavel-pelo-primeiro-contato',
             :communication_channel => 'canal-de-comunicacao-utilizado',

@@ -11,6 +11,7 @@ class TM
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(spaces, apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     abort('Wrong parameter for spaces in' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
@@ -28,6 +29,7 @@ class TM
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     limit = spaces.total_count-1
     for i in 0..limit
       if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:tm]
@@ -51,6 +53,7 @@ class TM
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configLocals(spaces, apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     @local_spaces_ids = []
     @local_apps_ids = {}
 
@@ -99,6 +102,7 @@ class TM
   end
 
   def configNational(spaces, apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     limit = spaces.total_count-1
     for i in 0..limit
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:tm]
@@ -117,6 +121,7 @@ class TM
   end
 
   def flow
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     ors_to_local
 
     lead_to_approach
@@ -136,7 +141,7 @@ class TM
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
-    puts 'ors_to_local'
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     models_list = @ors.find_ors_to_local_lead
     models_list.each do |national_lead|
       sleep(3600) unless $podio_flag == true
@@ -154,6 +159,7 @@ class TM
   end
 
   def lead_to_approach
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       leads = @local_apps_ids[entity][0]
       approach = @local_apps_ids[entity][1]
@@ -173,6 +179,7 @@ class TM
   end
 
   def approach_to_rapproach
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       approach = @local_apps_ids[entity][1]
       rapproach = @local_apps_ids[entity][5]
@@ -193,6 +200,7 @@ class TM
   end
 
   def stop_rapproach
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
@@ -208,6 +216,7 @@ class TM
   end
 
   def rapproach_to_selection
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       rapproach = @local_apps_ids[entity][5]
       selection = @local_apps_ids[entity][2]
@@ -218,11 +227,8 @@ class TM
         sleep(3600) unless $podio_flag == true
         $podio_flag = true
         if rapproach.business_rule_rapproach_to_selection?(rapproached)
-          puts selection.app_id
           selected = selection.new_model(rapproached.to_h)
-          criado = selected.create
-          puts criado[:item_id].to_i
-          puts selected.name
+          selected.create
           rapproached.delete
         end
       end
@@ -230,6 +236,7 @@ class TM
   end
 
   def approach_to_selection
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       approach = @local_apps_ids[entity][1]
       selection = @local_apps_ids[entity][2]
@@ -240,12 +247,8 @@ class TM
         sleep(3600) unless $podio_flag == true
         $podio_flag = true
         if approach.business_rule_approach_to_selection?(approached)
-          puts selection.find_all.size
           selected = selection.new_model(approached.to_h)
-          criado = selected.create
-          puts criado[:item_id].to_i
-          puts selected.name
-          puts selection.find_all.size
+          selected.create
           approached.delete
         end
       end
@@ -253,6 +256,7 @@ class TM
   end
 
   def selection_to_rapproach
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       rapproach = @local_apps_ids[entity][5]
@@ -272,6 +276,7 @@ class TM
   end
 
   def stop_selection
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
@@ -287,6 +292,7 @@ class TM
   end
 
   def selection_to_induction
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       selection = @local_apps_ids[entity][2]
       induction = @local_apps_ids[entity][3]
@@ -306,6 +312,7 @@ class TM
   end
 
   def induction_to_local_crm
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
       induction = @local_apps_ids[entity][3]
       local_crm = @local_apps_ids[entity][4]

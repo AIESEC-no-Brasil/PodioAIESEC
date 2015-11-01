@@ -1,13 +1,26 @@
 require_relative '../../utils/youth_leader_dao'
 
-# Generic App at ogcdp workspaces
+# Generic App at ogip workspaces
 # @author Luan Corumba <luan.corumba@aiesec.net>
 class GlobalCitizenDAO < YouthLeaderDAO
 
 	def initialize(app_id)
 		fields = {
-				:interest => 'programa-de-intersesse',
-				:specific_opportunity => 'esta-se-candidatando-a-algum-projetovaga-especifica',
+				:name => 'nome', #ops
+				:birthdate => 'data-de-nascimento-2', #ops
+				:phones => 'telefone-2', #ops
+				:study_stage => 'formacao2', #ops
+				:best_moment => 'melhor-turno-test', #ops
+				:local_aiesec => 'aiesec-mais-proxima-2', #ops
+				:address => 'endereco2', #ops
+        :state => 'estado2', #ops
+        :university => 'universidade', #ops
+        :other_university => 'se-voce-selecionou-a-opcao-outras-especifique-aqui-a-su',
+        :course => 'curso-2', #ops
+        :semester => 'semestre-3', #ops
+        :marketing_channel => 'como-voce-conheceu-a-aiesec', #ops
+				:interest => 'programa-de-interesse2',
+				:specific_opportunity => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 				:cv => 'cv',
 				:priority => 'prioridade',
 				:first_approach_date => 'data-do-primeiro-contato',
@@ -26,11 +39,10 @@ class GlobalCitizenDAO < YouthLeaderDAO
 				:match_date => 'data-do-match',
 				:country_host => 'pais-de-destino',
 				:lc_host => 'comite-de-destino',
-				:sub_product => 'sub-produto',
 				:realize_date => 'data-do-realize', #TODO considerar início e fim
 				:complete_date => 'data-do-complete',
 				:join_ris => 'compareceu-aos-ris',
-				:erase => 'apagar',
+				:erase => 'apagar'
 		}
 		super(app_id, fields)
 	end
@@ -40,16 +52,21 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	end
 
 	def can_be_contacted?(global_citizen)
-		true unless global_citizen.first_approach_date.nil? && global_citizen.first_contact_responsable.nil? && say_yes?(global_citizen.approach_result) && global_citizen.approach_channel.nil?
+		true unless global_citizen.first_approach_date.nil? &&
+				global_citizen.first_contact_responsable.nil? &&
+				!say_yes?(global_citizen.approach_result) &&
+				global_citizen.approach_channel.nil?
 	end
 
 	def can_be_EPI?(global_citizen)
-		true unless global_citizen.epi_date.nil? && global_citizen.epi_responsable.nil?
+		true unless global_citizen.epi_date.nil? &&
+				global_citizen.epi_responsable.nil?
 	end
 
 	def can_be_open?(global_citizen)
 		#TODO verificar se o link é realmente do expa. Usar include? para string
-		true unless global_citizen.link_to_expa.nil? && global_citizen.ep_manager.nil?
+		true unless global_citizen.link_to_expa.nil? &&
+				global_citizen.ep_manager.nil?
 	end
 
 	def can_be_ip?(global_citizen)
@@ -57,14 +74,18 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	end
 
 	def can_be_ma?(global_citizen)
-		true unless global_citizen.match_date.nil? && global_citizen.country_host.nil? && global_citizen.lc_host.nil? && global_citizen.sub_product.nil?
+		true unless global_citizen.match_date.nil? &&
+				global_citizen.country_host.nil? &&
+				global_citizen.lc_host.nil? &&
+				global_citizen.sub_product.nil?
 	end
 
 	def can_be_re?(global_citizen)
-		true unless global_citizen.ops_date.nil? && global_citizen.realize_date.nil? && !say_yes?(global_citizen.was_in_ops)
+		true unless global_citizen.ops_date.nil? &&
+				global_citizen.realize_date.nil?
 	end
 
 	def can_be_co?(global_citizen)
-		true unless global_citizen.complete_date.nil? && !say_yes(global_citizen.join_ris)
+		true unless global_citizen.complete_date.nil?
 	end
 end

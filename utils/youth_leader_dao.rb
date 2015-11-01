@@ -27,12 +27,13 @@ class YouthLeaderDAO < PodioAppControl
             :spanish_level => 'nivel-de-espanhol',
             :best_moment => 'melhor-turno-para-a-aiesec-entrar-em-contato',
             :local_aiesec => 'aiesec-mais-proxima',
-            :marketing_channel => 'categoria',
+            :marketing_channel => 'como-conheceu-a-aiesec',
             :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
             :erase => 'apagar',
-            :sync_with_local => 'transferido-para-area-local'
+            :sync_with_local => 'transferido-para-area-local',
+            :cards => 'cards'
         }
-        basic_fields.merge!(extra_fields) unless extra_fields.nil?
+        basic_fields = extra_fields.merge(basic_fields) unless extra_fields.nil?
         super(app_id, basic_fields)
     end
 

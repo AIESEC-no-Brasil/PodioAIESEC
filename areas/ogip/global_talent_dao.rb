@@ -6,8 +6,16 @@ class GlobalTalentDAO < YouthLeaderDAO
 
 	def initialize(app_id)
 		fields = {
-			:interest => 'programa-de-intersesse',
-			:specific_opportunity => 'esta-se-candidatando-a-algum-projetovaga-especifica',
+      :name => 'nome', #ops
+      :birthdate => 'data-de-nascimento-2', #ops
+      :phones => 'telefone-2', #ops
+      :study_stage => 'formacao2', #ops
+      :course => 'curso-2', #ops
+      :university => 'faculdade', #ops
+      :best_moment => 'melhor-turno-test', #ops
+      :local_aiesec => 'aiesec-mais-proxima-2', #ops
+			:interest => 'programa-de-interesse2',
+			:specific_opportunity => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 			:cv => 'cv',
 			:priority => 'prioridade',
 			:first_approach_date => 'data-do-primeiro-contato',
@@ -40,16 +48,21 @@ class GlobalTalentDAO < YouthLeaderDAO
     end
 
 	def can_be_contacted?(global_talent)
-		true unless global_talent.first_approach_date.nil? && global_talent.first_contact_responsable.nil? && say_yes?(global_talent.approach_result) && global_talent.approach_channel.nil?
+		true unless global_talent.first_approach_date.nil? &&
+				global_talent.first_contact_responsable.nil? &&
+				!say_yes?(global_talent.approach_result) &&
+				global_talent.approach_channel.nil?
 	end
 
 	def can_be_EPI?(global_talent)
-		true unless global_talent.epi_date.nil? && global_talent.epi_responsable.nil?
+		true unless global_talent.epi_date.nil? &&
+				global_talent.epi_responsable.nil?
 	end
 
 	def can_be_open?(global_talent)
 		#TODO verificar se o link é realmente do expa. Usar include? para string
-		true unless global_talent.link_to_expa.nil? && global_talent.ep_manager.nil?
+		true unless global_talent.link_to_expa.nil? &&
+				global_talent.ep_manager.nil?
 	end
 
 	def can_be_ip?(global_talent)
@@ -57,14 +70,20 @@ class GlobalTalentDAO < YouthLeaderDAO
 	end
 
 	def can_be_ma?(global_talent)
-		true unless global_talent.match_date.nil? && global_talent.country_host.nil? && global_talent.lc_host.nil? && global_talent.sub_product.nil?
+		true unless global_talent.match_date.nil? &&
+				global_talent.country_host.nil? &&
+				global_talent.lc_host.nil? &&
+				global_talent.sub_product.nil?
 	end
 
 	def can_be_re?(global_talent)
-		true unless global_talent.ops_date.nil? && global_talent.realize_date.nil? && !say_yes?(global_talent.was_in_ops)
+		true unless global_talent.ops_date.nil? &&
+				global_talent.realize_date.nil? &&
+				!say_yes?(global_talent.was_in_ops)
   end
 
   def can_be_co?(global_talent)
-    true unless global_talent.complete_date.nil? && !say_yes(global_talent.join_ris)
+    true unless global_talent.complete_date.nil? &&
+				!say_yes(global_talent.join_ris)
   end
 end

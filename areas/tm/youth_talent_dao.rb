@@ -7,6 +7,7 @@ class YouthTalentDAO < YouthLeaderDAO
     def initialize(app_id)
         fields = {
             :responsable => 'responsavel-pelo-primeiro-contato',
+            :lead_date => 'data-da-inscricao',
             :first_approach_date => 'data-do-primeiro-contato',
             :selection_date => 'data-da-selecao',
             :next_contact_date => 'data-da-proxima-abordagem',
@@ -59,11 +60,13 @@ class YouthTalentDAO < YouthLeaderDAO
     end
 
     def business_rule_stop_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.stop_approach) && youth_talent.approach_interruption_reason.nil?
+        true unless !say_yes?(youth_talent.stop_approach) &&
+            youth_talent.approach_interruption_reason.nil?
     end
 
     def business_rule_rapproach_to_selection?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_selection) && youth_talent.responsable_new_contact.nil?
+        true unless !say_yes?(youth_talent.send_to_selection) &&
+            youth_talent.responsable_new_contact.nil?
     end
 
     def business_rule_approach_to_selection?(youth_talent)
@@ -71,15 +74,19 @@ class YouthTalentDAO < YouthLeaderDAO
     end
 
     def business_rule_selection_to_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_rapproachement) && join_selection?
+        true unless !say_yes?(youth_talent.send_to_rapproachement) &&
+            !say_yes?(youth_talent.join_selection)
     end
 
     def business_rule_delete_selection?(youth_talent)
-        true unless say_yes?(youth_talent.was_selected) && youth_talent.feedback.nil?
+        true unless !say_yes?(youth_talent.was_selected) &&
+            youth_talent.feedback.nil?
     end
 
     def business_rule_selection_to_induction?(youth_talent)
-        true unless !say_yes?(youth_talent.join_selection) && youth_talent.selection_type.nil?
+        true unless !say_yes?(youth_talent.join_selection) &&
+            say_yes?(youth_talent.was_selected) &&
+            youth_talent.selection_type.nil?
     end
 
     def business_rule_induction_to_local_crm?(youth_talent)
