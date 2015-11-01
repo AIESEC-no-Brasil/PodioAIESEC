@@ -28,17 +28,16 @@ class OGX_GIP
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    limit = spaces.total_count-1
-    for i in 0..limit
+    limit = spaces.total_count
+    for i in 0...limit
       if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
         @ors_space_id = spaces.id(i)
         break
       end
     end
 
-    limit = apps.total_count-1
-    for i in 0..limit
-
+    limit = apps.total_count
+    for i in 0...limit
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
         @ors = GlobalTalentDAO.new(apps.id(i))
         break
@@ -63,7 +62,6 @@ class OGX_GIP
       end
     end
 
-    @entities = []
     limit = apps.total_count - 1
     for i in 0..limit
       if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogip]

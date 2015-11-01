@@ -105,7 +105,7 @@ class OGX_GCDP
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     limit = spaces.total_count - 1
     (0..limit).each do |i|
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogcdo]
+      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogcdp]
         @national_space_id = spaces.id(i)
         break
       end
@@ -113,7 +113,7 @@ class OGX_GCDP
 
     limit = apps.total_count - 1
     (0..limit).each do |i|
-      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogcdo]
+      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogcdp]
         @national_app_id = apps.id(i)
         break
       end
