@@ -88,17 +88,17 @@ class OGX_GCDP
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
-          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:ogip]
+          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:ogcdp]
             case apps.name(j)
-              when $enum_oGIP_apps_name[:leads] then app1 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:epi] then app3 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:open] then app4 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ip] then app5 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ma] then app6 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:re] then app7 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:co] then app8 = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:cards] then cards = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:leads] then app1 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:contacteds] then app2 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:epi] then app3 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:open] then app4 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ip] then app5 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ma] then app6 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:re] then app7 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:co] then app8 = GlobalCitizenDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:cards] then cards = GlobalCitizenDAO.new(apps.id(j))
             end
           end
           @local_apps_ids[entity] = {:app1 => app1,
@@ -152,7 +152,7 @@ class OGX_GCDP
     models_list.each do |national_lead|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      next unless not @local_apps_ids.has_key?(national_lead.local_aiesec)
+      next unless @local_apps_ids.has_key?(national_lead.local_aiesec)
       local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalCitizenDAO)

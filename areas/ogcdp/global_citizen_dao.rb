@@ -11,7 +11,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
 				:phones => 'telefone-2', #ops
 				:study_stage => 'formacao2', #ops
 				:best_moment => 'melhor-turno-test', #ops
-				:local_aiesec => 'aiesec-mais-proxima-2', #ops
+				:local_aiesec => 'aiesec-mais-proxima2', #ops
 				:address => 'endereco2', #ops
         :state => 'estado2', #ops
         :university => 'universidade', #ops

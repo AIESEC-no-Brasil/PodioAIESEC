@@ -152,7 +152,7 @@ class OGX_GIP
     models_list.each do |national_lead|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      next unless not @local_apps_ids.has_key?(national_lead.local_aiesec)
+      next unless @local_apps_ids.has_key?(national_lead.local_aiesec)
       local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
