@@ -38,10 +38,34 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_ors_to_local_lead
-        create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:sync_with_local][:id] => 1}, :sort_by => 'created_on').all
+        attributes = {:sort_by => 'created_on'}
+        attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
+
+        response = Podio.connection.post do |req|
+            req.url "/item/app/#{@app_id}/filter/"
+            req.body = attributes
+        end
+        if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+          $podio_flag = false
+        end
+        create_models Podio::Item.collection(response.body).all
+    end
+
+    def find_by_filter_values(app_id, filter_values, attributes={})
+      attributes[:filters] = filter_values
+      collection Podio.connection.post { |req|
+        req.url "/item/app/#{app_id}/filter/"
+        req.body = attributes
+      }.body
     end
 
     def find_all
-        create_models Podio::Item.find_all(@app_id, :sort_by => 'created_on').all
+      response = Podio.connection.get do |req|
+        req.url("/item/app/#{@app_id}/", {:sort_by => 'created_on'})
+      end
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+        $podio_flag = false
+      end
+      create_models Podio::Item.collection(response.body).all
     end
 end
