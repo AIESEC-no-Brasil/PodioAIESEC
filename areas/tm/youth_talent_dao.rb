@@ -38,7 +38,7 @@ class YouthTalentDAO < YouthLeaderDAO
             :internship_history => 'se-sim-especifique-pais-duracao-mesano-de-conclusao',
             :status => 'status',
             :leave_date => 'data-de-saida',
-            :leave_reason => 'motivo-de-saisa'
+            :leave_reason => 'motivo-de-saida'
         }
         super(app_id, fields)
     end

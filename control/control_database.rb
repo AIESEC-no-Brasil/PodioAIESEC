@@ -22,7 +22,16 @@ class ControlDatabase
       general_im_space_id = 3722237
     end
 
-    main_apps = Podio::Application.find_all_for_space(general_im_space_id,false)
+    sleep(3600) unless $podio_flag == true
+    $podio_flag = true
+
+    response = Podio.connection.get do |req|
+      req.url("/app/space/#{general_im_space_id}/", false)
+    end
+    main_apps = Podio::Application.list(response.body)
+    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      $podio_flag = false
+    end
 
     for app in main_apps do
       case app['config']['name']

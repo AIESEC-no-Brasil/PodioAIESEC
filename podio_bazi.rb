@@ -99,6 +99,8 @@ class PodioBAZI
     begin
       authenticate
       podioDatabase = ControlDatabase.new(test)
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
 
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
       OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
@@ -114,7 +116,8 @@ class PodioBAZI
 
   # Authenticate at Podio with script credentials
   def authenticate
-    #TODO: tratar rate limit aqui também
+    sleep(3600) unless $podio_flag == true
+    $podio_flag = true
     Podio.setup(:api_key => @enum_robot[:api_key], :api_secret => @enum_robot[:api_secret])
     Podio.client.authenticate_with_credentials(@enum_robot[:username], @enum_robot[:password])
   end

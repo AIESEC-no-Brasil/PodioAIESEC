@@ -39,7 +39,8 @@ class YouthLeader < PodioAppControl
 			:marketing_channel => 'categoria',
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
 			:erase => 'apagar',
-			:sync_with_local => 'transferido-para-area-local'
+			:sync_with_local => 'transferido-para-area-local',
+		  :cards => 'cards'
 		}
 		basic_fields.merge!(extra_fields) unless extra_fields.nil?
 		super(app_id, basic_fields)
@@ -129,7 +130,11 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:indication] => @indication) unless @indication.nil?
 		hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
 		hash_fields
-	end
+  end
+
+  def getCards(index)
+
+  end
 
 	# Update register on Podio database
 	# @param index [Integer] Index of the item you want to retrieve the value

@@ -228,8 +228,16 @@ class PodioAppControl
   # @param index [Integer] Index of the item you want to retrieve
   # @return [nil]
   def prepare_item(index)
-    @item = Podio::Item.find_all(@app_id, :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on') if @index.nil? || @index != (index/@max)*@max
-    @index = (index/@max)*@max
+    if @index.nil? || @index != (index/@max)*@max
+      response = Podio.connection.get do |req|
+        req.url("/item/app/#{@app_id}/", :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on')
+      end
+      @item = Podio::Item.collection(response.body)
+      @index = (index/@max)*@max
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+        $podio_flag = false
+      end
+    end
     nil
   end
 
@@ -260,7 +268,14 @@ class PodioAppControl
   # @return [Integer] if field is a contact/profile (contact id)
   # @return [String]  if field is text (text)
   def get_field_from_relationship(relationship_id, external_id)
-    relationship = Podio::Item.find(relationship_id)
+    response = Podio.connection.get do |req|
+      req.url("/item/#{relationship_id}", {})
+    end
+    relationship = Podio::Item.member(response.body)
+    if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      $podio_flag = false
+    end
+
     limit = relationship[:fields].size
 
     for i in 0..limit

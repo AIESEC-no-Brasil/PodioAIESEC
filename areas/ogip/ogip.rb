@@ -28,19 +28,21 @@ class OGX_GIP
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    limit = spaces.total_count
-    for i in 0...limit
+
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
         @ors_space_id = spaces.id(i)
         break
       end
     end
 
-    limit = apps.total_count
-    for i in 0...limit
-      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:ogip]
-        @ors = GlobalTalentDAO.new(apps.id(i))
-        break
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
+          @ors = GlobalTalentDAO.new(apps.id(j))
+          break
+        end
       end
     end
   end
@@ -52,25 +54,26 @@ class OGX_GIP
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configLocals(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = []
+    @local_spaces_ids = {}
     @local_apps_ids = {}
 
-    limit = spaces.total_count - 1
-    for i in 0..limit
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogip]
-        @local_spaces_ids << spaces.id(i)
+        @local_spaces_ids[spaces.id(i)] = nil
       end
     end
 
-    limit = apps.total_count - 1
-    for i in 0..limit
-      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:ogip]
-        @entities << apps.entity(i)
+    @entities = []
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:ogip]
+          @entities << spaces.entity(i)
+        end
       end
     end
 
     @entities.uniq!
-
     for entity in @entities do
       app1 = nil
       app2 = nil
@@ -80,40 +83,57 @@ class OGX_GIP
       app6 = nil
       app7 = nil
       app8 = nil
-      for i in 0..apps.total_count - 1
-        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:ogip]
-          case apps.name(i)
-            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(i))
-            when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(i))
+      cards = nil
+
+      for j in 0...apps.total_count
+        work_id = apps.workspace_id_calculated(j)
+        for i in 0...spaces.total_count
+          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:ogip]
+            case apps.name(j)
+              when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGIP_apps_name[:cards] then cards = GlobalTalentDAO.new(apps.id(j))
+            end
           end
+          @local_apps_ids[entity] = {:app1 => app1,
+                                     :app2 => app2,
+                                     :app3 => app3,
+                                     :app4 => app4,
+                                     :app5 => app5,
+                                     :app6 => app6,
+                                     :app7 => app7,
+                                     :app8 => app8,
+                                     :cards => cards}
+
         end
       end
-      @local_apps_ids[entity] = [app1,app2,app3,app4,app5,app6,app7,app8]
     end
 
   end
 
   def configNational(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    limit = spaces.total_count - 1
-    (0..limit).each do |i|
+
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
         @national_space_id = spaces.id(i)
         break
       end
     end
 
-    limit = apps.total_count - 1
-    (0..limit).each do |i|
-      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:ogip]
-        @national_app_id = apps.id(i)
-        break
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
+          @national_app_id = apps.id(j)
+          break
+        end
       end
     end
   end
@@ -132,8 +152,8 @@ class OGX_GIP
     models_list.each do |national_lead|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      next unless not @local_apps_ids[national_lead.local_aiesec].nil?
-      local_leads = @local_apps_ids[national_lead.local_aiesec][0]
+      next unless not @local_apps_ids.has_key?(national_lead.local_aiesec)
+      local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
 
@@ -148,14 +168,15 @@ class OGX_GIP
   def local_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      leads = @local_apps_ids[entity][0]
-      contacteds = @local_apps_ids[entity][1]
-      epis = @local_apps_ids[entity][2]
-      opens = @local_apps_ids[entity][3]
-      in_progress = @local_apps_ids[entity][4]
-      matchs = @local_apps_ids[entity][5]
-      realizes = @local_apps_ids[entity][6]
-      completes = @local_apps_ids[entity][7]
+      leads = @local_apps_ids[entity][:app1]
+      contacteds = @local_apps_ids[entity][:app2]
+      epis = @local_apps_ids[entity][:app3]
+      opens = @local_apps_ids[entity][:app4]
+      in_progress = @local_apps_ids[entity][:app5]
+      matchs = @local_apps_ids[entity][:app6]
+      realizes = @local_apps_ids[entity][:app7]
+      completes = @local_apps_ids[entity][:app8]
+      cards = @local_apps_ids[entity][:cards]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
       abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)

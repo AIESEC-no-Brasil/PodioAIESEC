@@ -1,5 +1,6 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
+require_relative 'cards'
 require_relative 'youth_talent_dao'
 
 # This class initializes, configure and take care of the tm module.
@@ -30,19 +31,21 @@ class TM
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configORS(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    limit = spaces.total_count
-    for i in 0...limit
+
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:tm]
         @ors_space_id = spaces.id(i)
         break
       end
     end
 
-    limit = apps.total_count
-    for i in 0...limit
-      if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:tm]
-        @ors = YouthTalentDAO.new(apps.id(i))
-        break
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:tm]
+          @ors = YouthTalentDAO.new(apps.id(j))
+          break
+        end
       end
     end
   end
@@ -54,26 +57,26 @@ class TM
   # @param apps [ControlDatabaseApp] List of apps registered at the IM general
   def configLocals(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = []
+    @local_spaces_ids = {}
     @local_apps_ids = {}
 
-    limit = spaces.total_count-1
-    for i in 0..limit
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:tm]
-        @local_spaces_ids << spaces.id(i)
+        @local_spaces_ids[spaces.id(i)] = nil
       end
     end
 
     @entities = []
-    limit = apps.total_count-1
-    for i in 0..limit
-      if !apps.entity(i).nil? && apps.area(i) == $enum_area[:tm]
-        @entities << apps.entity(i)
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:tm]
+          @entities << spaces.entity(i)
+        end
       end
     end
 
     @entities.uniq!
-
     for entity in @entities do
       app1 = nil
       app2 = nil
@@ -82,20 +85,31 @@ class TM
       app5 = nil
       app2_5 = nil
       cards = nil
-      for i in 0..apps.total_count-1
-        if !apps.entity(i).nil? && apps.entity(i).eql?(entity) && apps.area(i) == $enum_area[:tm]
-          case apps.name(i)
-            when $enum_TM_apps_name[:app1] then app1 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app2] then app2 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app3] then app3 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(i))
-            when $enum_TM_apps_name[:cards] then cards = YouthTalentDAO.new(apps.id(i))
-          end
-        end
 
-        @local_apps_ids[entity] = [app1, app2, app3, app4, app5, app2_5, cards]
+      for j in 0...apps.total_count
+        work_id = apps.workspace_id_calculated(j)
+        for i in 0...spaces.total_count
+          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:tm]
+            case apps.name(j)
+              when $enum_TM_apps_name[:app1] then app1 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:app2] then app2 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:app3] then app3 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(j))
+              when $enum_TM_apps_name[:cards] then cards = YouthTalentDAO.new(apps.id(j))
+            end
+          end
+
+          @local_apps_ids[entity] = {:app1 => app1,
+                                     :app2 => app2,
+                                     :app3 => app3,
+                                     :app4 => app4,
+                                     :app5 => app5,
+                                     :app2_5 => app2_5,
+                                     :cards => cards}
+
+        end
       end
     end
 
@@ -103,19 +117,21 @@ class TM
 
   def configNational(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    limit = spaces.total_count-1
-    for i in 0..limit
+
+    for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:tm]
         @national_space_id = spaces.id(i)
         break
       end
     end
 
-    limit = apps.total_count-1
-    for i in 0..limit
-      if apps.type(i) == $enum_type[:national] && apps.area(i) == $enum_area[:tm]
-        @national_app_id = apps.id(i)
-        break
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:tm]
+          @national_app_id = apps.id(j)
+          break
+        end
       end
     end
   end
@@ -146,13 +162,27 @@ class TM
     models_list.each do |national_lead|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      next unless not @local_apps_ids[national_lead.local_aiesec].nil?
-      local_leads = @local_apps_ids[national_lead.local_aiesec][0]
+      next unless not @local_apps_ids.has_key?(national_lead.local_aiesec)
+      local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
+      cards = @local_apps_ids[national_lead.local_aiesec][:cards]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless cards.is_a?(Cards)
 
       local_lead = local_leads.new_model(national_lead.to_h)
+
+      #card = cards.new_model(national_lead.to_h)
+      #card.name = local_leads.name
+      #card.email = local_leads.email
+      #card.responsible = local_leads.responsable
+      #card.modification_date =
+      #card.stage = 1
+      #card.create
+
+      #local_lead.cards = card
+      #local_lead.first_approach_date =
       local_lead.create
+
       national_lead.sync_with_local = 2
       national_lead.update
     end
@@ -161,8 +191,8 @@ class TM
   def lead_to_approach
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      leads = @local_apps_ids[entity][0]
-      approach = @local_apps_ids[entity][1]
+      leads = @local_apps_ids[entity][:app1]
+      approach = @local_apps_ids[entity][:app2]
       abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(YouthTalentDAO)
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
 
@@ -171,7 +201,19 @@ class TM
         $podio_flag = true
         if leads.business_rule_lead_to_approach?(lead)
           approached = approach.new_model(lead.to_h)
+
+          #cards.name = approached.name
+          #cards.email = approached.email
+          #cards.responsible = approached.responsable
+          #cards.modification_date =
+          #cards.stage = 2
+          #card = cards.create
+
+          #approached.cards = card
+          #approached.first_approach_date =
           approached.create
+
+          #cards.delete(lead.cards.id)
           lead.delete
         end
       end
@@ -181,8 +223,8 @@ class TM
   def approach_to_rapproach
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      approach = @local_apps_ids[entity][1]
-      rapproach = @local_apps_ids[entity][5]
+      approach = @local_apps_ids[entity][:app2]
+      rapproach = @local_apps_ids[entity][:app2_5]
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
@@ -192,6 +234,13 @@ class TM
         if approach.business_rule_approach_to_rapproach?(approached)
           rapproached = rapproach.new_model(approached.to_h)
           rapproached.approaches_number = 1
+
+          #cards.name = approached.name
+          #cards.email = approached.email
+          #cards.responsible = approached.responsable
+          #cards.modification_date =cards.stage = 2
+          #card = cards.create
+
           rapproached.create
           approached.delete
         end
@@ -202,7 +251,7 @@ class TM
   def stop_rapproach
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      rapproach = @local_apps_ids[entity][5]
+      rapproach = @local_apps_ids[entity][:app2_5]
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
       rapproach.find_all.each do |rapproached|
@@ -218,8 +267,8 @@ class TM
   def rapproach_to_selection
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      rapproach = @local_apps_ids[entity][5]
-      selection = @local_apps_ids[entity][2]
+      rapproach = @local_apps_ids[entity][:app2_5]
+      selection = @local_apps_ids[entity][:app3]
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
@@ -238,8 +287,8 @@ class TM
   def approach_to_selection
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      approach = @local_apps_ids[entity][1]
-      selection = @local_apps_ids[entity][2]
+      approach = @local_apps_ids[entity][:app2]
+      selection = @local_apps_ids[entity][:app3]
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
@@ -258,8 +307,8 @@ class TM
   def selection_to_rapproach
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      selection = @local_apps_ids[entity][2]
-      rapproach = @local_apps_ids[entity][5]
+      selection = @local_apps_ids[entity][:app3]
+      rapproach = @local_apps_ids[entity][:app2_5]
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
@@ -278,7 +327,7 @@ class TM
   def stop_selection
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      selection = @local_apps_ids[entity][2]
+      selection = @local_apps_ids[entity][:app3]
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
       selection.find_all.each do |selected|
@@ -294,8 +343,8 @@ class TM
   def selection_to_induction
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      selection = @local_apps_ids[entity][2]
-      induction = @local_apps_ids[entity][3]
+      selection = @local_apps_ids[entity][:app3]
+      induction = @local_apps_ids[entity][:app4]
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
       abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
 
@@ -314,8 +363,8 @@ class TM
   def induction_to_local_crm
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      induction = @local_apps_ids[entity][3]
-      local_crm = @local_apps_ids[entity][4]
+      induction = @local_apps_ids[entity][:app4]
+      local_crm = @local_apps_ids[entity][:app5]
       abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
       abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalentDAO)
 

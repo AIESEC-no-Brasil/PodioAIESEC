@@ -33,7 +33,7 @@ class YouthLeaderDAO < PodioAppControl
             :sync_with_local => 'transferido-para-area-local',
             :cards => 'cards'
         }
-        basic_fields = extra_fields.merge(basic_fields) unless extra_fields.nil?
+        basic_fields.merge!(extra_fields) unless extra_fields.nil?
         super(app_id, basic_fields)
     end
 
