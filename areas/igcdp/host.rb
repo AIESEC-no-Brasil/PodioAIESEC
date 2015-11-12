@@ -38,7 +38,7 @@ class HOST
     limit = apps.total_count-1
     for i in 0..limit
       if apps.type(i) == $enum_type[:ors] && apps.area(i) == $enum_area[:igcdp]
-        @ors = GlobalCitizenDAO.new(apps.id(i))
+        @ors = HostDAO.new(apps.id(i))
         break
       end
     end

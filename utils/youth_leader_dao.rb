@@ -53,4 +53,9 @@ class YouthLeaderDAO < PodioAppControl
     def find_all
         create_models Podio::Item.find_all(@app_id, :sort_by => 'created_on').all
     end
+
+    def delete_by_id(id)
+        Podio::Item.delete(id)
+    end
+    
 end
