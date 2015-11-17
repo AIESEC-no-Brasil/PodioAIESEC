@@ -29,7 +29,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
 				:approach_description => 'descricao-da-abordagem',
 				:approach_result => 'foi-abordado-e-nao-respondeu',
 				:epi_date => 'data-da-epi',
-				:epi_responsable => 'responsavel-pela-epi',
+				:epi_responsable => 'responsavel-pelo-epi',
 				:ep_manager => 'ep-manager',
 				:link_to_expa => 'link-do-perfil-no-expa',
 				:countries_options => 'paises-interessados',
@@ -76,8 +76,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	def can_be_ma?(global_citizen)
 		true unless global_citizen.match_date.nil? &&
 				global_citizen.country_host.nil? &&
-				global_citizen.lc_host.nil? &&
-				global_citizen.sub_product.nil?
+				global_citizen.lc_host.nil?
 	end
 
 	def can_be_re?(global_citizen)

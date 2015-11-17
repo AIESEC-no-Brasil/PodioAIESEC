@@ -24,7 +24,7 @@ class GlobalTalentDAO < YouthLeaderDAO
       :approach_description => 'descricao-da-abordagem',
       :approach_result => 'foi-abordado-e-nao-respondeu',
 			:epi_date => 'data-da-epi',
-			:epi_responsable => 'responsavel-pela-epi',
+			:epi_responsable => 'responsavel-pelo-epi',
 			:ep_manager => 'ep-manager',
 			:link_to_expa => 'link-do-perfil-no-expa',
 			:countries_options => 'paises-interessados',

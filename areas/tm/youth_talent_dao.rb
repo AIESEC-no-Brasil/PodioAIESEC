@@ -85,7 +85,7 @@ class YouthTalentDAO < YouthLeaderDAO
 
     def business_rule_selection_to_induction?(youth_talent)
         true unless !say_yes?(youth_talent.join_selection) &&
-            say_yes?(youth_talent.was_selected) &&
+            !say_yes?(youth_talent.was_selected) &&
             youth_talent.selection_type.nil?
     end
 

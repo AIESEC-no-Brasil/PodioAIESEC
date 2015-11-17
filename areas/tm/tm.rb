@@ -158,29 +158,19 @@ class TM
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    sleep(3600) unless $podio_flag == true
+    $podio_flag = true
     models_list = @ors.find_ors_to_local_lead
+
+    sleep(3600) unless $podio_flag == true
+    $podio_flag = true
     models_list.each do |national_lead|
-      sleep(3600) unless $podio_flag == true
-      $podio_flag = true
       next unless @local_apps_ids.has_key?(national_lead.local_aiesec)
       local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
-      cards = @local_apps_ids[national_lead.local_aiesec][:cards]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless cards.is_a?(Cards)
 
       local_lead = local_leads.new_model(national_lead.to_h)
-
-      #card = cards.new_model(national_lead.to_h)
-      #card.name = local_leads.name
-      #card.email = local_leads.email
-      #card.responsible = local_leads.responsable
-      #card.modification_date =
-      #card.stage = 1
-      #card.create
-
-      #local_lead.cards = card
-      #local_lead.first_approach_date =
       local_lead.create
 
       national_lead.sync_with_local = 2
@@ -196,24 +186,12 @@ class TM
       abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(YouthTalentDAO)
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       leads.find_all.each do |lead|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if leads.business_rule_lead_to_approach?(lead)
           approached = approach.new_model(lead.to_h)
-
-          #cards.name = approached.name
-          #cards.email = approached.email
-          #cards.responsible = approached.responsable
-          #cards.modification_date =
-          #cards.stage = 2
-          #card = cards.create
-
-          #approached.cards = card
-          #approached.first_approach_date =
           approached.create
-
-          #cards.delete(lead.cards.id)
           lead.delete
         end
       end
@@ -228,19 +206,12 @@ class TM
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       approach.find_all.each do |approached|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if approach.business_rule_approach_to_rapproach?(approached)
           rapproached = rapproach.new_model(approached.to_h)
           rapproached.approaches_number = 1
-
-          #cards.name = approached.name
-          #cards.email = approached.email
-          #cards.responsible = approached.responsable
-          #cards.modification_date =cards.stage = 2
-          #card = cards.create
-
           rapproached.create
           approached.delete
         end
@@ -254,9 +225,9 @@ class TM
       rapproach = @local_apps_ids[entity][:app2_5]
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       rapproach.find_all.each do |rapproached|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if rapproach.business_rule_stop_rapproach?(rapproached)
           rapproached.delete
         end
@@ -272,11 +243,13 @@ class TM
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       rapproach.find_all.each do |rapproached|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if rapproach.business_rule_rapproach_to_selection?(rapproached)
           selected = selection.new_model(rapproached.to_h)
+          selected.responsable = rapproached.responsable_new_contact
+          selected.first_approach_date = rapproached.next_contact_date
           selected.create
           rapproached.delete
         end
@@ -292,9 +265,9 @@ class TM
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(YouthTalentDAO)
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       approach.find_all.each do |approached|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if approach.business_rule_approach_to_selection?(approached)
           selected = selection.new_model(approached.to_h)
           selected.create
@@ -312,9 +285,9 @@ class TM
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
       abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s) unless rapproach.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       selection.find_all.each do |selected|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if selection.business_rule_selection_to_rapproach?(selected)
           rapproached = rapproach.new_model(selected.to_h)
           rapproached.create
@@ -330,9 +303,9 @@ class TM
       selection = @local_apps_ids[entity][:app3]
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       selection.find_all.each do |selected|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if selection.business_rule_delete_selection?(selected)
           selected.delete
         end
@@ -348,9 +321,9 @@ class TM
       abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s) unless selection.is_a?(YouthTalentDAO)
       abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       selection.find_all.each do |selected|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if selection.business_rule_selection_to_induction?(selected)
           inducted = induction.new_model(selected.to_h)
           inducted.create
@@ -368,9 +341,9 @@ class TM
       abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s) unless induction.is_a?(YouthTalentDAO)
       abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s) unless local_crm.is_a?(YouthTalentDAO)
 
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
       induction.find_all.each do |inducted|
-        sleep(3600) unless $podio_flag == true
-        $podio_flag = true
         if induction.business_rule_induction_to_local_crm?(inducted)
           client = local_crm.new_model(inducted.to_h)
           client.create
