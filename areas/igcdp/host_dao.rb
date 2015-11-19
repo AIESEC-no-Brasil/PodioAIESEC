@@ -44,7 +44,8 @@ class HostDAO < PodioAppControl
             :blacklist => 'alocar-na-blacklist',
             :blacklist_intention => 'motivo-para-a-blacklist',
             :hosting => 'hospedando-no-momento',
-            :nps => 'avaliacao'
+            :nps => 'avaliacao',
+            :trainees => 'trainees-alocados'
 		}
 		super(app_id, fields)
 	end

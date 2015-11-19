@@ -33,9 +33,9 @@ class OpportunityDAO < YouthLeaderDAO
 
 	def get_id(opportunity)
 		expa_ssl = opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i
-		expa = opportunity.expa_link['url'].sub('experience.aiesec.org/#/opportunities/','').to_i
+		expa = opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i
 		op_ssl = opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i
-		op = opportunity.expa_link['url'].sub('internships.aiesec.org/#/volunteering/','').to_i
+		op = opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i
 		expa | expa_ssl | op | op_ssl
 	end
 
@@ -56,7 +56,7 @@ class OpportunityDAO < YouthLeaderDAO
 	end
 
 	def find_approveds
-        create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:situation][:id] => 2}, :sort_by => 'created_on').all
+        create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:situation][:id] => 4}, :sort_by => 'created_on').all
 	end
 
 	def find_closeds
@@ -67,27 +67,32 @@ class OpportunityDAO < YouthLeaderDAO
         create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
     end
 
-	def can_be_contacted?(global_talent)
-		true unless global_talent.first_approach_date.nil? or global_talent.first_contact_responsable.nil?
+    def local_open_updated?(national_opportunity,local_opportunity)
+    	national_opportunity.opens != local_opportunity.opens
+    end
+
+	def update_local_opens(national_opportunity,local_opportunity)
+		if national_opportunity.opens > local_opportunity.opens
+			national_opportunity.opens
+		else
+			local_opportunity.opens
+		end
 	end
 
-	def can_be_EPI?(global_talent)
-		true unless global_talent.epi_date.nil? or global_talent.epi_responsable.nil?
+	def local_project_updated?(national_opportunity,local_opportunity)
+		ok = true
+		local_opportunity.to_h.each do |key, value|
+			if national_opportunity[key] != value
+				ok = false
+			end
+		end
+		ok
 	end
 
-	def can_be_open?(global_talent)
-		true unless global_talent.link_to_expa.nil? or global_talent.ep_manager.nil?
+	def update_local_project(national_opportunity,local_opportunity)
+		local_opportunity.to_h.each_key do |key|
+			local_opportunity[key] = national_opportunity[key]
+		end
 	end
 
-	def can_be_ip?(global_talent)
-		global_talent.applying == 2
-	end
-
-	def can_be_ma?(global_talent)
-		true unless global_talent.match_date.nil?
-	end
-
-	def can_be_re?(global_talent)
-		true unless global_talent.ops_date.nil? or global_talent.realize_date.nil?
-	end
 end

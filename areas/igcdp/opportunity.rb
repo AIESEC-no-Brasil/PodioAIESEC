@@ -114,7 +114,6 @@ class Opportunity
       end
     end
     @national_apps = [app1,app2,app3]
-    puts @national_apps
   end
 
   def flow
@@ -132,9 +131,16 @@ class Opportunity
   end
 
   def local_national_sync
+    national_opens_map = {}
+    national_projects_map = {}
     national_opens = @national_apps[0]
     national_projects = @national_apps[1]
     national_history = @national_apps[2]
+
+    national_opens.find_all.each do |national_open|
+      national_opens_map[national_open.expa_id] = national_open
+    end
+
     for entity in @entities do
       local_opens = @local_apps_ids[entity][0]
       local_projects = @local_apps_ids[entity][1]
@@ -147,10 +153,9 @@ class Opportunity
           national.situation = 2
           national.local_entity = entity
           national.local_reference = newbie.id
-          #national.expa_link = nil
           national.id = nil
-          puts national.to_h
           national.create
+          national_opens_map[national.expa_id] = national
 
           newbie.situation = 2
           newbie.update
@@ -160,6 +165,24 @@ class Opportunity
       end
       
       #Local Project Update ()
+      local_opens.find_all.each do |local_open|
+        national_open = national_opens_map[local_opens.get_id(local_open)]
+        next if national_open.nil?
+        if national_opens.local_open_updated?(national_open,local_open)
+            local_open.opens = national_opens.update_local_opens(national_open,local_open)
+            local_open.update
+        end
+      end
+
+      #Local Project Update ()
+      local_projects.find_all.each do |local_project|
+        national_project = national_projects_map[local_projects.get_id(local_project)]
+        next if national_project.nil?
+        if national_projects.local_project_updated?(national_project,local_project)
+            national_projects.update_local_project(national_project,local_project)
+            local_project.update
+        end
+      end
 
     end
 
@@ -185,7 +208,7 @@ class Opportunity
       national_closed.create
 
       #Deleting Local|National Project
-      @local_apps_ids[closed.local_entity][0].delete_by_id(closed.local_reference)
+      @local_apps_ids[closed.local_entity][1].delete_by_id(closed.local_reference)
       closed.delete
     end
   end
