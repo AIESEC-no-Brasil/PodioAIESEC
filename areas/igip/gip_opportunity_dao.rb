@@ -72,7 +72,7 @@ class GIPOpportunityDAO < YouthLeaderDAO
 	end
 
 	def can_be_history?(opportunity)
-		true unless opportunity.tracking.index(2).nil?
+		true if opportunity.tracking.include?(2)
 	end
 
 	def sync_open(local,national)
@@ -80,17 +80,18 @@ class GIPOpportunityDAO < YouthLeaderDAO
 			local.opens = national.opens
 			local.update
 		end
-		national.update if not reverse_sync_opportunities(local,national,[])
+		puts national
+		national.update unless reverse_sync_opportunities(local,national,[:id,:files])
 	end
 
 	def sync_match(local,national)
-		if sync_opportunities(local,national,[:trainees,:realize_date]) == false
-			local.update
-		end
+		local.update unless sync_opportunities(local,national,[:trainees,:realize_date,:id,:files])
 
 		att = false
 		local.trainees = [] << local.trainees if local.trainees.class == Fixnum
+		local.trainees = [] if local.trainees.nil?
 		national.trainees = [] << national.trainees if national.trainees.class == Fixnum
+		national.trainees = [] if national.trainees.nil?
 
 		#Unless the fields isn't equal (sync), sync and update
 		unless local.trainees.length == national.trainees.length && (national.trainees & local.trainees == national.trainees)
@@ -105,12 +106,12 @@ class GIPOpportunityDAO < YouthLeaderDAO
 	end
 
 	def sync_realize(local,national)
-		if sync_opportunities(local,national,[:tracking]) == false
-			local.update
-		end
+		local.update unless sync_opportunities(local,national,[:tracking,:id,:files])
 
 		local.tracking = [] << local.tracking if local.tracking.class == Fixnum
+		local.tracking = [] if local.tracking.nil?
 		national.tracking = [] << national.tracking if national.tracking.class == Fixnum
+		national.tracking = [] if national.tracking.nil?
 
 		#Unless the fields isn't equal (sync), let's find what need to be updated
 		unless local.tracking.length == national.tracking.length && (national.tracking & local.tracking == national.tracking)
@@ -134,7 +135,7 @@ class GIPOpportunityDAO < YouthLeaderDAO
 	def sync_opportunities(local,national,ignoreds)
 		ok = true
 		local.to_h.each do |key, value|
-			if national[key] != value && ignoreds.include?(key)
+			if national[key] != value && (not ignoreds.include?(key))
 				local[key] = national[key]
 				ok = false
 			end
@@ -145,11 +146,12 @@ class GIPOpportunityDAO < YouthLeaderDAO
 	def reverse_sync_opportunities(local,national,ignoreds)
 		ok = true
 		local.to_h.each do |key, value|
-			if national[key] != value && ignoreds.include?(key)
+			if national[key] != value && (not ignoreds.include?(key))
 				national[key] = local[key]
 				ok = false
 			end
 		end
+		puts national
 		ok
 	end
 end

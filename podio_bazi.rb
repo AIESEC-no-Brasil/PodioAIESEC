@@ -7,6 +7,9 @@ require_relative 'control/control_database'
 require_relative 'areas/tm/tm'
 require_relative 'areas/ogip/ogip'
 require_relative 'areas/ogcdp/ogcdp'
+require_relative 'areas/igcdp/host'
+require_relative 'areas/igcdp/opportunity'
+require_relative 'areas/igip/gip_opportunity'
 
 # This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
 # areas of AIESEC in Brazil's Podio. It also automate procedures by controled data manipulation/duplication.
@@ -48,6 +51,25 @@ class PodioBAZI
       :co => '8. Completed'
   }
 
+  $enum_iGCDP_apps_name = {
+      :leads => '1. Inscritos',
+      :approach => '2. Abordagem',
+      :reapproach => '1.5. Re-abordagem',
+      :alignment => '3. Alinhamento',
+      :blacklist => 'Blacklist',
+      :whitelist => '4. Whitelist',
+      :open => '1. Open',
+      :project => '2. Projeto',
+      :history => '3. Histórico de Projetos'
+  }
+
+  $enum_iGIP_apps_name = {
+      :open => '1. Open',
+      :match => '2. Match',
+      :realize => '3. Realize',
+      :history => '4. Histórico de Projetos',
+  }
+
   $enum_type = { :ors => 1,
                  :national => 2,
                  :local => 3 }
@@ -73,10 +95,12 @@ class PodioBAZI
       authenticate
       podioDatabase = ControlDatabase.new(test)
 
-       TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      #TM.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-      #TODO GCDPi
+      #HOST.new(podioDatabase.workspaces, podioDatabase.apps)
+      #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+      GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO GIPi
       #TODO mkt
       #TODO fin
@@ -93,5 +117,3 @@ class PodioBAZI
 end
 
 PodioBAZI.new(true, false)
-
-

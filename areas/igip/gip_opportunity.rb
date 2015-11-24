@@ -198,9 +198,7 @@ class GIPOpportunity
           national_realize.id = nil
           local_realize = local_realizes.new_model(national_realize.to_h)
 
-          puts national_realize.trainees
           national_realize.create
-          puts national_realize.trainees
           local_realize.create
           national_realize_map[national_realize.expa_id] = national_realize
 
@@ -212,7 +210,7 @@ class GIPOpportunity
 
       #Local Realizes Upgrade ()
       local_realizes.find_all.each do |local_realize|
-        national_realize = national_realize_map[local_realize.get_id(local_realize)]
+        national_realize = national_realize_map[local_realizes.get_id(local_realize)]
         next if national_realize.nil?
         national_realizes.sync_realize(local_realize,national_realize)
         
