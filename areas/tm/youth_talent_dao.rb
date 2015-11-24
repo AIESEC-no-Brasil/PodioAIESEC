@@ -71,7 +71,7 @@ class YouthTalentDAO < YouthLeaderDAO
     end
 
     def business_rule_selection_to_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_rapproachement) && join_selection?
+        true unless !say_yes?(youth_talent.send_to_rapproachement) && say_yes?(youth_talent.join_selection)
     end
 
     def business_rule_delete_selection?(youth_talent)
