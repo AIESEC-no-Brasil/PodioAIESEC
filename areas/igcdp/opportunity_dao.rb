@@ -41,7 +41,13 @@ class OpportunityDAO < YouthLeaderDAO
 
   def new_open?(opportunity)
     expa = opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i |
-        opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i
+        opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('experience.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('www.experience.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('https://experience-v1.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('http://experience-v1.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('experience-v1.aiesec.org/#/opportunities/','').to_i |
+        opportunity.expa_link['url'].sub('www.experience-v1.aiesec.org/#/opportunities/','').to_i
     op = opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i
     if expa != 0

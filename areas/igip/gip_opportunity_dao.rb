@@ -80,7 +80,6 @@ class GIPOpportunityDAO < YouthLeaderDAO
       local.opens = national.opens
       local.update
     end
-    puts national
     national.update unless reverse_sync_opportunities(local,national,[:id,:files])
   end
 
@@ -146,12 +145,11 @@ class GIPOpportunityDAO < YouthLeaderDAO
   def reverse_sync_opportunities(local,national,ignoreds)
     ok = true
     local.to_h.each do |key, value|
-      if national[key] != value && (not ignoreds.include?(key))
+      if national[key] != value && (not ignoreds.include?(key)) && key != 'situation'
         national[key] = local[key]
         ok = false
       end
     end
-    puts national
     ok
   end
 end

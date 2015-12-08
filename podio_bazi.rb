@@ -79,22 +79,22 @@ class PodioBAZI
   }
 
   $enum_iGCDP_apps_name = {
-      :leads => '1. Inscritos',
-      :approach => '2. Abordagem',
-      :reapproach => '1.5. Re-abordagem',
-      :alignment => '3. Alinhamento',
-      :blacklist => 'Blacklist',
-      :whitelist => '4. Whitelist',
-      :open => '1. Open',
-      :project => '2. Projeto',
-      :history => '3. Histórico de Projetos'
+      :leads => 'iGCDP 1. Inscritos Host',
+      :approach => 'iGCDP 2. Abordagem Host',
+      :reapproach => 'iGCDP 1.5. Re-abordagem Host',
+      :alignment => 'iGCDP 3. Alinhamento Host',
+      :blacklist => 'iGCDP Blacklist Host',
+      :whitelist => 'iGCDP 4. Whitelist Host',
+      :open => 'iGCDP 1. Open',
+      :project => 'iGCDP 2. Projetos',
+      :history => 'iGCDP 3. Histórico de Projetos'
   }
 
   $enum_iGIP_apps_name = {
-      :open => '1. Open',
-      :match => '2. Match',
-      :realize => '3. Realize',
-      :history => '4. Histórico de Projetos',
+      :open => 'iGIP 1. Open',
+      :match => 'iGIP 2. Match',
+      :realize => 'iGIP 3. Realize',
+      :history => 'iGIP 4. Histórico de Projetos',
   }
 
   $enum_type = { :ors => 1,
@@ -124,9 +124,9 @@ class PodioBAZI
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
 
-      #TM.new(podioDatabase.workspaces, podioDatabase.apps)
-      #OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
-      #OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
       HOST.new(podioDatabase.workspaces, podioDatabase.apps)
       Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
       GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
@@ -146,6 +146,6 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new(true, false)
+PodioBAZI.new(false, true)
 
 
