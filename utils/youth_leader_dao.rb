@@ -29,9 +29,11 @@ class YouthLeaderDAO < PodioAppControl
             :local_aiesec => 'aiesec-mais-proxima',
             :marketing_channel => 'como-conheceu-a-aiesec',
             :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-            :erase => 'apagar',
             :sync_with_local => 'transferido-para-area-local',
-            :cards => 'cards'
+            :id_local => 'id-local',
+            :id_local_1 => 'id-local-1',
+            :id_local_2 => 'id-local-2',
+            :lead_date => 'data-da-inscricao'
         }
         basic_fields.merge!(extra_fields) unless extra_fields.nil?
         super(app_id, basic_fields)
@@ -49,6 +51,48 @@ class YouthLeaderDAO < PodioAppControl
           $podio_flag = false
         end
         create_models Podio::Item.collection(response.body).all
+    end
+
+    def find_national_local_id(local_id)
+      attributes = {:sort_by => 'created_on'}
+      attributes[:filters] = {@fields_name_map[:id_local][:id] => {'from'=>local_id,'to'=>local_id}}
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+        $podio_flag = false
+      end
+      create_models Podio::Item.collection(response.body).all
+    end
+
+    def find_national_local_id_1(local_id)
+      attributes = {:sort_by => 'created_on'}
+      attributes[:filters] = {@fields_name_map[:id_local_1][:id] => {'from'=>local_id,'to'=>local_id}}
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+        $podio_flag = false
+      end
+      create_models Podio::Item.collection(response.body).all
+    end
+
+    def find_national_local_id_2(local_id)
+      attributes = {:sort_by => 'created_on'}
+      attributes[:filters] = {@fields_name_map[:id_local_2][:id] => {'from'=>local_id,'to'=>local_id}}
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+        $podio_flag = false
+      end
+      create_models Podio::Item.collection(response.body).all
     end
 
     def find_by_filter_values(app_id, filter_values, attributes={})

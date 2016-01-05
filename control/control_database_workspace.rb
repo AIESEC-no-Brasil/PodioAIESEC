@@ -6,6 +6,7 @@ class ControlDatabaseWorkspace < PodioAppControl
   def initialize(app_id)
     @fields = {:name => 'title',
                :id => 'id-2',
+               :id_2 => 'id-2-2',
                :entity => 'entity',
                :area => 'area-2',
                :type => 'type',
@@ -27,6 +28,14 @@ class ControlDatabaseWorkspace < PodioAppControl
   # @return [Integer] The Podio id of the workspace
   def id(index)
     i = get_field_index_by_external_id(index,@fields[:id])
+    fields(index, i).to_i unless i.nil?
+  end
+
+  # Get Podio id-2 of the workspace - Used for entities with double VP
+  # @param index [Integer] Index of the item you want to retrieve
+  # @return [Integer] The Podio id of the workspace
+  def id2(index)
+    i = get_field_index_by_external_id(index,@fields[:id_2])
     fields(index, i).to_i unless i.nil?
   end
 

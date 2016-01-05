@@ -6,19 +6,19 @@ class GlobalCitizenDAO < YouthLeaderDAO
 
 	def initialize(app_id)
 		fields = {
-				:name => 'nome', #ops
-				:birthdate => 'data-de-nascimento-2', #ops
-				:phones => 'telefone-2', #ops
-				:study_stage => 'formacao2', #ops
-				:best_moment => 'melhor-turno-test', #ops
-				:local_aiesec => 'aiesec-mais-proxima2', #ops
+				:name => 'nome',
+				:birthdate => 'data-de-nascimento-2',
+				:phones => 'telefone-2',
+				:study_stage => 'formacao2',
+				:best_moment => 'melhor-turno-test',
+				:local_aiesec => 'aiesec-mais-proxima2',
 				:address => 'endereco2', #ops
-        :state => 'estado2', #ops
-        :university => 'universidade', #ops
+        :state => 'estado2',
+        :university => 'universidade-2',
         :other_university => 'se-voce-selecionou-a-opcao-outras-especifique-aqui-a-su',
-        :course => 'curso-2', #ops
-        :semester => 'semestre-3', #ops
+        :semester => 'semestre-3',
         :marketing_channel => 'como-voce-conheceu-a-aiesec', #ops
+				:contact_channel => 'como-voce-prefere-ser-contactado',
 				:interest => 'programa-de-interesse2',
 				:specific_opportunity => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 				:cv => 'cv',
@@ -42,7 +42,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
 				:realize_date => 'data-do-realize', #TODO considerar início e fim
 				:complete_date => 'data-do-complete',
 				:join_ris => 'compareceu-aos-ris',
-				:erase => 'apagar'
+				:duplicate_vp => 'vp-dobrado'
 		}
 		super(app_id, fields)
 	end
@@ -52,20 +52,20 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	end
 
 	def can_be_contacted?(global_citizen)
-		true unless global_citizen.first_approach_date.nil? &&
-				global_citizen.first_contact_responsable.nil? &&
-				!say_yes?(global_citizen.approach_result) &&
+		true unless global_citizen.first_approach_date.nil? ||
+				global_citizen.first_contact_responsable.nil? ||
+				!say_yes?(global_citizen.approach_result) ||
 				global_citizen.approach_channel.nil?
 	end
 
 	def can_be_EPI?(global_citizen)
-		true unless global_citizen.epi_date.nil? &&
+		true unless global_citizen.epi_date.nil? ||
 				global_citizen.epi_responsable.nil?
 	end
 
 	def can_be_open?(global_citizen)
 		#TODO verificar se o link é realmente do expa. Usar include? para string
-		true unless global_citizen.link_to_expa.nil? &&
+		true unless global_citizen.link_to_expa.nil? ||
 				global_citizen.ep_manager.nil?
 	end
 
@@ -74,13 +74,13 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	end
 
 	def can_be_ma?(global_citizen)
-		true unless global_citizen.match_date.nil? &&
-				global_citizen.country_host.nil? &&
+		true unless global_citizen.match_date.nil? ||
+				global_citizen.country_host.nil? ||
 				global_citizen.lc_host.nil?
 	end
 
 	def can_be_re?(global_citizen)
-		true unless global_citizen.ops_date.nil? &&
+		true unless global_citizen.ops_date.nil? ||
 				global_citizen.realize_date.nil?
 	end
 

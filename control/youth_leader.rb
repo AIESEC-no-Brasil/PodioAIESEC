@@ -4,14 +4,14 @@ require_relative '../utils'
 
 class YouthLeader < PodioAppControl
 
-	text_attr_accessor :name, :address, :city, :course, :university, :indication
-	number_attr_accessor :zip_code
+	text_attr_accessor :name,  :city, :indication
+	number_attr_accessor :zip_code, :id_local, :id_local_1, :id_local_2
 	date_attr_accessor :birthdate
 	boolean_attr_accessor :erase, :sync_with_local
 	category_attr_accessor :sex, :study_stage, :semester, :english_level, :spanish_level, :best_moment
-	category_attr_accessor :marketing_channel, :carrier
+	category_attr_accessor :marketing_channel, :carrier, :graduation_year, :authorization
 	multiple_attr_accessor :phones, :emails
-	reference_attr_accessor :state, :local_aiesec
+	reference_attr_accessor :state, :local_aiesec, :university, :course
 
 	def initialize(app_id, extra_fields)
 		basic_fields = {
@@ -19,28 +19,26 @@ class YouthLeader < PodioAppControl
 			:sex => 'sexo',
 			:birthdate => 'data-de-nascimento',
 			:phones => 'telefone',
-			:telefone_old => 'telefone-3',#TODO exluir
-			:celular => 'celular-2',#TODO exluir
-			:carrier => 'operadoras', #TODO aceitar múltiplas
 			:emails => 'email',
-			:email_old => 'email-2',#TODO exluir
-			:address => 'endereco-completo',
 			:zip_code => 'cep',
 			:city => 'cidade',
 			:state => 'estado',
 			:study_stage => 'formacao',
-			:course => 'texto',
+      :university => 'universidade',
+      :course => 'curso',
 			:semester => 'semestre-2',
-			:university => 'nome-da-universidadefaculdade',
+			:graduation_year => 'ano-de-formacao',
 			:english_level => 'nivel-de-ingles',
 			:spanish_level => 'nivel-de-espanhol',
 			:best_moment => 'melhor-turno-para-a-aiesec-entrar-em-contato',
 			:local_aiesec => 'aiesec-mais-proxima',
 			:marketing_channel => 'categoria',
 			:indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-			:erase => 'apagar',
 			:sync_with_local => 'transferido-para-area-local',
-		  :cards => 'cards'
+			:authorization => 'autorizo-receber-informacoes-sobre-os-projetos-de-inter',
+      :id_local => 'id-local',
+      :id_local_1 => 'id-local-1',
+      :id_local_2 => 'id-local-2',
 		}
 		basic_fields.merge!(extra_fields) unless extra_fields.nil?
 		super(app_id, basic_fields)
@@ -54,15 +52,15 @@ class YouthLeader < PodioAppControl
 		self.sex = other.sex i
 		self.birthdate = other.birthdate i
 		self.phones = other.phones i
-		self.carrier = other.carrier i
 		self.emails = other.emails i
-		self.address = other.address i
 		self.zip_code = other.zip_code i
 		self.city = other.city i
 		self.state_id = other.state_id i
 		self.study_stage = other.study_stage i
+    self.university = other.university i
 		self.course = other.course i
 		self.semester = other.semester i
+    self.graduation_year = other.graduation_year i
 		self.university = other.university i
 		self.english_level = other.english_level i
 		self.spanish_level = other.spanish_level i
@@ -70,7 +68,10 @@ class YouthLeader < PodioAppControl
 		self.local_aiesec_id = other.local_aiesec_id i
 		self.marketing_channel = other.marketing_channel i
 		self.indication = other.indication i
-		self.erase = other.erase i
+		self.sync_with_local = other.sync_with_local i
+    self.id_local = other.id_local i
+    self.id_local_1 = other.id_local_1 i
+    self.id_local_2 = other.id_local_2 i
 	end
 
 	def hashing_to_update(index)
@@ -79,27 +80,26 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:sex] => @sex || sex(index))
 		hash_fields.merge!(@fields[:birthdate] => {'start' => @birthdate || birthdate(index)})
 		hash_fields.merge!(@fields[:phones] => @phones || phones(index))
-		#hash_fields.merge!(@fields[:telefone_old] => @telefone || telefone(index))
-		#hash_fields.merge!(@fields[:celular] => @celular || celular(index))
-		hash_fields.merge!(@fields[:carrier] => @carrier || carrier(index))
 		hash_fields.merge!(@fields[:emails] => @emails || emails(index))
-		#hash_fields.merge!(@fields[:email_old] => @email_text || email_text(index))
-		hash_fields.merge!(@fields[:address] => @address || address(index))
 		hash_fields.merge!(@fields[:zip_code] => @zip_code || zip_code(index))
 		hash_fields.merge!(@fields[:city] => @city || city(index))
 		hash_fields.merge!(@fields[:state] => @state_id || state_id(index))
 		hash_fields.merge!(@fields[:study_stage] => @study_stage || study_stage(index))
+    hash_fields.merge!(@fields[:university] => @university || university(index))
 		hash_fields.merge!(@fields[:course] => @course || course(index))
 		hash_fields.merge!(@fields[:semester] => @semester || semester(index))
-		hash_fields.merge!(@fields[:university] => @university || university(index))
+		hash_fields.merge!(@fields[:graduation_year] => @graduation_year || graduation_year(index))
 		hash_fields.merge!(@fields[:english_level] => @english_level || english_level(index))
 		hash_fields.merge!(@fields[:spanish_level] => @spanish_level || spanish_level(index))
 		hash_fields.merge!(@fields[:best_moment] => @best_moment || best_moment(index))
 		hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec_id || local_aiesec_id(index))
 		hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel || marketing_channel(index))
 		hash_fields.merge!(@fields[:indication] => @indication || indication(index))
-		hash_fields.merge!(@fields[:erase] => @erase || erase(index))
 		hash_fields.merge!(@fields[:sync_with_local] => @sync_with_local || sync_with_local(index))
+    hash_fields.merge!(@fields[:authorization] => @authorization || authorization(index))
+    hash_fields.merge!(@fields[:id_local] => @id_local || id_local(index))
+    hash_fields.merge!(@fields[:id_local_1] => @id_local_1 || id_local_1(index))
+    hash_fields.merge!(@fields[:id_local_2] => @id_local_2 || id_local_2(index))
 		hash_fields
 	end
 
@@ -109,31 +109,27 @@ class YouthLeader < PodioAppControl
 		hash_fields.merge!(@fields[:sex] => @sex) unless @sex.nil?
 		hash_fields.merge!(@fields[:birthdate] => {'start' => @birthdate}) unless @birthdate.nil?
 		hash_fields.merge!(@fields[:phones] => @phones) unless @phones.nil?
-		#hash_fields.merge!(@fields[:telefone_old] => @telefone) unless @telefone.nil?
-		#hash_fields.merge!(@fields[:celular] => @celular) unless @celular.nil?
-		hash_fields.merge!(@fields[:carrier] => @carrier) unless @carrier.nil?
 		hash_fields.merge!(@fields[:emails] => @emails) unless @emails.nil?
-		#hash_fields.merge!(@fields[:email_old] => @email_text) unless @email_text.nil?
-		hash_fields.merge!(@fields[:address] => @address) unless @address.nil?
 		hash_fields.merge!(@fields[:zip_code] => @zip_code) unless @zip_code.nil?
 		hash_fields.merge!(@fields[:city] => @city) unless @city.nil?
 		hash_fields.merge!(@fields[:state] => @state_id) unless @state_id.nil?
 		hash_fields.merge!(@fields[:study_stage] => @study_stage) unless @study_stage.nil?
+    hash_fields.merge!(@fields[:university] => @university) unless @university.nil?
 		hash_fields.merge!(@fields[:course] => @course) unless @course.nil?
 		hash_fields.merge!(@fields[:semester] => @semester) unless @semester.nil?
-		hash_fields.merge!(@fields[:university] => @university) unless @university.nil?
+    hash_fields.merge!(@fields[:graduation_year] => @graduation_year) unless @graduation_year.nil?
 		hash_fields.merge!(@fields[:english_level] => @english_level) unless @english_level.nil?
 		hash_fields.merge!(@fields[:spanish_level] => @spanish_level) unless @spanish_level.nil?
 		hash_fields.merge!(@fields[:best_moment] => @best_moment) unless @best_moment.nil?
 		hash_fields.merge!(@fields[:local_aiesec] => @local_aiesec_id) unless @local_aiesec_id.nil?
 		hash_fields.merge!(@fields[:marketing_channel] => @marketing_channel) unless @marketing_channel.nil?
 		hash_fields.merge!(@fields[:indication] => @indication) unless @indication.nil?
-		hash_fields.merge!(@fields[:erase] => @erase) unless @erase.nil?
+    hash_fields.merge!(@fields[:sync_with_local] => @sync_with_local) unless @sync_with_local.nil?
+    hash_fields.merge!(@fields[:authorization] => @authorization) unless @authorization.nil?
+    hash_fields.merge!(@fields[:id_local] => @id_local) unless @id_local.nil?
+    hash_fields.merge!(@fields[:id_local_1] => @id_local_1) unless @id_local_1.nil?
+    hash_fields.merge!(@fields[:id_local_2] => @id_local_2) unless @id_local_2.nil?
 		hash_fields
-  end
-
-  def getCards(index)
-
   end
 
 	# Update register on Podio database

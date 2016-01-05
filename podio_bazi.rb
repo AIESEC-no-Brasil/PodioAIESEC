@@ -7,7 +7,7 @@ require_relative 'control/control_database'
 require_relative 'areas/tm/tm'
 require_relative 'areas/ogip/ogip'
 require_relative 'areas/ogcdp/ogcdp'
-require_relative 'areas/igcdp/host'
+require_relative 'areas/host/host'
 require_relative 'areas/igcdp/opportunity'
 require_relative 'areas/igip/gip_opportunity'
 
@@ -22,12 +22,11 @@ class PodioBAZI
 
   $enum_TM_apps_name = {
       :app1 => 'TM 1. Inscritos',
-      :app2_5 => 'TM 2.5 Re-abordagem',
       :app2 => 'TM 2. Abordados',
+      :app2_5 => 'TM 2.5. Re-abordagem',
       :app3 => 'TM 3. Seleções',
       :app4 => 'TM 4. Induções',
-      :app5 => 'TM 5. CRM',
-      :cards => 'TM Cards Layout'
+      :app5 => 'TM 5. CRM'
   }
 
   $enum_oGIP_apps_name = {
@@ -38,20 +37,7 @@ class PodioBAZI
       :ip => 'oGIP 5. In Progress',
       :ma => 'oGIP 6. Match',
       :re => 'oGIP 7. Realize',
-      :co => 'oGIP 8. Completed',
-      :cards => 'oGIP Cards Layout',
-      :january => 'oGIP Janeiro',
-      :february => 'oGIP Fevereiro',
-      :march => 'oGIP Marco',
-      :april => 'oGIP Abril',
-      :may => 'oGIP Maio',
-      :june => 'oGIP Junho',
-      :july => 'oGIP Julho',
-      :august => 'oGIP Agosto',
-      :september => 'oGIP Setembro',
-      :october => 'oGIP Outubro',
-      :november => 'oGIP Novembro',
-      :december => 'oGIP Dezembro'
+      :co => 'oGIP 8. Completed'
   }
 
   $enum_oGCDP_apps_name = {
@@ -62,29 +48,19 @@ class PodioBAZI
       :ip => 'oGCDP 5. In Progress',
       :ma => 'oGCDP 6. Match',
       :re => 'oGCDP 7. Realize',
-      :co => 'oGCDP 8. Completed',
-      :cards => 'oGCDP Cards Layout',
-      :january => 'oGCDP Janeiro',
-      :february => 'oGCDP Fevereiro',
-      :march => 'oGCDP Marco',
-      :april => 'oGCDP Abril',
-      :may => 'oGCDP Maio',
-      :june => 'oGCDP Junho',
-      :july => 'oGCDP Julho',
-      :august => 'oGCDP Agosto',
-      :september => 'oGCDP Setembro',
-      :october => 'oGCDP Outubro',
-      :november => 'oGCDP Novembro',
-      :december => 'oGCDP Dezembro'
+      :co => 'oGCDP 8. Completed'
+  }
+
+  $enum_host_apps_name = {
+      :leads => 'Host 1. Inscritos',
+      :approach => 'Host 2. Abordagem',
+      :reapproach => 'Host 2.5. Re-abordagem',
+      :alignment => 'Host 3. Alinhamento',
+      :blacklist => 'Host Blacklist',
+      :whitelist => 'Host 4. Whitelist'
   }
 
   $enum_iGCDP_apps_name = {
-      :leads => 'iGCDP 1. Inscritos Host',
-      :approach => 'iGCDP 2. Abordagem Host',
-      :reapproach => 'iGCDP 1.5. Re-abordagem Host',
-      :alignment => 'iGCDP 3. Alinhamento Host',
-      :blacklist => 'iGCDP Blacklist Host',
-      :whitelist => 'iGCDP 4. Whitelist Host',
       :open => 'iGCDP 1. Open',
       :project => 'iGCDP 2. Projetos',
       :history => 'iGCDP 3. Histórico de Projetos'
@@ -92,9 +68,10 @@ class PodioBAZI
 
   $enum_iGIP_apps_name = {
       :open => 'iGIP 1. Open',
-      :match => 'iGIP 2. Match',
-      :realize => 'iGIP 3. Realize',
-      :history => 'iGIP 4. Histórico de Projetos',
+      :in_progress => 'iGIP 2. In-Progress',
+      :match => 'iGIP 3. Match',
+      :realize => 'iGIP 4. Realize',
+      :history => 'iGIP 5. Histórico de Projetos',
   }
 
   $enum_type = { :ors => 1,
@@ -107,7 +84,8 @@ class PodioBAZI
                  :fin => 306775701,
                  :igip => 306774699,
                  :igcdp => 306774749,
-                 :bd => 306775405}
+                 :bd => 306775405,
+                 :host => 361615672}
 
   def initialize(test = true, loop = false)
     data = File.read('senha').each_line()
@@ -127,9 +105,9 @@ class PodioBAZI
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
       OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-      HOST.new(podioDatabase.workspaces, podioDatabase.apps)
-      Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
-      GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+      #HOST.new(podioDatabase.workspaces, podioDatabase.apps)
+      #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+      #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
       #TODO fin
       #TODO mkt
       #TODO bd

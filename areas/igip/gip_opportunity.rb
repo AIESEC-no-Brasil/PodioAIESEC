@@ -78,21 +78,24 @@ class GIPOpportunity
       app2 = nil
       app3 = nil
       app4 = nil
+      app5 = nil
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
           if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:igip]
             case apps.name(j)
               when $enum_iGIP_apps_name[:open] then app1 = GIPOpportunityDAO.new(apps.id(j))
-              when $enum_iGIP_apps_name[:match] then app2 = GIPOpportunityDAO.new(apps.id(j))
-              when $enum_iGIP_apps_name[:realize] then app3 = GIPOpportunityDAO.new(apps.id(j))
-              when $enum_iGIP_apps_name[:history] then app4 = GIPOpportunityDAO.new(apps.id(j))
+              when $enum_iGIP_apps_name[:in_progress] then app2 = GIPOpportunityDAO.new(apps.id(j))
+              when $enum_iGIP_apps_name[:match] then app3 = GIPOpportunityDAO.new(apps.id(j))
+              when $enum_iGIP_apps_name[:realize] then app4 = GIPOpportunityDAO.new(apps.id(j))
+              when $enum_iGIP_apps_name[:history] then app5 = GIPOpportunityDAO.new(apps.id(j))
             end
           end
           @local_apps_ids[entity] = {:app1 => app1,
                                      :app2 => app2,
                                      :app3 => app3,
-                                     :app4 => app4}
+                                     :app4 => app4,
+                                     :app5 => app5}
 
         end
       end
@@ -114,6 +117,7 @@ class GIPOpportunity
     app2 = nil
     app3 = nil
     app4 = nil
+    app5 = nil
 
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
@@ -121,9 +125,10 @@ class GIPOpportunity
         if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:igip]
           case apps.name(j)
             when $enum_iGIP_apps_name[:open] then app1 = GIPOpportunityDAO.new(apps.id(j))
-            when $enum_iGIP_apps_name[:match] then app2 = GIPOpportunityDAO.new(apps.id(j))
-            when $enum_iGIP_apps_name[:realize] then app3 = GIPOpportunityDAO.new(apps.id(j))
-            when $enum_iGIP_apps_name[:history] then app4 = GIPOpportunityDAO.new(apps.id(j))
+            when $enum_iGIP_apps_name[:in_progress] then app2 = GIPOpportunityDAO.new(apps.id(j))
+            when $enum_iGIP_apps_name[:match] then app3 = GIPOpportunityDAO.new(apps.id(j))
+            when $enum_iGIP_apps_name[:realize] then app4 = GIPOpportunityDAO.new(apps.id(j))
+            when $enum_iGIP_apps_name[:history] then app5 = GIPOpportunityDAO.new(apps.id(j))
           end
         end
       end
@@ -142,9 +147,10 @@ class GIPOpportunity
     national_match_map = {}
     national_realize_map = {}
     national_opens = @national_apps[0]
-    national_matchs = @national_apps[1]
-    national_realizes = @national_apps[2]
-    national_histories = @national_apps[3]
+    national_in_progress = @national_apps[1]
+    national_matchs = @national_apps[2]
+    national_realizes = @national_apps[3]
+    national_histories = @national_apps[4]
 
     national_opens.find_all.each do |national_open|
       national_opens_map[national_open.expa_id] = national_open
@@ -162,9 +168,10 @@ class GIPOpportunity
 
     for entity in @entities do
       local_opens = @local_apps_ids[entity][:app1]
-      local_matchs = @local_apps_ids[entity][:app2]
-      local_realizes = @local_apps_ids[entity][:app3]
-      local_histories = @local_apps_ids[entity][:app4]
+      local_in_progress = @local_apps_ids[entity][:app2]
+      local_matchs = @local_apps_ids[entity][:app3]
+      local_realizes = @local_apps_ids[entity][:app4]
+      local_histories = @local_apps_ids[entity][:app5]
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)

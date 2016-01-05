@@ -30,7 +30,7 @@ class HOST
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:igcdp]
+      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:host]
         @ors_space_id = spaces.id(i)
         break
       end
@@ -39,7 +39,7 @@ class HOST
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:igcdp]
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:host]
           @ors = HostDAO.new(apps.id(j))
           break
         end
@@ -58,7 +58,7 @@ class HOST
     @local_apps_ids = {}
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:igcdp]
+      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:host]
         @local_spaces_ids[spaces.id(i)] = nil
       end
     end
@@ -67,7 +67,7 @@ class HOST
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:igcdp]
+        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:host]
           @entities << spaces.entity(i)
         end
       end
@@ -85,14 +85,14 @@ class HOST
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
-          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:igcdp]
+          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:host]
             case apps.name(j)
-              when $enum_iGCDP_apps_name[:leads] then app1 = HostDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:approach] then app2 = HostDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:alignment] then app4 = HostDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:leads] then app1 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:approach] then app2 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:alignment] then app4 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(j))
+              when $enum_host_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(j))
             end
           end
           @local_apps_ids[entity] = {:app1 => app1,
@@ -113,7 +113,7 @@ class HOST
 
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:igcdp]
+      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:host]
         @national_space_id = spaces.id(i)
         break
       end
@@ -122,7 +122,7 @@ class HOST
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:igcdp]
+        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:host]
           @national_app_id = apps.id(j)
           break
         end

@@ -8,7 +8,8 @@ class ControlDatabaseApp < PodioAppControl
     @fields = {:name => 'title',
                :id => 'id-2',
                :workspace => 'relationship',
-               :workspace_id => 'workspace-id'}
+               :workspace_id => 'workspace-id',
+               :workspace_id_2 => 'workspace-id-2'}
 
     @fields_extra = {:entity => 'entity',
                      :area => 'area-2',
@@ -43,6 +44,11 @@ class ControlDatabaseApp < PodioAppControl
 
   def workspace_id_calculated(index)
     i = get_field_index_by_external_id(index,@fields[:workspace_id])
+    fields(index, i).to_i unless i.nil?
+  end
+
+  def workspace_id2_calculated(index)
+    i = get_field_index_by_external_id(index,@fields[:workspace_id_2])
     fields(index, i).to_i unless i.nil?
   end
 

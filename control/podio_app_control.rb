@@ -80,6 +80,7 @@ class PodioAppControl
     @fields_name_map = {}
     @fields_id_map = {}
     @app.fields.each { |f|
+      next unless f['status']=='active'
       key = @fields.select{|k,v| v.eql? f['external_id']}.keys[0]
       @fields_name_map[key] = {
         :id => f['field_id'],
@@ -118,6 +119,7 @@ class PodioAppControl
         if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
           $podio_flag = false
         end
+        response.body['priority'].to_i
       end
 
       def update

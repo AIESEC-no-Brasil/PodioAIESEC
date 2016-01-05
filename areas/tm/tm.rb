@@ -1,6 +1,5 @@
 require_relative '../../control/control_database_workspace'
 require_relative '../../control/control_database_app'
-require_relative 'cards'
 require_relative 'youth_talent_dao'
 
 # This class initializes, configure and take care of the tm module.
@@ -84,7 +83,6 @@ class TM
       app4 = nil
       app5 = nil
       app2_5 = nil
-      cards = nil
 
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
@@ -97,7 +95,6 @@ class TM
               when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(j))
               when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(j))
               when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(j))
-              when $enum_TM_apps_name[:cards] then cards = YouthTalentDAO.new(apps.id(j))
             end
           end
 
@@ -106,8 +103,7 @@ class TM
                                      :app3 => app3,
                                      :app4 => app4,
                                      :app5 => app5,
-                                     :app2_5 => app2_5,
-                                     :cards => cards}
+                                     :app2_5 => app2_5}
 
         end
       end
@@ -125,15 +121,34 @@ class TM
       end
     end
 
+    app1 = nil
+    app2 = nil
+    app3 = nil
+    app4 = nil
+    app5 = nil
+    app2_5 = nil
+
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
         if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:tm]
-          @national_app_id = apps.id(j)
-          break
+          case apps.name(j)
+            when $enum_TM_apps_name[:app1] then app1 = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2] then app2 = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app3] then app3 = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app4] then app4 = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(j))
+          end
         end
       end
     end
+    @national_apps = {:app1 => app1,
+                      :app2 => app2,
+                      :app3 => app3,
+                      :app4 => app4,
+                      :app5 => app5,
+                      :app6 => app2_5}
   end
 
   def flow
@@ -164,17 +179,21 @@ class TM
 
     sleep(3600) unless $podio_flag == true
     $podio_flag = true
-    models_list.each do |national_lead|
-      next unless @local_apps_ids.has_key?(national_lead.local_aiesec)
-      local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
+    models_list.each do |national_ors|
+      next unless @local_apps_ids.has_key?(national_ors.local_aiesec)
+      local_leads = @local_apps_ids[national_ors.local_aiesec][:app1]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
 
-      local_lead = local_leads.new_model(national_lead.to_h)
-      local_lead.create
+      local_lead = local_leads.new_model(national_ors.to_h)
+      local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+      national_app1 = @national_apps[:app1].new_model(national_ors.to_h)
+      national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+      national_ors.sync_with_local = 2
 
-      national_lead.sync_with_local = 2
-      national_lead.update
+      national_app1.id_local = local_lead.create
+      national_app1.create
+      national_ors.update
     end
   end
 
@@ -191,7 +210,15 @@ class TM
       leads.find_all.each do |lead|
         if leads.business_rule_lead_to_approach?(lead)
           approached = approach.new_model(lead.to_h)
-          approached.create
+          national_app1 = @national_apps[:app1]
+          national_app2 = @national_apps[:app2]
+          national_app1 = national_app1.find_national_local_id(lead.id)[0]
+          national_app2 = national_app2.new_model(lead.to_h)
+
+
+          national_app2.id_local = approached.create
+          national_app2.create
+          national_app1.delete
           lead.delete
         end
       end
@@ -211,8 +238,16 @@ class TM
       approach.find_all.each do |approached|
         if approach.business_rule_approach_to_rapproach?(approached)
           rapproached = rapproach.new_model(approached.to_h)
+          national_app2 = @national_apps[:app2]
+          national_app2_5 = @national_apps[:app2_5]
+          national_app2 = national_app2.find_national_local_id(approached.id)[0]
+          national_app2_5 = national_app2_5.new_model(approached.to_h)
+
           rapproached.approaches_number = 1
-          rapproached.create
+          national_app2_5.id_local = rapproached.create
+          national_app2_5.approaches_number = 1
+          national_app2_5.create
+          national_app2.delete
           approached.delete
         end
       end
@@ -229,6 +264,10 @@ class TM
       $podio_flag = true
       rapproach.find_all.each do |rapproached|
         if rapproach.business_rule_stop_rapproach?(rapproached)
+          national_app2_5 = @national_apps[:app2_5]
+          national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
+
+          national_app2_5.delete
           rapproached.delete
         end
       end
@@ -248,9 +287,19 @@ class TM
       rapproach.find_all.each do |rapproached|
         if rapproach.business_rule_rapproach_to_selection?(rapproached)
           selected = selection.new_model(rapproached.to_h)
+          national_app2_5 = @national_apps[:app2_5]
+          national_app3 = @national_apps[:app3]
+          national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
+          national_app3 = national_app3.new_model(rapproached.to_h)
+
+
           selected.responsable = rapproached.responsable_new_contact
           selected.first_approach_date = rapproached.next_contact_date
-          selected.create
+          national_app3.id_local = selected.create
+          national_app3.responsable = rapproached.responsable_new_contact
+          national_app3.first_approach_date = rapproached.next_contact_date
+          national_app3.create
+          national_app2_5.delete
           rapproached.delete
         end
       end
@@ -270,7 +319,14 @@ class TM
       approach.find_all.each do |approached|
         if approach.business_rule_approach_to_selection?(approached)
           selected = selection.new_model(approached.to_h)
-          selected.create
+          national_app2 = @national_apps[:app2]
+          national_app3 = @national_apps[:app3]
+          national_app2 = national_app2.find_national_local_id(approached.id)[0]
+          national_app3 = national_app3.new_model(approached.to_h)
+
+          national_app3.id_local = selected.create
+          national_app3.create
+          national_app2.delete
           approached.delete
         end
       end
@@ -290,7 +346,14 @@ class TM
       selection.find_all.each do |selected|
         if selection.business_rule_selection_to_rapproach?(selected)
           rapproached = rapproach.new_model(selected.to_h)
-          rapproached.create
+          national_app3 = @national_apps[:app3]
+          national_app2_5 = @national_apps[:app2_5]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+          national_app2_5 = national_app2_5.new_model(selected.to_h)
+
+          national_app2_5.id_local = rapproached.create
+          national_app2_5.create
+          national_app3.delete
           selected.delete
         end
       end
@@ -307,6 +370,10 @@ class TM
       $podio_flag = true
       selection.find_all.each do |selected|
         if selection.business_rule_delete_selection?(selected)
+          national_app3 = @national_apps[:app3]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+
+          national_app3.delete
           selected.delete
         end
       end
@@ -326,7 +393,14 @@ class TM
       selection.find_all.each do |selected|
         if selection.business_rule_selection_to_induction?(selected)
           inducted = induction.new_model(selected.to_h)
-          inducted.create
+          national_app3 = @national_apps[:app3]
+          national_app4 = @national_apps[:app4]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+          national_app4 = national_app4.new_model(selected.to_h)
+
+          national_app4.id_local = inducted.create
+          national_app4.create
+          national_app3.delete
           selected.delete
         end
       end
@@ -346,7 +420,14 @@ class TM
       induction.find_all.each do |inducted|
         if induction.business_rule_induction_to_local_crm?(inducted)
           client = local_crm.new_model(inducted.to_h)
-          client.create
+          national_app4 = @national_apps[:app4]
+          national_app5 = @national_apps[:app5]
+          national_app4 = national_app4.find_national_local_id(selected.id)[0]
+          national_app5 = national_app5.new_model(selected.to_h)
+
+          national_app5.id_local = client.create
+          national_app5.create
+          national_app4.delete
           inducted.delete
         end
       end

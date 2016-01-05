@@ -37,7 +37,6 @@ class YouthLeader < PodioAppControl
         :local_aiesec => 'aiesec-mais-proxima',
         :marketing_channel => 'categoria',
         :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-        :erase => 'apagar',
         :sync_with_local => 'transferido-para-area-local'
     }
     basic_fields.merge!(extra_fields) unless extra_fields.nil?
