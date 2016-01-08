@@ -87,7 +87,11 @@ class TM
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
-          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:tm]
+          if spaces.id(i) == work_id &&
+              !spaces.entity(i).nil? &&
+              spaces.entity(i).eql?(entity) &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:tm]
             case apps.name(j)
               when $enum_TM_apps_name[:app1] then app1 = YouthTalentDAO.new(apps.id(j))
               when $enum_TM_apps_name[:app2] then app2 = YouthTalentDAO.new(apps.id(j))
@@ -96,6 +100,7 @@ class TM
               when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(j))
               when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(j))
             end
+            next
           end
 
           @local_apps_ids[entity] = {:app1 => app1,
@@ -140,6 +145,7 @@ class TM
             when $enum_TM_apps_name[:app5] then app5 = YouthTalentDAO.new(apps.id(j))
             when $enum_TM_apps_name[:app2_5] then app2_5 = YouthTalentDAO.new(apps.id(j))
           end
+          next
         end
       end
     end
@@ -218,8 +224,8 @@ class TM
 
           national_app2.id_local = approached.create
           national_app2.create
-          national_app1.delete
-          lead.delete
+          national_app1.delete unless national_app1.nil?
+          lead.delete unless lead.nil?
         end
       end
     end
@@ -247,8 +253,8 @@ class TM
           national_app2_5.id_local = rapproached.create
           national_app2_5.approaches_number = 1
           national_app2_5.create
-          national_app2.delete
-          approached.delete
+          national_app2.delete unless national_app2.nil?
+          approached.delete unless approached.nil?
         end
       end
     end
@@ -267,8 +273,8 @@ class TM
           national_app2_5 = @national_apps[:app2_5]
           national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
 
-          national_app2_5.delete
-          rapproached.delete
+          national_app2_5.delete unless national_app2_5.nil?
+          rapproached.delete unless rapproached.nil?
         end
       end
     end
@@ -299,8 +305,8 @@ class TM
           national_app3.responsable = rapproached.responsable_new_contact
           national_app3.first_approach_date = rapproached.next_contact_date
           national_app3.create
-          national_app2_5.delete
-          rapproached.delete
+          national_app2_5.delete national_app2_5.nil?
+          rapproached.delete rapproached.nil?
         end
       end
     end
@@ -326,8 +332,8 @@ class TM
 
           national_app3.id_local = selected.create
           national_app3.create
-          national_app2.delete
-          approached.delete
+          national_app2.delete national_app2.nil?
+          approached.delete approached.nil?
         end
       end
     end
@@ -353,8 +359,8 @@ class TM
 
           national_app2_5.id_local = rapproached.create
           national_app2_5.create
-          national_app3.delete
-          selected.delete
+          national_app3.delete national_app3.nil?
+          selected.delete selected.nil?
         end
       end
     end
@@ -373,8 +379,8 @@ class TM
           national_app3 = @national_apps[:app3]
           national_app3 = national_app3.find_national_local_id(selected.id)[0]
 
-          national_app3.delete
-          selected.delete
+          national_app3.delete unless national_app3.nil?
+          selected.delete unless selected.nil?
         end
       end
     end
@@ -400,8 +406,8 @@ class TM
 
           national_app4.id_local = inducted.create
           national_app4.create
-          national_app3.delete
-          selected.delete
+          national_app3.delete unless national_app3.nil?
+          selected.delete unless selected.nil?
         end
       end
     end
@@ -427,8 +433,8 @@ class TM
 
           national_app5.id_local = client.create
           national_app5.create
-          national_app4.delete
-          inducted.delete
+          national_app4.delete unless national_app4.nil?
+          inducted.delete unless inducted.nil?
         end
       end
     end

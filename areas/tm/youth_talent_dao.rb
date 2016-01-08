@@ -38,7 +38,11 @@ class YouthTalentDAO < YouthLeaderDAO
             :internship_history => 'se-sim-especifique-pais-duracao-mesano-de-conclusao',
             :status => 'status',
             :leave_date => 'data-de-saida',
-            :leave_reason => 'motivo-de-saida'
+            :leave_reason => 'motivo-de-saida',
+            :university => 'universidade',
+            :major => 'curso',
+            :graduation_year => 'ano-de-formacao'
+
         }
         super(app_id, fields)
     end
@@ -48,24 +52,24 @@ class YouthTalentDAO < YouthLeaderDAO
     end
 
     def business_rule_lead_to_approach?(youth_talent)
-        true unless youth_talent.first_approach_date.nil? &&
-            youth_talent.responsable.nil? &&
+        true unless youth_talent.first_approach_date.nil? ||
+            youth_talent.responsable.nil? ||
             youth_talent.approach_channel.nil?
     end
 
     def business_rule_approach_to_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_rapproachement) &&
-            youth_talent.rapprochement_notes.nil? &&
+        true unless !say_yes?(youth_talent.send_to_rapproachement) ||
+            youth_talent.rapprochement_notes.nil? ||
             youth_talent.rapprochement_reason.nil?
     end
 
     def business_rule_stop_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.stop_approach) &&
+        true unless !say_yes?(youth_talent.stop_approach) ||
             youth_talent.approach_interruption_reason.nil?
     end
 
     def business_rule_rapproach_to_selection?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_selection) &&
+        true unless !say_yes?(youth_talent.send_to_selection) ||
             youth_talent.responsable_new_contact.nil?
     end
 
@@ -74,26 +78,26 @@ class YouthTalentDAO < YouthLeaderDAO
     end
 
     def business_rule_selection_to_rapproach?(youth_talent)
-        true unless !say_yes?(youth_talent.send_to_rapproachement) &&
+        true unless !say_yes?(youth_talent.send_to_rapproachement) ||
             !say_yes?(youth_talent.join_selection)
     end
 
     def business_rule_delete_selection?(youth_talent)
-        true unless !say_yes?(youth_talent.was_selected) &&
+        true unless !say_yes?(youth_talent.was_selected) ||
             youth_talent.feedback.nil?
     end
 
     def business_rule_selection_to_induction?(youth_talent)
-        true unless !say_yes?(youth_talent.join_selection) &&
-            !say_yes?(youth_talent.was_selected) &&
+        true unless !say_yes?(youth_talent.join_selection) ||
+            !say_yes?(youth_talent.was_selected) ||
             youth_talent.selection_type.nil?
     end
 
     def business_rule_induction_to_local_crm?(youth_talent)
-        true unless !say_yes?(youth_talent.has_volunteer_term) &&
-            !say_yes?(youth_talent.has_functional_induction) &&
-            !say_yes?(youth_talent.has_organizational_induction) &&
-            youth_talent.organizational_induction_date.nil? &&
+        true unless !say_yes?(youth_talent.has_volunteer_term) ||
+            !say_yes?(youth_talent.has_functional_induction) ||
+            !say_yes?(youth_talent.has_organizational_induction) ||
+            youth_talent.organizational_induction_date.nil? ||
             youth_talent.functional_induction_date.nil?
     end
 end

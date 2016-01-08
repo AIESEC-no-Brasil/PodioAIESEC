@@ -94,6 +94,7 @@ class OGX_GCDP
           if spaces.id(i) == work_id &&
               !spaces.entity(i).nil? &&
               spaces.entity(i).eql?(entity) &&
+              spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:ogcdp]
             case apps.name(j)
               when $enum_oGCDP_apps_name[:leads] then app1 = GlobalCitizenDAO.new(apps.id(j))
@@ -310,8 +311,8 @@ class OGX_GCDP
               original.update
               national_app2.id_local_1 = contacted.create
               national_app2.create
-              national_app1.delete
-              lead.delete
+              national_app1.delete unless national_app1.nil?
+              lead.delete unless lead.nil?
             when 3 then
               Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?
               original.id_local_2 = nil
@@ -324,10 +325,10 @@ class OGX_GCDP
               original.update
               national_app2.id_local_1 = contacted.create
               national_app2.create
-              national_app1.delete
-              lead.delete
+              national_app1.delete unless national_app1.nil?
+              lead.delete unless lead.nil?
             when 4 then
-              lead.delete
+              lead.delete unless lead.nil?
             else nil
           end
         end
@@ -345,8 +346,8 @@ class OGX_GCDP
 
           national_app3.id_local_1 = epi.create
           national_app3.create
-          national_app2.delete
-          contacted.delete
+          national_app2.delete unless national_app2.nil?
+          contacted.delete unless contacted.nil?
         end
       end
 
@@ -362,8 +363,8 @@ class OGX_GCDP
 
           national_app4.id_local_1 = open.create
           national_app4.create
-          national_app3.delete
-          epi.delete
+          national_app3.delete unless national_app3.nil?
+          epi.delete unless epi.nil?
         end
       end
 
@@ -380,8 +381,8 @@ class OGX_GCDP
 
           national_app5.id_local_1 = ip.create
           national_app5.create
-          national_app4.delete
-          open.delete
+          national_app4.delete unless national_app4.nil?
+          open.delete unless open.nil?
         end
       end
 
@@ -397,8 +398,8 @@ class OGX_GCDP
 
           national_app6.id_local_1 = ma.create
           national_app6.create
-          national_app5.delete
-          ip.delete
+          national_app5.delete unless national_app5.nil?
+          ip.delete unless ip.nil?
         end
       end
 
@@ -414,8 +415,8 @@ class OGX_GCDP
 
           national_app7.id_local_1 = re.create
           national_app7.create
-          national_app6.delete
-          ma.delete
+          national_app6.delete unless national_app6.nil?
+          ma.delete unless ma.nil?
         end
       end
 
@@ -431,8 +432,8 @@ class OGX_GCDP
 
           national_app8.id_local_1 = co.create
           national_app8.create
-          national_app7.delete
-          re.delete
+          national_app7.delete unless national_app7.nil?
+          re.delete unless re.nil?
         end
       end
 
@@ -468,9 +469,9 @@ class OGX_GCDP
           original = @ors.find_national_local_id_2(lead.id)[0]
           case lead.duplicate_vp
             when 2 then
-              lead.delete
+              lead.delete unless lead.nil?
             when 3 then
-              lead.delete
+              lead.delete unless lead.nil?
             when 4 then
               Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?
               original.id_local_1 = nil
@@ -483,8 +484,8 @@ class OGX_GCDP
               original.update
               national_app2.id_local_2 = contacted.create
               national_app2.create
-              national_app1.delete
-              lead.delete
+              national_app1.delete unless national_app1.nil?
+              lead.delete unless lead.nil?
             else nil
           end
         end
@@ -502,8 +503,8 @@ class OGX_GCDP
 
           national_app3.id_local_2 = epi.create
           national_app3.create
-          national_app2.delete
-          contacted.delete
+          national_app2.delete unless national_app2.nil?
+          contacted.delete unless contacted.nil?
         end
       end
 
@@ -519,8 +520,8 @@ class OGX_GCDP
 
           national_app4.id_local_2 = open.create
           national_app4.create
-          national_app3.delete
-          epi.delete
+          national_app3.delete unless national_app3.nil?
+          epi.delete unless epi.nil?
         end
       end
 
@@ -537,8 +538,8 @@ class OGX_GCDP
 
           national_app5.id_local_2 = ip.create
           national_app5.create
-          national_app4.delete
-          open.delete
+          national_app4.delete unless national_app4.nil?
+          open.delete unless open.nil?
         end
       end
 
@@ -554,8 +555,8 @@ class OGX_GCDP
 
           national_app6.id_local_2 = ma.create
           national_app6.create
-          national_app5.delete
-          ip.delete
+          national_app5.delete unless national_app5.nil?
+          ip.delete unless ip.nil?
         end
       end
 
@@ -571,8 +572,8 @@ class OGX_GCDP
 
           national_app7.id_local_2 = re.create
           national_app7.create
-          national_app6.delete
-          ma.delete
+          national_app6.delete unless national_app6.nil?
+          ma.delete unless ma.nil?
         end
       end
 
@@ -588,8 +589,8 @@ class OGX_GCDP
 
           national_app8.id_local_2 = co.create
           national_app8.create
-          national_app7.delete
-          re.delete
+          national_app7.delete unless national_app7.nil?
+          re.delete unless re.nil?
         end
       end
 

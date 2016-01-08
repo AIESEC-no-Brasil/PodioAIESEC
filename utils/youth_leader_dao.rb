@@ -42,6 +42,9 @@ class YouthLeaderDAO < PodioAppControl
     def find_ors_to_local_lead
         attributes = {:sort_by => 'created_on'}
         attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
+        attributes[:limit] = 500
+        #TODO: Baixar 500 de uma vez no lugar de 20 (20 eh default)
+
 
         response = Podio.connection.post do |req|
             req.url "/item/app/#{@app_id}/filter/"

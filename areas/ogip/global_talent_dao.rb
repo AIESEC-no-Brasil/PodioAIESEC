@@ -13,7 +13,7 @@ class GlobalTalentDAO < YouthLeaderDAO
       :course => 'curso-2', #ops
       :university => 'faculdade', #ops
       :best_moment => 'melhor-turno-test', #ops
-      :local_aiesec => 'aiesec-mais-proxima-2', #ops
+      :local_aiesec => 'aiesec-mais-proxima2', #ops
 			:interest => 'programa-de-interesse2',
 			:specific_opportunity => 'caso-voce-esta-se-candidatando-a-algum-projetovaga-espe',
 			:cv => 'cv',
