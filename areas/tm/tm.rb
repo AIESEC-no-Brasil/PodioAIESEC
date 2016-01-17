@@ -154,7 +154,7 @@ class TM
                       :app3 => app3,
                       :app4 => app4,
                       :app5 => app5,
-                      :app6 => app2_5}
+                      :app2_5 => app2_5}
   end
 
   def flow
@@ -305,8 +305,8 @@ class TM
           national_app3.responsable = rapproached.responsable_new_contact
           national_app3.first_approach_date = rapproached.next_contact_date
           national_app3.create
-          national_app2_5.delete national_app2_5.nil?
-          rapproached.delete rapproached.nil?
+          national_app2_5.delete unless national_app2_5.nil?
+          rapproached.delete unless rapproached.nil?
         end
       end
     end
@@ -332,8 +332,8 @@ class TM
 
           national_app3.id_local = selected.create
           national_app3.create
-          national_app2.delete national_app2.nil?
-          approached.delete approached.nil?
+          national_app2.delete unless national_app2.nil?
+          approached.delete unless approached.nil?
         end
       end
     end
@@ -359,8 +359,8 @@ class TM
 
           national_app2_5.id_local = rapproached.create
           national_app2_5.create
-          national_app3.delete national_app3.nil?
-          selected.delete selected.nil?
+          national_app3.delete unless national_app3.nil?
+          selected.delete unless selected.nil?
         end
       end
     end

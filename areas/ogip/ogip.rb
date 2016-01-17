@@ -68,7 +68,9 @@ class OGX_GIP
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id &&
+        if !work_id.nil? &&
+            !spaces.id(i).nil? &&
+            spaces.id(i) == work_id &&
             !spaces.entity(i).nil? &&
             spaces.area(i) == $enum_area[:ogip]
           @entities << spaces.entity(i)
@@ -90,7 +92,9 @@ class OGX_GIP
       for j in 0...apps.total_count
         work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
-          if spaces.id(i) == work_id &&
+          if !work_id.nil? &&
+              !spaces.id(i).nil? &&
+              spaces.id(i) == work_id &&
               !spaces.entity(i).nil? &&
               spaces.entity(i).eql?(entity) &&
               spaces.type(i) == $enum_type[:local] &&
@@ -152,6 +156,7 @@ class OGX_GIP
               spaces.id2(i) == work_id &&
               !spaces.entity(i).nil? &&
               spaces.entity(i).eql?(entity) &&
+              spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:ogip]
             case apps.name(j)
               when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
@@ -183,7 +188,8 @@ class OGX_GIP
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:national] &&
+          spaces.area(i) == $enum_area[:ogip]
         @national_space_id = spaces.id(i)
         break
       end
@@ -201,7 +207,11 @@ class OGX_GIP
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:ogip]
+        if !work_id.nil? &&
+            !spaces.id(i).nil? &&
+            spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:national] &&
+            spaces.area(i) == $enum_area[:ogip]
           case apps.name(j)
             when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
             when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(j))
@@ -254,7 +264,7 @@ class OGX_GIP
       local_lead_id = local_lead.create
       if local_leads2.is_a?(GlobalTalentDAO)
         local_leads2 = local_leads2.new_model(national_ors.to_h)
-        local_lead2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+        local_leads2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
         local_lead2_id = local_leads2.create
       end
       national_ors.id_local_1 = local_lead_id
@@ -299,29 +309,29 @@ class OGX_GIP
           original = @ors.find_national_local_id_1(lead.id)[0]
           case lead.duplicate_vp
             when 2 then
-              Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?
-              original.id_local_2 = nil
+              (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
+              original.id_local_2 = nil unless original.nil?
               contacted = contacteds.new_model(lead.to_h)
               national_app1 = @national_apps[:app1]
               national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
               national_app2 = @national_apps[:app2]
               national_app2 = national_app2.new_model(lead.to_h)
 
-              original.update
+              original.update unless original.nil?
               national_app2.id_local_1 = contacted.create
               national_app2.create
               national_app1.delete unless national_app1.nil?
               lead.delete unless lead.nil?
             when 3 then
-              Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?
-              original.id_local_2 = nil
+              (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
+              original.id_local_2 = nil unless original.nil?
               contacted = contacteds.new_model(lead.to_h)
               national_app1 = @national_apps[:app1]
               national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
               national_app2 = @national_apps[:app2]
               national_app2 = national_app2.new_model(lead.to_h)
 
-              original.update
+              original.update unless original.nil?
               national_app2.id_local_1 = contacted.create
               national_app2.create
               national_app1.delete unless national_app1.nil?
@@ -470,20 +480,20 @@ class OGX_GIP
             when 2 then
               lead.delete unless lead.nil?
             when 3 then
-              lead.delete unless lead.nil?
-            when 4 then
-              Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?
-              original.id_local_1 = nil
+              (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
+              original.id_local_1 = nil unless original.nil?
               contacted = contacteds.new_model(lead.to_h)
               national_app1 = @national_apps[:app1]
               national_app1 = national_app1.find_national_local_id_2(lead.id)[0]
               national_app2 = @national_apps[:app2]
               national_app2 = national_app2.new_model(lead.to_h)
 
-              original.update
+              original.update unless original.nil?
               national_app2.id_local_2 = contacted.create
               national_app2.create
               national_app1.delete unless national_app1.nil?
+              lead.delete unless lead.nil?
+            when 4 then
               lead.delete unless lead.nil?
             else nil
           end
