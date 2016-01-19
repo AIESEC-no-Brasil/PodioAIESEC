@@ -6,22 +6,6 @@ class HostDAO < PodioAppControl
 
   def initialize(app_id)
     fields = {
-        :name => 'titulo',
-        :sex => 'sexo',
-        :phones => 'telefone',
-        :emails => 'email',
-        :address => 'endereco-completo',
-        :zip_code => 'cep',
-        :city => 'cidade',
-        :state => 'estado',
-        :type_of_host => 'receberem-em',
-        :quantity_available => 'quantos-intercambistas-pretende-receber',
-        :max_time_of_xp => 'tempo-maximo-que-pretende-ser-host',
-        :best_moment => 'melhor-turno-para-a-aiesec-entrar-em-contato',
-        :local_aiesec => 'aiesec-mais-proxima',
-        :marketing_channel => 'categoria',
-        :indication => 'nome-da-pessoaentidade-que-lhe-indicou',
-        :sync_with_local => 'transferido-para-area-local',
         :first_contact_date => 'data-do-primeiro-contato',
         :first_contact_responsable => 'responsavel-pelo-primeiro-contato',
         :communication_channel => 'canal-de-comunicacao-utilizado',
@@ -37,12 +21,7 @@ class HostDAO < PodioAppControl
         :blacklist_intention => 'motivo-para-a-blacklist',
         :hosting => 'hospedando-no-momento',
         :nps => 'avaliacao',
-        :trainees => 'trainees-alocados',
-        :authorization => 'autorizo-receber-informacoes-sobre-os-projetos-de-inter',
-        :id_local_gcdp_1 => 'id-local-gcdp-1',
-        :id_local_gcdp_2 => 'id-local-gcdp-2',
-        :id_local_gip_1 => 'id-local-gip-1',
-        :id_local_gip_2 => 'id-local-gip-2',
+        :trainees => 'trainees-alocados'
     }
     super(app_id, fields)
   end

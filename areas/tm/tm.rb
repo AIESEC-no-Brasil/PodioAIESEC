@@ -197,7 +197,7 @@ class TM
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
       national_ors.sync_with_local = 2
 
-      national_app1.id_local = local_lead.create
+      national_ors.id_local = national_app1.id_local = local_lead.create
       national_app1.create
       national_ors.update
     end

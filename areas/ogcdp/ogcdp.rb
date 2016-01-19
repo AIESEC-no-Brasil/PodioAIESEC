@@ -251,13 +251,13 @@ class OGX_GCDP
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
 
-      next unless @local_apps_ids.has_key?(national_ors.local_aiesec)
-      local_leads = @local_apps_ids[national_ors.local_aiesec][:app1]
+      next unless @local_apps_ids.has_key?(national_ors.local_aiesec_ogcdp_ogip)
+      local_leads = @local_apps_ids[national_ors.local_aiesec_ogcdp_ogip][:app1]
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalCitizenDAO)
 
       local_leads2 = nil
       local_lead2_id = nil
-      local_leads2 = @local_apps_ids2[national_ors.local_aiesec][:app1] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec)
+      local_leads2 = @local_apps_ids2[national_ors.local_aiesec_ogcdp_ogip][:app1] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec_ogcdp_ogip)
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
@@ -337,7 +337,9 @@ class OGX_GCDP
               national_app1.delete unless national_app1.nil?
               lead.delete unless lead.nil?
             when 4 then
-              lead.delete unless lead.nil?
+              ((lead.delete unless lead.nil?) unless !original.id_local_2.nil?) unless original.nil?
+              original.id_local_1 = nil unless original.nil?
+              original.update unless original.nil?
             else nil
           end
         end
@@ -478,7 +480,9 @@ class OGX_GCDP
           original = @ors.find_national_local_id_2(lead.id)[0]
           case lead.duplicate_vp
             when 2 then
-              lead.delete unless lead.nil?
+              ((lead.delete unless lead.nil?) unless !original.id_local_1.nil?) unless original.nil?
+              original.id_local_2 = nil unless original.nil?
+              original.update unless original.nil?
             when 3 then
               (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
               original.id_local_1 = nil unless original.nil?
@@ -494,7 +498,9 @@ class OGX_GCDP
               national_app1.delete unless national_app1.nil?
               lead.delete unless lead.nil?
             when 4 then
-              lead.delete unless lead.nil?
+              ((lead.delete unless lead.nil?) unless !original.id_local_1.nil?) unless original.nil?
+              original.id_local_2 = nil unless original.nil?
+              original.update unless original.nil?
             else nil
           end
         end
