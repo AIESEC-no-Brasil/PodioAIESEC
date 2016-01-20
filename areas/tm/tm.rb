@@ -15,13 +15,112 @@ class TM
     abort('Wrong parameter for spaces in' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
-    configORS(spaces,apps)
-    configLocals(spaces, apps)
-    configNational(spaces, apps)
+    config(spaces,apps)
     flow
   end
 
   private
+
+  def config(spaces, apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    @local_spaces_ids = {}
+    @local_apps_ids = {}
+
+    for i in 0...spaces.total_count
+      if spaces.type(i) == $enum_type[:ors] &&
+          spaces.area(i) == $enum_area[:tm]
+        @ors_space_id = spaces.id(i)
+      end
+      if spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:tm]
+        @local_spaces_ids[spaces.id(i)] = nil
+      end
+      if spaces.type(i) == $enum_type[:national] &&
+          spaces.area(i) == $enum_area[:tm]
+        @national_space_id = spaces.id(i)
+      end
+    end
+
+    @entities = []
+    for i in 0...spaces.total_count
+      if !spaces.entity(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:tm]
+        @entities << spaces.entity(i)
+      end
+    end
+
+    @entities.uniq!
+    for entity in @entities do
+      app1 = nil
+      app2 = nil
+      app3 = nil
+      app4 = nil
+      app5 = nil
+      app2_5 = nil
+
+      @local_apps_ids[entity] = {:app1 => app1,
+                                 :app2 => app2,
+                                 :app3 => app3,
+                                 :app4 => app4,
+                                 :app5 => app5,
+                                 :app2_5 => app2_5}
+    end
+
+    app1 = nil
+    app2 = nil
+    app3 = nil
+    app4 = nil
+    app5 = nil
+    app2_5 = nil
+
+    @national_apps = {:app1 => app1,
+                      :app2 => app2,
+                      :app3 => app3,
+                      :app4 => app4,
+                      :app5 => app5,
+                      :app2_5 => app2_5}
+
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      if !work_id.nil? &&
+          !@ors_space_id.nil? &&
+          !@ors_space_id == work_id
+        @ors = YouthTalentDAO.new(apps.id(i))
+      end
+      for i in 0...spaces.total_count
+        if spaces.id(i) == work_id &&
+            !spaces.entity(i).nil? &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:tm]
+          case apps.name(j)
+            when $enum_TM_apps_name[:app1] then @local_apps_ids[spaces.entity(i)][:app1] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2] then @local_apps_ids[spaces.entity(i)][:app2] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app3] then @local_apps_ids[spaces.entity(i)][:app3] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app4] then @local_apps_ids[spaces.entity(i)][:app4] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app5] then @local_apps_ids[spaces.entity(i)][:app5] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2_5] then @local_apps_ids[spaces.entity(i)][:app2_5] = YouthTalentDAO.new(apps.id(j))
+          end
+        end
+
+        if !work_id.nil? &&
+            !@national_space_id.nil? &&
+            !spaces.id(i).nil? &&
+            spaces.id(i) == @national_space_id
+          case apps.name(j)
+            when $enum_TM_apps_name[:app1] then @national_apps[:app1] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2] then @national_apps[:app2] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app3] then @national_apps[:app3] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app4] then @national_apps[:app4] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app5] then @national_apps[:app5] = YouthTalentDAO.new(apps.id(j))
+            when $enum_TM_apps_name[:app2_5] then @national_apps[:app2_5] = YouthTalentDAO.new(apps.id(j))
+          end
+        end
+      end
+    end
+
+
+  end
 
   # Detect and configure every ORS workspace and ORS app that is linked to tm
   # @todo research how to raise global variable ors_space_id

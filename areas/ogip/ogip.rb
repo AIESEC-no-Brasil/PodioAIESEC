@@ -15,10 +15,178 @@ class OGX_GIP
     abort('Wrong parameter for spaces in ' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
-    configORS(spaces,apps)
-    configLocals(spaces, apps)
-    configNational(spaces, apps)
+    config(spaces,apps)
     flow
+  end
+
+  def config(spaces,apps)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    @local_spaces_ids = {}
+    @local_apps_ids = {}
+    @local_apps_ids2 = {}
+
+    for i in 0...spaces.total_count
+      if spaces.type(i) == $enum_type[:ors] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @ors_space_id = spaces.id(i)
+      end
+
+      if spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @local_spaces_ids[spaces.id(i)] = nil
+      end
+
+      if spaces.type(i) == $enum_type[:national] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @national_space_id = spaces.id(i)
+      end
+    end
+
+    @entities = []
+    for i in 0...spaces.total_count
+      if !spaces.entity(i).nil? &&
+          !spaces.id(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @entities << spaces.entity(i)
+      end
+    end
+
+    @entities2 = []
+    for i in 0...spaces.total_count
+      if !spaces.entity(i).nil? &&
+          !spaces.id2(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @entities2 << spaces.entity(i)
+      end
+    end
+
+    @entities.uniq!
+    for entity in @entities do
+      app1 = nil
+      app2 = nil
+      app3 = nil
+      app4 = nil
+      app5 = nil
+      app6 = nil
+      app7 = nil
+      app8 = nil
+
+      @local_apps_ids[entity] = {:app1 => app1,
+                                 :app2 => app2,
+                                 :app3 => app3,
+                                 :app4 => app4,
+                                 :app5 => app5,
+                                 :app6 => app6,
+                                 :app7 => app7,
+                                 :app8 => app8}
+    end
+
+    @entities2.uniq!
+    for entity in @entities2 do
+      app1 = nil
+      app2 = nil
+      app3 = nil
+      app4 = nil
+      app5 = nil
+      app6 = nil
+      app7 = nil
+      app8 = nil
+
+      @local_apps_ids2[entity] = {:app1 => app1,
+                                  :app2 => app2,
+                                  :app3 => app3,
+                                  :app4 => app4,
+                                  :app5 => app5,
+                                  :app6 => app6,
+                                  :app7 => app7,
+                                  :app8 => app8}
+    end
+
+    app1 = nil
+    app2 = nil
+    app3 = nil
+    app4 = nil
+    app5 = nil
+    app6 = nil
+    app7 = nil
+    app8 = nil
+
+    @national_apps = {:app1 => app1,
+                      :app2 => app2,
+                      :app3 => app3,
+                      :app4 => app4,
+                      :app5 => app5,
+                      :app6 => app6,
+                      :app7 => app7,
+                      :app8 => app8}
+
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+
+      if !work_id.nil? &&
+          !@ors_space_id.nil? &&
+          !@ors_space_id == work_id
+        @ors = GlobalCitizenDAO.new(apps.id(i))
+      end
+
+      for i in 0...spaces.total_count
+        if !work_id.nil? &&
+            !spaces.id(i).nil? &&
+            spaces.id(i) == work_id &&
+            !spaces.entity(i).nil? &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:ogip]
+          case apps.name(j)
+            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[spaces.entity(i)][:app1] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[spaces.entity(i)][:app2] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[spaces.entity(i)][:app3] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:open] then @local_apps_ids[spaces.entity(i)][:app4] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[spaces.entity(i)][:app5] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[spaces.entity(i)][:app6] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:re] then @local_apps_ids[spaces.entity(i)][:app7] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:co] then @local_apps_ids[spaces.entity(i)][:app8] = GlobalTalentDAO.new(apps.id(j))
+          end
+        end
+
+        if !work_id.nil? &&
+            !spaces.id2(i).nil? &&
+            spaces.id2(i) == work_id &&
+            !spaces.entity(i).nil?
+          spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:ogip]
+          case apps.name(j)
+            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[spaces.entity(i)][:app1] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[spaces.entity(i)][:app2] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids2[spaces.entity(i)][:app3] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:open] then @local_apps_ids2[spaces.entity(i)][:app4] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids2[spaces.entity(i)][:app5] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids2[spaces.entity(i)][:app6] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:re] then @local_apps_ids2[spaces.entity(i)][:app7] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:co] then @local_apps_ids2[spaces.entity(i)][:app8] = GlobalTalentDAO.new(apps.id(j))
+          end
+        end
+
+        if !work_id.nil? &&
+            !@national_space_id.nil? &&
+            !spaces.id(i).nil? &&
+            spaces.id(i) == @national_space_id
+          case apps.name(j)
+            when $enum_oGCDP_apps_name[:leads] then @national_apps[:app1] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:contacteds] then @national_apps[:app2] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:epi] then @national_apps[:app3] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:open] then @national_apps[:app4] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ip] then @national_apps[:app5] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:ma] then @national_apps[:app6] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:re] then @national_apps[:app7] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:co] then @national_apps[:app8] = GlobalTalentDAO.new(apps.id(j))
+          end
+        end
+
+      end
+    end
+
   end
 
   # Detect and configure every ORS workspace and ORS app that is linked to tm
