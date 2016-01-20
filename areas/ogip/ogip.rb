@@ -30,19 +30,20 @@ class OGX_GIP
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:ors] &&
+          spaces.area(i) == $enum_area[:ogip]
         @ors_space_id = spaces.id(i)
         break
       end
     end
 
     for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:ogip]
-          @ors = GlobalTalentDAO.new(apps.id(j))
-          break
-        end
+      work_id = apps.workspace_id_calculated(i)
+      if !work_id.nil? &&
+          !@ors_space_id.nil? &&
+          !@ors_space_id == work_id
+        @ors = GlobalTalentDAO.new(apps.id(i))
+        break
       end
     end
   end
@@ -59,22 +60,19 @@ class OGX_GIP
     @local_apps_ids2 = {}
 
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:ogip]
+      if spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
         @local_spaces_ids[spaces.id(i)] = nil
       end
     end
 
     @entities = []
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if !work_id.nil? &&
-            !spaces.id(i).nil? &&
-            spaces.id(i) == work_id &&
-            !spaces.entity(i).nil? &&
-            spaces.area(i) == $enum_area[:ogip]
-          @entities << spaces.entity(i)
-        end
+    for i in 0...spaces.total_count
+      if !spaces.entity(i).nil? &&
+          !spaces.id(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @entities << spaces.entity(i)
       end
     end
 
@@ -89,51 +87,23 @@ class OGX_GIP
       app7 = nil
       app8 = nil
 
-      for j in 0...apps.total_count
-        work_id = apps.workspace_id_calculated(j)
-        for i in 0...spaces.total_count
-          if !work_id.nil? &&
-              !spaces.id(i).nil? &&
-              spaces.id(i) == work_id &&
-              !spaces.entity(i).nil? &&
-              spaces.entity(i).eql?(entity) &&
-              spaces.type(i) == $enum_type[:local] &&
-              spaces.area(i) == $enum_area[:ogip]
-            case apps.name(j)
-              when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(j))
-            end
-          end
-          @local_apps_ids[entity] = {:app1 => app1,
-                                     :app2 => app2,
-                                     :app3 => app3,
-                                     :app4 => app4,
-                                     :app5 => app5,
-                                     :app6 => app6,
-                                     :app7 => app7,
-                                     :app8 => app8}
-
-        end
-      end
+      @local_apps_ids[entity] = {:app1 => app1,
+                                 :app2 => app2,
+                                 :app3 => app3,
+                                 :app4 => app4,
+                                 :app5 => app5,
+                                 :app6 => app6,
+                                 :app7 => app7,
+                                 :app8 => app8}
     end
 
     @entities2 = []
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id2_calculated(j)
-      for i in 0...spaces.total_count
-        if !work_id.nil? &&
-            !spaces.id2(i).nil? &&
-            spaces.id2(i) == work_id &&
-            !spaces.entity(i).nil? &&
-            spaces.area(i) == $enum_area[:ogip]
-          @entities2 << spaces.entity(i)
-        end
+    for i in 0...spaces.total_count
+      if !spaces.entity(i).nil? &&
+          !spaces.id2(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogip]
+        @entities2 << spaces.entity(i)
       end
     end
 
@@ -148,9 +118,39 @@ class OGX_GIP
       app7 = nil
       app8 = nil
 
+      @local_apps_ids2[entity] = {:app1 => app1,
+                                  :app2 => app2,
+                                  :app3 => app3,
+                                  :app4 => app4,
+                                  :app5 => app5,
+                                  :app6 => app6,
+                                  :app7 => app7,
+                                  :app8 => app8}
+    end
+
+    for entity in @entities
       for j in 0...apps.total_count
-        work_id = apps.workspace_id2_calculated(j)
+        work_id = apps.workspace_id_calculated(j)
         for i in 0...spaces.total_count
+          if !work_id.nil? &&
+              !spaces.id(i).nil? &&
+              spaces.id(i) == work_id &&
+              !spaces.entity(i).nil? &&
+              spaces.entity(i).eql?(entity) &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:ogip]
+            case apps.name(j)
+              when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[entity][:app1] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[entity][:app2] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[entity][:app3] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:open] then @local_apps_ids[entity][:app4] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[entity][:app5] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[entity][:app6] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:re] then @local_apps_ids[entity][:app7] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:co] then @local_apps_ids[entity][:app8] = GlobalTalentDAO.new(apps.id(j))
+            end
+          end
+
           if !work_id.nil? &&
               !spaces.id2(i).nil? &&
               spaces.id2(i) == work_id &&
@@ -159,25 +159,16 @@ class OGX_GIP
               spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:ogip]
             case apps.name(j)
-              when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(j))
-              when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[entity][:app1] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[entity][:app2] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:epi] then @local_apps_ids2[entity][:app3] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:open] then @local_apps_ids2[entity][:app4] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ip] then @local_apps_ids2[entity][:app5] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:ma] then @local_apps_ids2[entity][:app6] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:re] then @local_apps_ids2[entity][:app7] = GlobalTalentDAO.new(apps.id(j))
+              when $enum_oGCDP_apps_name[:co] then @local_apps_ids2[entity][:app8] = GlobalTalentDAO.new(apps.id(j))
             end
           end
-          @local_apps_ids2[entity] = {:app1 => app1,
-                                     :app2 => app2,
-                                     :app3 => app3,
-                                     :app4 => app4,
-                                     :app5 => app5,
-                                     :app6 => app6,
-                                     :app7 => app7,
-                                     :app8 => app8}
-
         end
       end
     end
@@ -204,27 +195,6 @@ class OGX_GIP
     app7 = nil
     app8 = nil
 
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if !work_id.nil? &&
-            !spaces.id(i).nil? &&
-            spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:national] &&
-            spaces.area(i) == $enum_area[:ogip]
-          case apps.name(j)
-            when $enum_oGIP_apps_name[:leads] then app1 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:contacteds] then app2 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:epi] then app3 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:open] then app4 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:ip] then app5 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:ma] then app6 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:re] then app7 = GlobalTalentDAO.new(apps.id(j))
-            when $enum_oGIP_apps_name[:co] then app8 = GlobalTalentDAO.new(apps.id(j))
-          end
-        end
-      end
-    end
     @national_apps = {:app1 => app1,
                       :app2 => app2,
                       :app3 => app3,
@@ -233,6 +203,27 @@ class OGX_GIP
                       :app6 => app6,
                       :app7 => app7,
                       :app8 => app8}
+
+    for j in 0...apps.total_count
+      work_id = apps.workspace_id_calculated(j)
+      for i in 0...spaces.total_count
+        if !work_id.nil? &&
+            !@national_space_id.nil? &&
+            !spaces.id.nil? &&
+            spaces.id(i) == @national_space_id
+          case apps.name(j)
+            when $enum_oGIP_apps_name[:leads] then @national_apps[:app1] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:contacteds] then @national_apps[:app2] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:epi] then @national_apps[:app3] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:open] then @national_apps[:app4] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:ip] then @national_apps[:app5] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:ma] then @national_apps[:app6] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:re] then @national_apps[:app7] = GlobalTalentDAO.new(apps.id(j))
+            when $enum_oGIP_apps_name[:co] then @national_apps[:app8] = GlobalTalentDAO.new(apps.id(j))
+          end
+        end
+      end
+    end
 
   end
 
@@ -254,6 +245,7 @@ class OGX_GIP
       next unless @local_apps_ids.has_key?(national_ors.local_aiesec_ogcdp_ogip)
       local_leads = @local_apps_ids[national_ors.local_aiesec_ogcdp_ogip][:app1]
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalTalentDAO)
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec_ogcdp_ogip.to_s + ' - ' + Time.now.utc.to_s)
 
       local_leads2 = nil
       local_lead2_id = nil
@@ -284,6 +276,7 @@ class OGX_GIP
   def local_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
       leads = @local_apps_ids[entity][:app1]
       contacteds = @local_apps_ids[entity][:app2]
       epis = @local_apps_ids[entity][:app3]
@@ -293,14 +286,14 @@ class OGX_GIP
       realizes = @local_apps_ids[entity][:app7]
       completes = @local_apps_ids[entity][:app8]
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s) unless completes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless contacteds.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless epis.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless opens.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless in_progress.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless matchs.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless realizes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless completes.is_a?(GlobalTalentDAO)
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
@@ -308,6 +301,21 @@ class OGX_GIP
         if leads.can_be_contacted?(lead)
           original = @ors.find_national_local_id_1(lead.id)[0]
           case lead.duplicate_vp
+            when 1 then
+              next unless @local_apps_ids2.has_key?(entity)
+              (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
+              original.id_local_2 = nil unless original.nil?
+              contacted = contacteds.new_model(lead.to_h)
+              national_app1 = @national_apps[:app1]
+              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
+              national_app2 = @national_apps[:app2]
+              national_app2 = national_app2.new_model(lead.to_h)
+
+              original.update unless original.nil?
+              national_app2.id_local_1 = contacted.create
+              national_app2.create
+              national_app1.delete unless national_app1.nil?
+              lead.delete unless lead.nil?
             when 2 then
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
               original.id_local_2 = nil unless original.nil?
@@ -455,6 +463,7 @@ class OGX_GIP
   def local_to_local2
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities2 do
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
       leads = @local_apps_ids2[entity][:app1]
       contacteds = @local_apps_ids2[entity][:app2]
       epis = @local_apps_ids2[entity][:app3]
@@ -464,14 +473,14 @@ class OGX_GIP
       realizes = @local_apps_ids2[entity][:app7]
       completes = @local_apps_ids2[entity][:app8]
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s) unless contacteds.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s) unless epis.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s) unless opens.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s) unless in_progress.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s) unless matchs.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s) unless realizes.is_a?(GlobalTalentDAO)
-      abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s) unless completes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless contacteds.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for epis in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless epis.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for opens in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless opens.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for in_progress in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless in_progress.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for matchs in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless matchs.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for realizes in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless realizes.is_a?(GlobalTalentDAO)
+      abort('Wrong parameter for completes in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless completes.is_a?(GlobalTalentDAO)
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true

@@ -61,16 +61,12 @@ class YouthLeaderDAO < PodioAppControl
         attributes = {:sort_by => 'created_on'}
         attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
         attributes[:limit] = 500
-        #TODO: Baixar 500 de uma vez no lugar de 20 (20 eh default)
-
 
         response = Podio.connection.post do |req|
             req.url "/item/app/#{@app_id}/filter/"
             req.body = attributes
         end
-        if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-          $podio_flag = false
-        end
+        check_rate_limit_remaining(response)
         create_models Podio::Item.collection(response.body).all
     end
 
@@ -82,9 +78,7 @@ class YouthLeaderDAO < PodioAppControl
         req.url "/item/app/#{@app_id}/filter/"
         req.body = attributes
       end
-      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-        $podio_flag = false
-      end
+      check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
     end
 
@@ -96,9 +90,7 @@ class YouthLeaderDAO < PodioAppControl
         req.url "/item/app/#{@app_id}/filter/"
         req.body = attributes
       end
-      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-        $podio_flag = false
-      end
+      check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
     end
 
@@ -110,9 +102,7 @@ class YouthLeaderDAO < PodioAppControl
         req.url "/item/app/#{@app_id}/filter/"
         req.body = attributes
       end
-      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
-        $podio_flag = false
-      end
+      check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
     end
 
@@ -125,12 +115,21 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_all
+      attributes = {:sort_by => 'created_on'}
+      attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
+      attributes[:limit] = 500
+
       response = Podio.connection.get do |req|
-        req.url("/item/app/#{@app_id}/", {:sort_by => 'created_on'})
+        req.url "/item/app/#{@app_id}/"
+        req.body = attributes
       end
-      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 10) then
+      check_rate_limit_remaining(response)
+      create_models Podio::Item.collection(response.body).all
+    end
+
+    def check_rate_limit_remaining(response)
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 15) then
         $podio_flag = false
       end
-      create_models Podio::Item.collection(response.body).all
     end
 end
