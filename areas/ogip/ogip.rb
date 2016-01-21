@@ -73,7 +73,7 @@ class OGX_GIP
           end
 
         elsif !entity.nil? &&
-            spaces.id(i).nil? &&
+            spaces.id2(i) == work_id &&
             spaces.type(i) == $enum_type[:local] &&
             spaces.area(i) == $enum_area[:ogip]
           case apps.name(j)
@@ -182,7 +182,7 @@ class OGX_GIP
           original = @ors.find_national_local_id_1(lead.id)[0]
           case lead.duplicate_vp
             when 1 then
-              next unless @local_apps_ids2.has_key?(entity)
+              next unless !@local_apps_ids2.has_key?(entity)
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
               original.id_local_2 = nil unless original.nil?
               contacted = contacteds.new_model(lead.to_h)

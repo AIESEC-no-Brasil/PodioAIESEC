@@ -36,9 +36,9 @@ class OGX_GCDP
         @local_apps_ids[spaces.entity(i)] = {:empty => ''}
       end
       if !spaces.entity(i).nil? &&
-               !spaces.id2(i).nil? &&
-               spaces.type(i) == $enum_type[:local] &&
-               spaces.area(i) == $enum_area[:ogcdp]
+          !spaces.id2(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:ogcdp]
         @entities2 << spaces.entity(i)
         @local_apps_ids2[spaces.entity(i)] = {:empty => ''}
       end
@@ -58,9 +58,9 @@ class OGX_GCDP
           @ors = GlobalCitizenDAO.new(apps.id(j))
 
         elsif !entity.nil? &&
-            spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:local] &&
-            spaces.area(i) == $enum_area[:ogcdp]
+              spaces.id(i) == work_id &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
             when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
             when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
@@ -73,9 +73,9 @@ class OGX_GCDP
           end
 
         elsif !entity.nil? &&
-            spaces.id2(i) == work_id &&
-            spaces.type(i) == $enum_type[:local] &&
-            spaces.area(i) == $enum_area[:ogcdp]
+              spaces.id2(i) == work_id &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
             when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
             when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
@@ -88,8 +88,8 @@ class OGX_GCDP
           end
 
         elsif spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:national] &&
-            spaces.area(i) == $enum_area[:ogcdp]
+              spaces.type(i) == $enum_type[:national] &&
+              spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
             when $enum_oGCDP_apps_name[:leads] then @national_apps[:app1] = GlobalCitizenDAO.new(apps.id(j))
             when $enum_oGCDP_apps_name[:contacteds] then @national_apps[:app2] = GlobalCitizenDAO.new(apps.id(j))
@@ -182,7 +182,7 @@ class OGX_GCDP
           original = @ors.find_national_local_id_1(lead.id)[0]
           case lead.duplicate_vp
             when 1 then
-              next unless @local_apps_ids2.has_key?(entity)
+              next unless !@local_apps_ids2.has_key?(entity)
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
               original.id_local_2 = nil unless original.nil?
               contacted = contacteds.new_model(lead.to_h)

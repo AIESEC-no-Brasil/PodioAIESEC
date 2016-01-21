@@ -232,7 +232,7 @@ class PodioAppControl
   def prepare_item(index)
     if @index.nil? || @index != (index/@max)*@max
       response = Podio.connection.get do |req|
-        req.url("/item/app/#{@app_id}/", :offset => (index/@max)*@max, :limit => @max, :sort_by => 'created_on')
+        req.url("/item/app/#{@app_id}/", :offset => (index/@max)*@max, :limit => @max, :sort_by => 'last_edit_on')
       end
       @item = Podio::Item.collection(response.body)
       @index = (index/@max)*@max

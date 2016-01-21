@@ -30,6 +30,7 @@ class TM
     @entities = []
     for i in 0...spaces.total_count
       if !spaces.entity(i).nil? &&
+          !spaces.id(i).nil? &&
           spaces.type(i) == $enum_type[:local] &&
           spaces.area(i) == $enum_area[:tm]
         @entities << spaces.entity(i)
@@ -50,8 +51,9 @@ class TM
           @ors = YouthTalentDAO.new(apps.id(j))
 
         elsif !entity.nil? &&
-            spaces.type(i) == $enum_type[:local] &&
-            spaces.area(i) == $enum_area[:tm]
+              spaces.id(i) == work_id &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:tm]
           case apps.name(j)
             when $enum_TM_apps_name[:app1] then @local_apps_ids[entity].merge!({:app1 => YouthTalentDAO.new(apps.id(j))})
             when $enum_TM_apps_name[:app2] then @local_apps_ids[entity].merge!({:app2 => YouthTalentDAO.new(apps.id(j))})
@@ -62,8 +64,8 @@ class TM
           end
 
         elsif spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:national] &&
-            spaces.area(i) == $enum_area[:tm]
+              spaces.type(i) == $enum_type[:national] &&
+              spaces.area(i) == $enum_area[:tm]
           case apps.name(j)
             when $enum_TM_apps_name[:app1] then @national_apps[:app1] = YouthTalentDAO.new(apps.id(j))
             when $enum_TM_apps_name[:app2] then @national_apps[:app2] = YouthTalentDAO.new(apps.id(j))

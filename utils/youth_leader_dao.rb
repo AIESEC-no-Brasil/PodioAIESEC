@@ -58,7 +58,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_ors_to_local_lead
-        attributes = {:sort_by => 'created_on'}
+        attributes = {:sort_by => 'last_edit_on'}
         attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
         attributes[:limit] = 500
 
@@ -71,7 +71,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_national_local_id(local_id)
-      attributes = {:sort_by => 'created_on'}
+      attributes = {:sort_by => 'last_edit_on'}
       attributes[:filters] = {@fields_name_map[:id_local][:id] => {'from'=>local_id,'to'=>local_id}}
 
       response = Podio.connection.post do |req|
@@ -83,7 +83,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_national_local_id_1(local_id)
-      attributes = {:sort_by => 'created_on'}
+      attributes = {:sort_by => 'last_edit_on'}
       attributes[:filters] = {@fields_name_map[:id_local_1][:id] => {'from'=>local_id,'to'=>local_id}}
 
       response = Podio.connection.post do |req|
@@ -95,7 +95,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_national_local_id_2(local_id)
-      attributes = {:sort_by => 'created_on'}
+      attributes = {:sort_by => 'last_edit_on'}
       attributes[:filters] = {@fields_name_map[:id_local_2][:id] => {'from'=>local_id,'to'=>local_id}}
 
       response = Podio.connection.post do |req|
@@ -116,7 +116,7 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_all
       response = Podio.connection.get do |req|
-        req.url("/item/app/#{@app_id}/", {:sort_by => 'created_on', :limit => 500})
+        req.url("/item/app/#{@app_id}/", {:sort_by => 'last_edit_on', :limit => 500})
       end
       check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
