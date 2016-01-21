@@ -21,157 +21,75 @@ class OGX_GCDP
 
   def config(spaces,apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = {}
     @local_apps_ids = {}
     @local_apps_ids2 = {}
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:ors] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @ors_space_id = spaces.id(i)
-      end
-
-      if spaces.type(i) == $enum_type[:local] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @local_spaces_ids[spaces.id(i)] = nil
-      end
-
-      if spaces.type(i) == $enum_type[:national] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @national_space_id = spaces.id(i)
-      end
-    end
+    @national_apps = {}
 
     @entities = []
+    @entities2 = []
     for i in 0...spaces.total_count
       if !spaces.entity(i).nil? &&
           !spaces.id(i).nil? &&
           spaces.type(i) == $enum_type[:local] &&
           spaces.area(i) == $enum_area[:ogcdp]
         @entities << spaces.entity(i)
+        @local_apps_ids[spaces.entity(i)] = {:empty => ''}
       end
-    end
-
-    @entities2 = []
-    for i in 0...spaces.total_count
       if !spaces.entity(i).nil? &&
-          !spaces.id2(i).nil? &&
-          spaces.type(i) == $enum_type[:local] &&
-          spaces.area(i) == $enum_area[:ogcdp]
+               !spaces.id2(i).nil? &&
+               spaces.type(i) == $enum_type[:local] &&
+               spaces.area(i) == $enum_area[:ogcdp]
         @entities2 << spaces.entity(i)
+        @local_apps_ids2[spaces.entity(i)] = {:empty => ''}
       end
     end
-
     @entities.uniq!
-    for entity in @entities do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      app4 = nil
-      app5 = nil
-      app6 = nil
-      app7 = nil
-      app8 = nil
-
-      @local_apps_ids[entity] = {:app1 => app1,
-                                 :app2 => app2,
-                                 :app3 => app3,
-                                 :app4 => app4,
-                                 :app5 => app5,
-                                 :app6 => app6,
-                                 :app7 => app7,
-                                 :app8 => app8}
-    end
-
     @entities2.uniq!
-    for entity in @entities2 do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      app4 = nil
-      app5 = nil
-      app6 = nil
-      app7 = nil
-      app8 = nil
-
-      @local_apps_ids2[entity] = {:app1 => app1,
-                                  :app2 => app2,
-                                  :app3 => app3,
-                                  :app4 => app4,
-                                  :app5 => app5,
-                                  :app6 => app6,
-                                  :app7 => app7,
-                                  :app8 => app8}
-    end
-
-    app1 = nil
-    app2 = nil
-    app3 = nil
-    app4 = nil
-    app5 = nil
-    app6 = nil
-    app7 = nil
-    app8 = nil
-
-    @national_apps = {:app1 => app1,
-                      :app2 => app2,
-                      :app3 => app3,
-                      :app4 => app4,
-                      :app5 => app5,
-                      :app6 => app6,
-                      :app7 => app7,
-                      :app8 => app8}
 
     for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-
-      if !work_id.nil? &&
-          !@ors_space_id.nil? &&
-          !@ors_space_id == work_id
-        @ors = GlobalCitizenDAO.new(apps.id(i))
-      end
-
+      work_id = apps.workspace_id_calculated(j) || apps.workspace_id2_calculated(j)
       for i in 0...spaces.total_count
-        if !work_id.nil? &&
-            !spaces.id(i).nil? &&
+        next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil?)
+        entity = spaces.entity(i)
+
+        if spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:ors] &&
+            spaces.area(i) == $enum_area[:ogcdp]
+          @ors = GlobalCitizenDAO.new(apps.id(j))
+
+        elsif !entity.nil? &&
             spaces.id(i) == work_id &&
-            !spaces.entity(i).nil? &&
             spaces.type(i) == $enum_type[:local] &&
             spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
-            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[spaces.entity(i)][:app1] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[spaces.entity(i)][:app2] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[spaces.entity(i)][:app3] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:open] then @local_apps_ids[spaces.entity(i)][:app4] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[spaces.entity(i)][:app5] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[spaces.entity(i)][:app6] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:re] then @local_apps_ids[spaces.entity(i)][:app7] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:co] then @local_apps_ids[spaces.entity(i)][:app8] = GlobalCitizenDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[entity].merge!({:app3 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:open] then @local_apps_ids[entity].merge!({:app4 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[entity].merge!({:app5 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[entity].merge!({:app6 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:re] then @local_apps_ids[entity].merge!({:app7 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:co] then @local_apps_ids[entity].merge!({:app8 => GlobalCitizenDAO.new(apps.id(j))})
           end
-        end
 
-        if !work_id.nil? &&
-            !spaces.id2(i).nil? &&
+        elsif !entity.nil? &&
             spaces.id2(i) == work_id &&
-            !spaces.entity(i).nil?
             spaces.type(i) == $enum_type[:local] &&
             spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
-            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[spaces.entity(i)][:app1] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[spaces.entity(i)][:app2] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids2[spaces.entity(i)][:app3] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:open] then @local_apps_ids2[spaces.entity(i)][:app4] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids2[spaces.entity(i)][:app5] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids2[spaces.entity(i)][:app6] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:re] then @local_apps_ids2[spaces.entity(i)][:app7] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:co] then @local_apps_ids2[spaces.entity(i)][:app8] = GlobalCitizenDAO.new(apps.id(j))
+            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids2[entity].merge!({:app3 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:open] then @local_apps_ids2[entity].merge!({:app4 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids2[entity].merge!({:app5 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids2[entity].merge!({:app6 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:re] then @local_apps_ids2[entity].merge!({:app7 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:co] then @local_apps_ids2[entity].merge!({:app8 => GlobalCitizenDAO.new(apps.id(j))})
           end
-        end
 
-        if !work_id.nil? &&
-            !@national_space_id.nil? &&
-            !spaces.id(i).nil? &&
-            spaces.id(i) == @national_space_id
+        elsif spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:national] &&
+            spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
             when $enum_oGCDP_apps_name[:leads] then @national_apps[:app1] = GlobalCitizenDAO.new(apps.id(j))
             when $enum_oGCDP_apps_name[:contacteds] then @national_apps[:app2] = GlobalCitizenDAO.new(apps.id(j))
@@ -184,213 +102,6 @@ class OGX_GCDP
           end
         end
 
-      end
-    end
-
-  end
-
-  # Detect and configure every ORS workspace and ORS app that is linked to oGCDP
-  # @todo research how to raise global variable ors_space_id
-  # @todo research how to raise global variable ors_app
-  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
-  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
-  def configORS(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:ors] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @ors_space_id = spaces.id(i)
-        break
-      end
-    end
-
-    for i in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(i)
-      if !work_id.nil? &&
-          !@ors_space_id.nil? &&
-          !@ors_space_id == work_id
-        @ors = GlobalCitizenDAO.new(apps.id(i))
-        break
-      end
-    end
-
-  end
-
-  # Detect and configure every Locals workspaces and Locals apps taht are linkted to oGCDP
-  # @todo research how to raise global array local_spaces_ids
-  # @todo research how to raise global hash local_apps_ids
-  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
-  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
-  def configLocals(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = {}
-    @local_apps_ids = {}
-    @local_apps_ids2 = {}
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:local] &&
-          spaces.area(i) == $enum_area[:gcdp]
-        @local_spaces_ids[spaces.id(i)] = nil
-      end
-    end
-
-    @entities = []
-    for i in 0...spaces.total_count
-      if !spaces.entity(i).nil? &&
-          !spaces.id(i).nil? &&
-          spaces.type(i) == $enum_type[:local] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @entities << spaces.entity(i)
-      end
-    end
-
-    @entities.uniq!
-    for entity in @entities do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      app4 = nil
-      app5 = nil
-      app6 = nil
-      app7 = nil
-      app8 = nil
-
-      @local_apps_ids[entity] = {:app1 => app1,
-                                 :app2 => app2,
-                                 :app3 => app3,
-                                 :app4 => app4,
-                                 :app5 => app5,
-                                 :app6 => app6,
-                                 :app7 => app7,
-                                 :app8 => app8}
-    end
-
-    @entities2 = []
-    for i in 0...spaces.total_count
-      if !spaces.entity(i).nil? &&
-          !spaces.id2(i).nil? &&
-          spaces.type(i) == $enum_type[:local] &&
-          spaces.area(i) == $enum_area[:ogcdp]
-        @entities2 << spaces.entity(i)
-      end
-    end
-
-    @entities2.uniq!
-    for entity in @entities2 do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      app4 = nil
-      app5 = nil
-      app6 = nil
-      app7 = nil
-      app8 = nil
-
-      @local_apps_ids2[entity] = {:app1 => app1,
-                                 :app2 => app2,
-                                 :app3 => app3,
-                                 :app4 => app4,
-                                 :app5 => app5,
-                                 :app6 => app6,
-                                 :app7 => app7,
-                                 :app8 => app8}
-    end
-
-    for entity in @entities
-      for j in 0...apps.total_count
-        work_id = apps.workspace_id_calculated(j)
-        for i in 0...spaces.total_count
-          if !work_id.nil? &&
-              !spaces.id(i).nil? &&
-              spaces.id(i) == work_id &&
-              !spaces.entity(i).nil? &&
-              spaces.entity(i).eql?(entity) &&
-              spaces.type(i) == $enum_type[:local] &&
-              spaces.area(i) == $enum_area[:ogcdp]
-            case apps.name(j)
-              when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[entity][:app1] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[entity][:app2] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[entity][:app3] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:open] then @local_apps_ids[entity][:app4] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[entity][:app5] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[entity][:app6] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:re] then @local_apps_ids[entity][:app7] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:co] then @local_apps_ids[entity][:app8] = GlobalCitizenDAO.new(apps.id(j))
-            end
-          end
-
-          if !work_id.nil? &&
-              !spaces.id2(i).nil? &&
-              spaces.id2(i) == work_id &&
-              !spaces.entity(i).nil? &&
-              spaces.entity(i).eql?(entity) &&
-              spaces.type(i) == $enum_type[:local] &&
-              spaces.area(i) == $enum_area[:ogcdp]
-            case apps.name(j)
-              when $enum_oGCDP_apps_name[:leads] then @local_apps_ids2[entity][:app1] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids2[entity][:app2] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:epi] then @local_apps_ids2[entity][:app3] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:open] then @local_apps_ids2[entity][:app4] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:ip] then @local_apps_ids2[entity][:app5] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:ma] then @local_apps_ids2[entity][:app6] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:re] then @local_apps_ids2[entity][:app7] = GlobalCitizenDAO.new(apps.id(j))
-              when $enum_oGCDP_apps_name[:co] then @local_apps_ids2[entity][:app8] = GlobalCitizenDAO.new(apps.id(j))
-            end
-          end
-        end
-      end
-    end
-
-  end
-
-  def configNational(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:national] &&
-          spaces.area(i) == $enum_area[:ogip]
-        @national_space_id = spaces.id(i)
-        break
-      end
-    end
-
-    app1 = nil
-    app2 = nil
-    app3 = nil
-    app4 = nil
-    app5 = nil
-    app6 = nil
-    app7 = nil
-    app8 = nil
-
-    @national_apps = {:app1 => app1,
-                      :app2 => app2,
-                      :app3 => app3,
-                      :app4 => app4,
-                      :app5 => app5,
-                      :app6 => app6,
-                      :app7 => app7,
-                      :app8 => app8}
-
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if !work_id.nil? &&
-            !@national_space_id.nil? &&
-            !spaces.id.nil? &&
-            spaces.id(i) == @national_space_id
-          case apps.name(j)
-            when $enum_oGCDP_apps_name[:leads] then @national_apps[:app1] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:contacteds] then @national_apps[:app2] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:epi] then @national_apps[:app3] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:open] then @national_apps[:app4] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ip] then @national_apps[:app5] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:ma] then @national_apps[:app6] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:re] then @national_apps[:app7] = GlobalCitizenDAO.new(apps.id(j))
-            when $enum_oGCDP_apps_name[:co] then @national_apps[:app8] = GlobalCitizenDAO.new(apps.id(j))
-          end
-        end
       end
     end
 
