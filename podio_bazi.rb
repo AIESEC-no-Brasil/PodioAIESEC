@@ -105,9 +105,10 @@ class PodioBAZI
       #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
       #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
 
-      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       TM.new(podioDatabase.workspaces, podioDatabase.apps)
+
       #TODO fin
       #TODO mkt
       #TODO bd

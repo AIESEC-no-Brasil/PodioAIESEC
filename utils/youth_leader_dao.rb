@@ -58,7 +58,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_ors_to_local_lead
-        attributes = {:sort_by => 'last_edit_on'}
+        attributes = {:sort_by => 'last_edit_on', :created_by => {:type => 'user', :id => 0}}
         attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
         attributes[:limit] = 500
 
@@ -116,7 +116,7 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_all
       response = Podio.connection.get do |req|
-        req.url("/item/app/#{@app_id}/", {:sort_by => 'last_edit_on', :limit => 500})
+        req.url("/item/app/#{@app_id}/", {:sort_by => 'last_edit_on', :limit => 500, :created_by => {:type => 'user', :id => 0}})
       end
       check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
