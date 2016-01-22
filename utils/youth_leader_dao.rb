@@ -115,8 +115,12 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_all
-      response = Podio.connection.get do |req|
-        req.url("/item/app/#{@app_id}/", {:sort_by => 'last_edit_on', :limit => 500, :created_by => {:type => 'user', :id => 0}})
+      attributes = {:sort_by => 'last_edit_on', :created_by => {:type => 'user', :id => 0}}
+      attributes[:limit] = 500
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
       end
       check_rate_limit_remaining(response)
       create_models Podio::Item.collection(response.body).all
