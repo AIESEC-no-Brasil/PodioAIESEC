@@ -61,7 +61,7 @@ class PodioAppControl
   end
 
   def say_yes?(value)
-    value == 2
+    value > 1
   end
 
   def hashing(model)

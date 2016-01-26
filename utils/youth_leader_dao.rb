@@ -58,7 +58,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_ors_to_local_lead
-        attributes = {:sort_by => 'last_edit_on', :created_by => {:type => 'user', :id => 0}}
+        attributes = {:sort_by => 'last_edit_on'}
         attributes[:filters] = {@fields_name_map[:sync_with_local][:id] => 1}
         attributes[:limit] = 500
 
