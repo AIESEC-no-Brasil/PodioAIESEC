@@ -125,6 +125,6 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new(false, true)
+PodioBAZI.new(false, false)
 
 
