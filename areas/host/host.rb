@@ -88,8 +88,8 @@ class HOST
             when $enum_HOST_apps_name[:approach] then @local_apps_ids1[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:reapproach] then @local_apps_ids1[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:alignment] then @local_apps_ids1[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids1[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids1[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids1[entity].merge!({:black => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids1[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
           end
 
         elsif !entity.nil? &&
@@ -101,8 +101,8 @@ class HOST
             when $enum_HOST_apps_name[:approach] then @local_apps_ids2[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:reapproach] then @local_apps_ids2[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:alignment] then @local_apps_ids2[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids2[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids2[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids2[entity].merge!({:black => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids2[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
           end
 
         elsif !entity.nil? &&
@@ -114,8 +114,8 @@ class HOST
             when $enum_HOST_apps_name[:approach] then @local_apps_ids3[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:reapproach] then @local_apps_ids3[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:alignment] then @local_apps_ids3[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids3[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids3[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids3[entity].merge!({:black => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids3[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
           end
 
         elsif !entity.nil? &&
@@ -127,8 +127,8 @@ class HOST
             when $enum_HOST_apps_name[:approach] then @local_apps_ids4[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:reapproach] then @local_apps_ids4[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:alignment] then @local_apps_ids4[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids4[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids4[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids4[entity].merge!({:black => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids4[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
           end
 
         elsif spaces.id(i) == work_id &&
@@ -139,8 +139,8 @@ class HOST
             when $enum_HOST_apps_name[:approach] then @national_apps[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:reapproach] then @national_apps[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:alignment] then @national_apps[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @national_apps[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @national_apps[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @national_apps[entity].merge!({:black => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @national_apps[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
           end
         end
       end
@@ -220,8 +220,8 @@ class HOST
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app2].is_a?(HostDAO)
       abort('Wrong parameter for reapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app2_5].is_a?(HostDAO)
       abort('Wrong parameter for alignment in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app3].is_a?(HostDAO)
-      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app4].is_a?(HostDAO)
-      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app5].is_a?(HostDAO)
+      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:black].is_a?(HostDAO)
+      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:app4].is_a?(HostDAO)
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
@@ -239,9 +239,8 @@ class HOST
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:app3].find_all.each do |aligned|
-        local_to_local_helper(iteration, aligned, :app2_5) if local_apps_ids[iteration][entity][:app3].return_to_reapproach?(aligned)
-        local_to_local_helper(iteration, aligned, :app4) if local_apps_ids[iteration][entity][:app3].go_to_blacklist?(aligned)
-        local_to_local_helper(iteration, aligned, :app5) if local_apps_ids[iteration][entity][:app3].go_to_whitelist?(aligned)
+        local_to_local_helper(iteration, aligned, :black) if local_apps_ids[iteration][entity][:app3].go_to_blacklist?(aligned)
+        local_to_local_helper(iteration, aligned, :app4) if local_apps_ids[iteration][entity][:app3].go_to_whitelist?(aligned)
       end
 
       sleep(3600) unless $podio_flag == true

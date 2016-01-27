@@ -36,39 +36,81 @@ class GlobalCitizenDAO < YouthLeaderDAO
 	end
 
 	def can_be_contacted?(global_citizen)
-		true unless global_citizen.first_approach_date.nil? ||
-				global_citizen.first_contact_responsable.nil? ||
-				!say_yes?(global_citizen.approach_result) ||
-				global_citizen.approach_channel.nil?
+    begin
+      true unless global_citizen.first_approach_date.nil? ||
+          global_citizen.first_contact_responsable.nil? ||
+          !say_yes?(global_citizen.approach_result) ||
+          global_citizen.approach_channel.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_EPI?(global_citizen)
-		true unless global_citizen.epi_date.nil? ||
-				global_citizen.epi_responsable.nil?
+    begin
+      true unless global_citizen.epi_date.nil? ||
+          global_citizen.epi_responsable.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_open?(global_citizen)
 		#TODO verificar se o link é realmente do expa. Usar include? para string
-		true unless global_citizen.link_to_expa.nil? ||
-				global_citizen.ep_manager.nil?
+    begin
+      true unless global_citizen.link_to_expa.nil? ||
+          global_citizen.ep_manager.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_ip?(global_citizen)
-		say_yes?(global_citizen.applying)
+    begin
+      say_yes?(global_citizen.applying)
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_ma?(global_citizen)
-		true unless global_citizen.match_date.nil? ||
-				global_citizen.country_host.nil? ||
-				global_citizen.lc_host.nil?
+    begin
+      true unless global_citizen.match_date.nil? ||
+          global_citizen.country_host.nil? ||
+          global_citizen.lc_host.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_re?(global_citizen)
-		true unless global_citizen.ops_date.nil? ||
-				global_citizen.realize_date.nil?
+    begin
+      true unless global_citizen.ops_date.nil? ||
+          global_citizen.realize_date.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_co?(global_citizen)
-		true unless global_citizen.complete_date.nil?
-	end
+    begin
+      true unless global_citizen.complete_date.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
+  end
 end
