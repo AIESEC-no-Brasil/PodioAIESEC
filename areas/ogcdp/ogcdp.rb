@@ -148,8 +148,10 @@ class OGX_GCDP
         end
         national_ors.update
         national_app1.create
-      rescue
-        puts 'error'
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtracce
+        puts 'ERROR'
       end
     end
   end
@@ -200,8 +202,10 @@ class OGX_GCDP
                 national_app2.create
                 national_app1.delete unless national_app1.nil?
                 lead.delete unless lead.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             when 2 then
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
@@ -218,8 +222,10 @@ class OGX_GCDP
                 national_app2.create
                 national_app1.delete unless national_app1.nil?
                 lead.delete unless lead.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             when 3 then
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
@@ -236,16 +242,20 @@ class OGX_GCDP
                 national_app2.create
                 national_app1.delete unless national_app1.nil?
                 lead.delete unless lead.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             when 4 then
               begin
                 ((lead.delete unless lead.nil?) unless !original.id_local_2.nil?) unless original.nil?
                 original.id_local_1 = nil unless original.nil?
                 original.update unless original.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             else nil
           end
@@ -267,8 +277,10 @@ class OGX_GCDP
             national_app3.create
             national_app2.delete unless national_app2.nil?
             contacted.delete unless contacted.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -288,8 +300,10 @@ class OGX_GCDP
             national_app4.create
             national_app3.delete unless national_app3.nil?
             epi.delete unless epi.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -310,8 +324,10 @@ class OGX_GCDP
             national_app5.create
             national_app4.delete unless national_app4.nil?
             open.delete unless open.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -331,8 +347,10 @@ class OGX_GCDP
             national_app6.create
             national_app5.delete unless national_app5.nil?
             ip.delete unless ip.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -352,8 +370,10 @@ class OGX_GCDP
             national_app7.create
             national_app6.delete unless national_app6.nil?
             ma.delete unless ma.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -373,8 +393,10 @@ class OGX_GCDP
             national_app8.create
             national_app7.delete unless national_app7.nil?
             re.delete unless re.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -416,8 +438,10 @@ class OGX_GCDP
                 ((lead.delete unless lead.nil?) unless !original.id_local_1.nil?) unless original.nil?
                 original.id_local_2 = nil unless original.nil?
                 original.update unless original.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             when 3 then
               (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
@@ -434,8 +458,10 @@ class OGX_GCDP
                 national_app2.create
                 national_app1.delete unless national_app1.nil?
                 lead.delete unless lead.nil?
-              rescue
-                puts 'error'
+              rescue => exception
+                puts 'ERROR'
+                puts exception.backtracce
+                puts 'ERROR'
               end
             else nil
           end
@@ -457,8 +483,10 @@ class OGX_GCDP
             national_app3.create
             national_app2.delete unless national_app2.nil?
             contacted.delete unless contacted.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -478,8 +506,10 @@ class OGX_GCDP
             national_app4.create
             national_app3.delete unless national_app3.nil?
             epi.delete unless epi.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -500,8 +530,10 @@ class OGX_GCDP
             national_app5.create
             national_app4.delete unless national_app4.nil?
             open.delete unless open.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -521,8 +553,10 @@ class OGX_GCDP
             national_app6.create
             national_app5.delete unless national_app5.nil?
             ip.delete unless ip.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -542,8 +576,10 @@ class OGX_GCDP
             national_app7.create
             national_app6.delete unless national_app6.nil?
             ma.delete unless ma.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -563,8 +599,10 @@ class OGX_GCDP
             national_app8.create
             national_app7.delete unless national_app7.nil?
             re.delete unless re.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
