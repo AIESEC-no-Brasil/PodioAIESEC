@@ -149,7 +149,7 @@ class OGX_GCDP
         national_app1.create
       rescue => exception
         puts 'ERROR'
-        puts exception.backtracce
+        puts exception.backtrace
         puts 'ERROR'
       end
     end
@@ -203,7 +203,7 @@ class OGX_GCDP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             when 2 then
@@ -223,7 +223,7 @@ class OGX_GCDP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             when 3 then
@@ -243,7 +243,7 @@ class OGX_GCDP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             when 4 then
@@ -253,7 +253,7 @@ class OGX_GCDP
                 original.update unless original.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             else nil
@@ -278,7 +278,7 @@ class OGX_GCDP
             contacted.delete unless contacted.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -301,7 +301,7 @@ class OGX_GCDP
             epi.delete unless epi.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -325,7 +325,7 @@ class OGX_GCDP
             open.delete unless open.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -348,7 +348,7 @@ class OGX_GCDP
             ip.delete unless ip.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -371,7 +371,7 @@ class OGX_GCDP
             ma.delete unless ma.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -394,7 +394,7 @@ class OGX_GCDP
             re.delete unless re.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -439,7 +439,7 @@ class OGX_GCDP
                 original.update unless original.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             when 3 then
@@ -459,7 +459,7 @@ class OGX_GCDP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtracce
+                puts exception.backtrace
                 puts 'ERROR'
               end
             else nil
@@ -484,7 +484,7 @@ class OGX_GCDP
             contacted.delete unless contacted.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -507,7 +507,7 @@ class OGX_GCDP
             epi.delete unless epi.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -531,7 +531,7 @@ class OGX_GCDP
             open.delete unless open.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -554,7 +554,7 @@ class OGX_GCDP
             ip.delete unless ip.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -577,7 +577,7 @@ class OGX_GCDP
             ma.delete unless ma.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -600,7 +600,7 @@ class OGX_GCDP
             re.delete unless re.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
