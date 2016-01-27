@@ -239,11 +239,11 @@ class TM
       $podio_flag = true
       selectiones.find_all.each do |selection|
         if selectiones.business_rule_selection_to_rapproach?(selection)
-          rapproached = rapproaches.new_model(selected.to_h)
+          rapproached = rapproaches.new_model(selection.to_h)
           national_app3 = @national_apps[:app3]
           national_app2_5 = @national_apps[:app2_5]
-          national_app3 = national_app3.find_national_local_id(selected.id)[0]
-          national_app2_5 = national_app2_5.new_model(selected.to_h)
+          national_app3 = national_app3.find_national_local_id(selection.id)[0]
+          national_app2_5 = national_app2_5.new_model(selection.to_h)
 
           begin
             national_app2_5.id_local = rapproached.create
@@ -257,7 +257,7 @@ class TM
 
         if selectiones.business_rule_delete_selection?(selection)
           national_app3 = @national_apps[:app3]
-          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+          national_app3 = national_app3.find_national_local_id(selection.id)[0]
 
           begin
             national_app3.delete unless national_app3.nil?
@@ -268,11 +268,11 @@ class TM
         end
 
         if selectiones.business_rule_selection_to_induction?(selection)
-          inducted = inductiones.new_model(selected.to_h)
+          inducted = inductiones.new_model(selection.to_h)
           national_app3 = @national_apps[:app3]
           national_app4 = @national_apps[:app4]
-          national_app3 = national_app3.find_national_local_id(selected.id)[0]
-          national_app4 = national_app4.new_model(selected.to_h)
+          national_app3 = national_app3.find_national_local_id(selection.id)[0]
+          national_app4 = national_app4.new_model(selection.to_h)
 
           national_app4.id_local = inducted.create
           national_app4.create
