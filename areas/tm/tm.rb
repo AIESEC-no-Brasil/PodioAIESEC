@@ -111,8 +111,10 @@ class TM
         national_ors.id_local = national_app1.id_local = local_lead.create
         national_app1.create
         national_ors.update
-      rescue
-        puts 'error'
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtracce
+        puts 'ERROR'
       end
     end
   end
@@ -151,8 +153,10 @@ class TM
             national_app2.create
             national_app1.delete unless national_app1.nil?
             lead.delete unless lead.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -174,8 +178,10 @@ class TM
             national_app2_5.create
             national_app2.delete unless national_app2.nil?
             approached.delete unless approached.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
 
@@ -191,8 +197,10 @@ class TM
             national_app3.create
             national_app2.delete unless national_app2.nil?
             approached.delete unless approached.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
 
         end
@@ -208,8 +216,10 @@ class TM
           begin
             national_app2_5.delete unless national_app2_5.nil?
             rapproached.delete unless rapproached.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
 
@@ -229,8 +239,10 @@ class TM
             national_app3.create
             national_app2_5.delete unless national_app2_5.nil?
             rapproached.delete unless rapproached.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
@@ -250,8 +262,10 @@ class TM
             national_app2_5.create
             national_app3.delete unless national_app3.nil?
             selection.delete unless selection.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
 
@@ -262,8 +276,10 @@ class TM
           begin
             national_app3.delete unless national_app3.nil?
             selected.delete unless selected.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
 
@@ -296,8 +312,10 @@ class TM
             national_app5.create
             national_app4.delete unless national_app4.nil?
             induction.delete unless induction.nil?
-          rescue
-            puts 'error'
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtracce
+            puts 'ERROR'
           end
         end
       end
