@@ -28,7 +28,7 @@ class Opportunity
   def configLocals(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     @local_spaces_ids = {}
-    @local_apps_ids = {}
+    @local_apps_ids1 = {}
 
     for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:igcdp]
@@ -36,18 +36,18 @@ class Opportunity
       end
     end
 
-    @entities = []
+    @entities1 = []
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
         if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:igcdp]
-          @entities << spaces.entity(i)
+          @entities1 << spaces.entity(i)
         end
       end
     end
 
-    @entities.uniq!
-    for entity in @entities do
+    @entities1.uniq!
+    for entity in @entities1 do
       app1 = nil
       app2 = nil
       app3 = nil
@@ -61,9 +61,9 @@ class Opportunity
               when $enum_iGCDP_apps_name[:history] then app3 = OpportunityDAO.new(apps.id(j))
             end
           end
-          @local_apps_ids[entity] = {:app1 => app1,
-                                     :app2 => app2,
-                                     :app3 => app3}
+          @local_apps_ids1[entity] = {:app1 => app1,
+                                      :app2 => app2,
+                                      :app3 => app3}
 
         end
       end
@@ -118,10 +118,10 @@ class Opportunity
       national_opens_map[national_open.expa_id] = national_open
     end
 
-    for entity in @entities do
-      local_opens = @local_apps_ids[entity][:app1]
-      local_projects = @local_apps_ids[entity][:app2]
-      local_history = @local_apps_ids[entity][:app3]
+    for entity in @entities1 do
+      local_opens = @local_apps_ids1[entity][:app1]
+      local_projects = @local_apps_ids1[entity][:app2]
+      local_history = @local_apps_ids1[entity][:app3]
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)
@@ -166,7 +166,7 @@ class Opportunity
     #National_Open 2 P (Create Local|National Projects - Delete Local|National Opens)
     national_opens.find_approveds.each do |approved|
       #Creating Local|National Projects
-      local_project = @local_apps_ids[approved.local_entity][:app2].new_model(approved.to_h)
+      local_project = @local_apps_ids1[approved.local_entity][:app2].new_model(approved.to_h)
       local_project.create
       national_project = national_projects.new_model(approved.to_h)
       national_project.create
@@ -179,13 +179,13 @@ class Opportunity
     #National Project 2 History (Delete Local|National Project - Create Local|National History)
     national_projects.find_closeds.each do |closed|
       #Creating Local|National History
-      local_closed = @local_apps_ids[closed.local_entity][:app3].new_model(closed.to_h)
+      local_closed = @local_apps_ids1[closed.local_entity][:app3].new_model(closed.to_h)
       local_closed.create
       national_closed = national_history.new_model(closed.to_h)
       national_closed.create
 
       #Deleting Local|National Project
-      @local_apps_ids[closed.local_entity][:app2].delete_by_id(closed.local_reference)
+      @local_apps_ids1[closed.local_entity][:app2].delete_by_id(closed.local_reference)
       Podio::Item.delete(closed.local_reference)
       closed.delete
     end

@@ -22,19 +22,19 @@ class OGX_GCDP
 
   def config(spaces,apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_apps_ids = {}
+    @local_apps_ids1 = {}
     @local_apps_ids2 = {}
     @national_apps = {}
 
-    @entities = []
+    @entities1 = []
     @entities2 = []
     for i in 0...spaces.total_count
       if !spaces.entity(i).nil? &&
           !spaces.id(i).nil? &&
           spaces.type(i) == $enum_type[:local] &&
           spaces.area(i) == $enum_area[:ogcdp]
-        @entities << spaces.entity(i)
-        @local_apps_ids[spaces.entity(i)] = {:empty => ''}
+        @entities1 << spaces.entity(i)
+        @local_apps_ids1[spaces.entity(i)] = {:empty => ''}
       end
       if !spaces.entity(i).nil? &&
           !spaces.id2(i).nil? &&
@@ -44,7 +44,7 @@ class OGX_GCDP
         @local_apps_ids2[spaces.entity(i)] = {:empty => ''}
       end
     end
-    @entities.uniq!
+    @entities1.uniq!
     @entities2.uniq!
 
     for j in 0...apps.total_count
@@ -63,14 +63,14 @@ class OGX_GCDP
               spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:ogcdp]
           case apps.name(j)
-            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids[entity].merge!({:app3 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:open] then @local_apps_ids[entity].merge!({:app4 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids[entity].merge!({:app5 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids[entity].merge!({:app6 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:re] then @local_apps_ids[entity].merge!({:app7 => GlobalCitizenDAO.new(apps.id(j))})
-            when $enum_oGCDP_apps_name[:co] then @local_apps_ids[entity].merge!({:app8 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:leads] then @local_apps_ids1[entity].merge!({:app1 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:contacteds] then @local_apps_ids1[entity].merge!({:app2 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:epi] then @local_apps_ids1[entity].merge!({:app3 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:open] then @local_apps_ids1[entity].merge!({:app4 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ip] then @local_apps_ids1[entity].merge!({:app5 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:ma] then @local_apps_ids1[entity].merge!({:app6 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:re] then @local_apps_ids1[entity].merge!({:app7 => GlobalCitizenDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:co] then @local_apps_ids1[entity].merge!({:app8 => GlobalCitizenDAO.new(apps.id(j))})
           end
 
         elsif !entity.nil? &&
@@ -102,10 +102,8 @@ class OGX_GCDP
             when $enum_oGCDP_apps_name[:co] then @national_apps[:app8] = GlobalCitizenDAO.new(apps.id(j))
           end
         end
-
       end
     end
-
   end
 
   def flow
@@ -122,9 +120,8 @@ class OGX_GCDP
     models_list.each do |national_ors|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-
-      next unless @local_apps_ids.has_key?(national_ors.local_aiesec_ogcdp_ogip)
-      local_leads = @local_apps_ids[national_ors.local_aiesec_ogcdp_ogip][:app1]
+      next unless @local_apps_ids1.has_key?(national_ors.local_aiesec_ogcdp_ogip)
+      local_leads = @local_apps_ids1[national_ors.local_aiesec_ogcdp_ogip][:app1]
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(GlobalCitizenDAO)
       puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec_ogcdp_ogip.to_s + ' - ' + Time.now.utc.to_s)
 
@@ -133,19 +130,20 @@ class OGX_GCDP
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+
       if local_leads2.is_a?(GlobalCitizenDAO)
         local_lead2 = local_leads2.new_model(national_ors.to_h)
         local_lead2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
       end
+
       national_ors.sync_with_local = 2
       national_app1 = @national_apps[:app1].new_model(national_ors.to_h)
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
 
       begin
         national_app1.id_local_1 = national_ors.id_local_1 = local_lead.create
-        if local_leads2.is_a?(GlobalCitizenDAO)
-          national_app1.id_local_2 = national_ors.id_local_2 = local_lead2.create
-        end
+        national_app1.id_local_2 = national_ors.id_local_2 = local_lead2.create if local_leads2.is_a?(GlobalCitizenDAO)
+
         national_ors.update
         national_app1.create
       rescue => exception
@@ -159,16 +157,16 @@ class OGX_GCDP
   # For all local apps, move the registers through customer flow.
   def local_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    for entity in @entities do
+    for entity in @entities1 do
       puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
-      leads = @local_apps_ids[entity][:app1]
-      contacteds = @local_apps_ids[entity][:app2]
-      epis = @local_apps_ids[entity][:app3]
-      opens = @local_apps_ids[entity][:app4]
-      in_progress = @local_apps_ids[entity][:app5]
-      matchs = @local_apps_ids[entity][:app6]
-      realizes = @local_apps_ids[entity][:app7]
-      completes = @local_apps_ids[entity][:app8]
+      leads = @local_apps_ids1[entity][:app1]
+      contacteds = @local_apps_ids1[entity][:app2]
+      epis = @local_apps_ids1[entity][:app3]
+      opens = @local_apps_ids1[entity][:app4]
+      in_progress = @local_apps_ids1[entity][:app5]
+      matchs = @local_apps_ids1[entity][:app6]
+      realizes = @local_apps_ids1[entity][:app7]
+      completes = @local_apps_ids1[entity][:app8]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(GlobalCitizenDAO)
       abort('Wrong parameter for contacteds in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless contacteds.is_a?(GlobalCitizenDAO)

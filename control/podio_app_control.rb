@@ -64,11 +64,11 @@ class PodioAppControl
     value > 1
   end
 
-  def hashing(model)
-    hash_fields = {}
-    @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => model[k]) unless model[k].nil? }
-    hash_fields
-  end
+  #def hashing(model)
+  #  hash_fields = {}
+  #  @fields_name_map.each_key { |k| hash_fields.merge!(@fields_name_map[k][:external_id] => model[k]) unless model[k].nil? }
+  #  hash_fields
+  #end
 
   def new_model(model_hash = nil)
     @Model.new(@fields_name_map, @app_id, model_hash)

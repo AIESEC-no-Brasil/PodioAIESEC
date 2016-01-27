@@ -15,117 +15,132 @@ class HOST
     abort('Wrong parameter for spaces in ' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
-    configORS(spaces,apps)
-    configLocals(spaces, apps)
-    configNational(spaces, apps)
+    config(spaces,apps)
     flow
     #TODO passagem de um CL para outro
   end
 
-  # Detect and configure every ORS workspace and ORS app that is linked to tm
-  # @todo research how to raise global variable ors_space_id
-  # @todo research how to raise global variable ors_app
-  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
-  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
-  def configORS(spaces, apps)
+  def config(spaces,app)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    @local_apps_ids1 = {}
+    @local_apps_ids2 = {}
+    @local_apps_ids3 = {}
+    @local_apps_ids4 = {}
+    @national_apps = {}
 
+    @entities1 = []
+    @entities2 = []
+    @entities3 = []
+    @entities4 = []
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:host]
-        @ors_space_id = spaces.id(i)
-        break
+      if !spaces.entity(i).nil? &&
+          !spaces.id(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:host]
+        @entities1 << spaces.entity(i)
+        @local_apps_ids1[spaces.entity(i)] = {:empty => ''}
+      end
+      if !spaces.entity(i).nil? &&
+          !spaces.id2(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:host]
+        @entities2 << spaces.entity(i)
+        @local_apps_ids2[spaces.entity(i)] = {:empty => ''}
+      end
+      if !spaces.entity(i).nil? &&
+          !spaces.id3(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:host]
+        @entities3 << spaces.entity(i)
+        @local_apps_ids3[spaces.entity(i)] = {:empty => ''}
+      end
+      if !spaces.entity(i).nil? &&
+          !spaces.id4(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:host]
+        @entities4 << spaces.entity(i)
+        @local_apps_ids4[spaces.entity(i)] = {:empty => ''}
       end
     end
+    @entities1.uniq!
+    @entities2.uniq!
+    @entities3.uniq!
+    @entities4.uniq!
 
     for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
+      work_id = apps.workspace_id_calculated(j) || apps.workspace_id2_calculated(j) || apps.workspace_id3_calculated(j) || apps.workspace_id4_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:ors] && spaces.area(i) == $enum_area[:host]
+        next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil?)
+        entity = spaces.entity(i)
+
+        if spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:ors] &&
+            spaces.area(i) == $enum_area[:host]
           @ors = HostDAO.new(apps.id(j))
-          break
-        end
-      end
-    end
-  end
 
-  # Detect and configure every Locals workspaces and Locals apps taht are linkted to tm
-  # @todo research how to raise global array local_spaces_ids
-  # @todo research how to raise global hash local_apps_ids
-  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
-  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
-  def configLocals(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = {}
-    @local_apps_ids = {}
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:host]
-        @local_spaces_ids[spaces.id(i)] = nil
-      end
-    end
-
-    @entities = []
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:host]
-          @entities << spaces.entity(i)
-        end
-      end
-    end
-
-    @entities.uniq!
-    for entity in @entities do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      app4 = nil
-      app5 = nil
-      app6 = nil
-
-      for j in 0...apps.total_count
-        work_id = apps.workspace_id_calculated(j)
-        for i in 0...spaces.total_count
-          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:host]
-            case apps.name(j)
-              when $enum_host_apps_name[:leads] then app1 = HostDAO.new(apps.id(j))
-              when $enum_host_apps_name[:approach] then app2 = HostDAO.new(apps.id(j))
-              when $enum_host_apps_name[:reapproach] then app3 = HostDAO.new(apps.id(j))
-              when $enum_host_apps_name[:alignment] then app4 = HostDAO.new(apps.id(j))
-              when $enum_host_apps_name[:blacklist] then app5 = HostDAO.new(apps.id(j))
-              when $enum_host_apps_name[:whitelist] then app6 = HostDAO.new(apps.id(j))
-            end
+        elsif !entity.nil? &&
+              spaces.id(i) == work_id &&
+              spaces.type(i) == $enum_type[:local] &&
+              spaces.area(i) == $enum_area[:host]
+          case apps.name(j)
+            when $enum_HOST_apps_name[:leads] then @local_apps_ids1[entity].merge!({:app1 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:approach] then @local_apps_ids1[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:reapproach] then @local_apps_ids1[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:alignment] then @local_apps_ids1[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids1[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids1[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
           end
-          @local_apps_ids[entity] = {:app1 => app1,
-                                     :app2 => app2,
-                                     :app3 => app3,
-                                     :app4 => app4,
-                                     :app5 => app5,
-                                     :app6 => app6}
 
-        end
-      end
-    end
+        elsif !entity.nil? &&
+            spaces.id2(i) == work_id &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:host]
+          case apps.name(j)
+            when $enum_HOST_apps_name[:leads] then @local_apps_ids2[entity].merge!({:app1 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:approach] then @local_apps_ids2[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:reapproach] then @local_apps_ids2[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:alignment] then @local_apps_ids2[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids2[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids2[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+          end
 
-  end
+        elsif !entity.nil? &&
+            spaces.id3(i) == work_id &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:host]
+          case apps.name(j)
+            when $enum_HOST_apps_name[:leads] then @local_apps_ids3[entity].merge!({:app1 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:approach] then @local_apps_ids3[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:reapproach] then @local_apps_ids3[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:alignment] then @local_apps_ids3[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids3[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids3[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+          end
 
-  def configNational(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+        elsif !entity.nil? &&
+            spaces.id4(i) == work_id &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:host]
+          case apps.name(j)
+            when $enum_HOST_apps_name[:leads] then @local_apps_ids4[entity].merge!({:app1 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:approach] then @local_apps_ids4[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:reapproach] then @local_apps_ids4[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:alignment] then @local_apps_ids4[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @local_apps_ids4[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @local_apps_ids4[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+          end
 
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:host]
-        @national_space_id = spaces.id(i)
-        break
-      end
-    end
-
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:host]
-          @national_app_id = apps.id(j)
-          break
+        elsif spaces.id(i) == work_id &&
+              spaces.type(i) == $enum_type[:national] &&
+              spaces.area(i) == $enum_area[:host]
+          case apps.name(j)
+            when $enum_HOST_apps_name[:leads] then @national_apps[entity].merge!({:app1 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:approach] then @national_apps[entity].merge!({:app2 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:reapproach] then @national_apps[entity].merge!({:app2_5 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:alignment] then @national_apps[entity].merge!({:app3 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:blacklist] then @national_apps[entity].merge!({:app4 => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:whitelist] then @national_apps[entity].merge!({:app5 => HostDAO.new(apps.id(j))})
+          end
         end
       end
     end
@@ -134,39 +149,77 @@ class HOST
   def flow
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     ors_to_local
-    local_to_local
-    #local_to_national
+    for i in 1...4 do
+      local_to_local(i)
+    end
   end
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     models_list = @ors.find_ors_to_local_lead
-    models_list.each do |national_lead|
+    models_list.each do |national_ors|
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      next unless @local_apps_ids.has_key?(national_lead.local_aiesec)
-      local_leads = @local_apps_ids[national_lead.local_aiesec][:app1]
-
+      next unless @local_apps_ids1.has_key?(national_ors.local_aiesec)
+      local_leads = @local_apps_ids1[national_ors.local_aiesec][:app1]
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(HostDAO)
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec.to_s + ' - ' + Time.now.utc.to_s)
 
-      local_lead = local_leads.new_model(national_lead.to_h)
-      local_lead.create
-      national_lead.sync_with_local = 2
-      national_lead.update
+      local_leads4 = local_leads3 = local_leads2 = nil
+      local_leads2 = @local_apps_ids2[national_ors.local_aiesec][:app1] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec)
+      local_leads3 = @local_apps_ids2[national_ors.local_aiesec][:app1] unless !@local_apps_ids3.has_key?(national_ors.local_aiesec)
+      local_leads4 = @local_apps_ids2[national_ors.local_aiesec][:app1] unless !@local_apps_ids4.has_key?(national_ors.local_aiesec)
+
+      local_lead = local_leads.new_model(national_ors.to_h)
+      local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+
+      if local_leads2.is_a?(HostDAO)
+        local_lead2 = local_leads2.new_model(national_ors.to_h)
+        local_lead2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+      end
+      if local_leads3.is_a?(HostDAO)
+        local_lead3 = local_leads3.new_model(national_ors.to_h)
+        local_lead3.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+      end
+      if local_leads4.is_a?(HostDAO)
+        local_lead4 = local_leads4.new_model(national_ors.to_h)
+        local_lead4.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+      end
+
+      national_ors.sync_with_local = 2
+      national_app1 = @national_apps[:app1].new_model(national_ors.to_h)
+      national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
+
+      begin
+        national_app1.id_local_1 = national_ors.id_local_1 = local_lead.create
+        national_app1.id_local_2 = national_ors.id_local_2 = local_lead.create if local_leads2.is_a?(HostDAO)
+        national_app1.id_local_3 = national_ors.id_local_3 = local_lead.create if local_leads3.is_a?(HostDAO)
+        national_app1.id_local_4 = national_ors.id_local_4 = local_lead.create if local_leads4.is_a?(HostDAO)
+
+        national_ors.update
+        national_app1.create
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtracce
+        puts 'ERROR'
+      end
     end
   end
 
   # For all local apps, move the registers through customer flow.
-  def local_to_local
+  def local_to_local(iteration)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    for entity in @entities do
-      leads = @local_apps_ids[entity][:app1]
-      approach = @local_apps_ids[entity][:app2]
-      reapproach = @local_apps_ids[entity][:app3]
-      alignment = @local_apps_ids[entity][:app4]
-      blacklist = @local_apps_ids[entity][:app5]
-      whitelist = @local_apps_ids[entity][:app6]
+    for entities in @entities1.zip(@entities2).zip(@entities3).zip(@entities4) do
+      next if entities[iteration].nil?
+      entity = entities[iteration]
+      
+      leads = @local_apps_ids1[entity][:app1]
+      approach = @local_apps_ids1[entity][:app2]
+      reapproach = @local_apps_ids1[entity][:app3]
+      alignment = @local_apps_ids1[entity][:app4]
+      blacklist = @local_apps_ids1[entity][:app5]
+      whitelist = @local_apps_ids1[entity][:app6]
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless leads.is_a?(HostDAO)
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s) unless approach.is_a?(HostDAO)

@@ -2,7 +2,7 @@ require_relative '../../control/podio_app_control'
 
 # Generic App at ogip workspaces
 # @author Luan Corumba <luan.corumba@aiesec.net>
-class HostDAO < PodioAppControl
+class HostDAO < YouthLeaderDAO
 
   def initialize(app_id)
     fields = {
@@ -24,14 +24,6 @@ class HostDAO < PodioAppControl
         :trainees => 'trainees-alocados'
     }
     super(app_id, fields)
-  end
-
-  def find_ors_to_local_lead
-    create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:sync_with_local][:id] => 1}, :sort_by => 'created_on').all
-  end
-
-  def find_all
-    create_models Podio::Item.find_all(@app_id, :sort_by => 'created_on').all
   end
 
   def find_with_date_in(field)

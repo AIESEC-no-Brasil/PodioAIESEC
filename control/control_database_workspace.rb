@@ -7,6 +7,8 @@ class ControlDatabaseWorkspace < PodioAppControl
     @fields = {:name => 'title',
                :id => 'id-2',
                :id_2 => 'id-2-2',
+               :id_3 => 'id-3',
+               :id_4 => 'id-4',
                :entity => 'entity',
                :area => 'area-2',
                :type => 'type',
@@ -31,11 +33,27 @@ class ControlDatabaseWorkspace < PodioAppControl
     fields(index, i).to_i unless i.nil?
   end
 
-  # Get Podio id-2 of the workspace - Used for entities with double VP
+  # Get Podio id-2 of the workspace - Used for entities with double VP and host control
   # @param index [Integer] Index of the item you want to retrieve
   # @return [Integer] The Podio id of the workspace
   def id2(index)
     i = get_field_index_by_external_id(index,@fields[:id_2])
+    fields(index, i).to_i unless i.nil?
+  end
+
+  # Get Podio id-3 of the workspace - Used for host control
+  # @param index [Integer] Index of the item you want to retrieve
+  # @return [Integer] The Podio id of the workspace
+  def id3(index)
+    i = get_field_index_by_external_id(index,@fields[:id_3])
+    fields(index, i).to_i unless i.nil?
+  end
+
+  # Get Podio id-4 of the workspace - Used for host control
+  # @param index [Integer] Index of the item you want to retrieve
+  # @return [Integer] The Podio id of the workspace
+  def id4(index)
+    i = get_field_index_by_external_id(index,@fields[:id_4])
     fields(index, i).to_i unless i.nil?
   end
 

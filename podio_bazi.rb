@@ -51,7 +51,7 @@ class PodioBAZI
       :co => 'oGCDP 8. Completed'
   }
 
-  $enum_host_apps_name = {
+  $enum_HOST_apps_name = {
       :leads => 'Host 1. Inscritos',
       :approach => 'Host 2. Abordagem',
       :reapproach => 'Host 2.5. Re-abordagem',

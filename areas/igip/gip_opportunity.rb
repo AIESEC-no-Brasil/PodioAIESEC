@@ -54,7 +54,7 @@ class GIPOpportunity
   def configLocals(spaces, apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     @local_spaces_ids = {}
-    @local_apps_ids = {}
+    @local_apps_ids1 = {}
 
     for i in 0...spaces.total_count
       if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:igip]
@@ -62,18 +62,18 @@ class GIPOpportunity
       end
     end
 
-    @entities = []
+    @entities1 = []
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
         if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:igip]
-          @entities << spaces.entity(i)
+          @entities1 << spaces.entity(i)
         end
       end
     end
 
-    @entities.uniq!
-    for entity in @entities do
+    @entities1.uniq!
+    for entity in @entities1 do
       app1 = nil
       app2 = nil
       app3 = nil
@@ -91,11 +91,11 @@ class GIPOpportunity
               when $enum_iGIP_apps_name[:history] then app5 = GIPOpportunityDAO.new(apps.id(j))
             end
           end
-          @local_apps_ids[entity] = {:app1 => app1,
-                                     :app2 => app2,
-                                     :app3 => app3,
-                                     :app4 => app4,
-                                     :app5 => app5}
+          @local_apps_ids1[entity] = {:app1 => app1,
+                                      :app2 => app2,
+                                      :app3 => app3,
+                                      :app4 => app4,
+                                      :app5 => app5}
 
         end
       end
@@ -166,12 +166,12 @@ class GIPOpportunity
 
 
 
-    for entity in @entities do
-      local_opens = @local_apps_ids[entity][:app1]
-      local_in_progress = @local_apps_ids[entity][:app2]
-      local_matchs = @local_apps_ids[entity][:app3]
-      local_realizes = @local_apps_ids[entity][:app4]
-      local_histories = @local_apps_ids[entity][:app5]
+    for entity in @entities1 do
+      local_opens = @local_apps_ids1[entity][:app1]
+      local_in_progress = @local_apps_ids1[entity][:app2]
+      local_matchs = @local_apps_ids1[entity][:app3]
+      local_realizes = @local_apps_ids1[entity][:app4]
+      local_histories = @local_apps_ids1[entity][:app5]
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)
@@ -247,7 +247,7 @@ class GIPOpportunity
     #National_Open 2 P (Create Local|National Projects - Delete Local|National Opens)
     national_opens.find_approveds.each do |approved|
       #Creating Local|National Projects
-      local_match = @local_apps_ids[approved.local_entity][:app2].new_model(approved.to_h)
+      local_match = @local_apps_ids1[approved.local_entity][:app2].new_model(approved.to_h)
       local_match.create
       national_match = national_matchs.new_model(approved.to_h)
       national_match.create
