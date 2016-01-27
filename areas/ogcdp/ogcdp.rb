@@ -557,7 +557,7 @@ class OGX_GCDP
           national_app7 = national_app7.find_national_local_id_2(re.id)[0]
           national_app8 = @national_apps[:app8]
           national_app8 = national_app8.new_model(re.to_h)
-          
+
           begin
             national_app8.id_local_2 = co.create
             national_app8.create

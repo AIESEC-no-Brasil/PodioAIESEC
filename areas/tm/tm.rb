@@ -128,18 +128,18 @@ class TM
       inductiones = @local_apps_ids[entity][:app4]
       local_crms = @local_apps_ids[entity][:app5]
 
-      abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless approaches.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless rapproaches.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless selectiones.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless inductiones.is_a?(YouthTalentDAO)
-      abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless local_crms.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for approaches in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless approaches.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for rapproaches in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless rapproaches.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for selectiones in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless selectiones.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for inductiones in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless inductiones.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for local_crms in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless local_crms.is_a?(YouthTalentDAO)
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       leads.find_all.each do |lead|
         if leads.business_rule_lead_to_approach?(lead)
-          approached = approach.new_model(lead.to_h)
+          approached = approaches.new_model(lead.to_h)
           national_app1 = @national_apps[:app1]
           national_app2 = @national_apps[:app2]
           national_app1 = national_app1.find_national_local_id(lead.id)[0]
@@ -161,7 +161,7 @@ class TM
       $podio_flag = true
       approaches.find_all.each do |approached|
         if approaches.business_rule_approach_to_rapproach?(approached)
-          rapproached = rapproach.new_model(approached.to_h)
+          rapproached = rapproaches.new_model(approached.to_h)
           national_app2 = @national_apps[:app2]
           national_app2_5 = @national_apps[:app2_5]
           national_app2 = national_app2.find_national_local_id(approached.id)[0]
@@ -180,7 +180,7 @@ class TM
         end
 
         if approaches.business_rule_approach_to_selection?(approached)
-          selected = selection.new_model(approached.to_h)
+          selected = selectiones.new_model(approached.to_h)
           national_app2 = @national_apps[:app2]
           national_app3 = @national_apps[:app3]
           national_app2 = national_app2.find_national_local_id(approached.id)[0]
@@ -214,7 +214,7 @@ class TM
         end
 
         if rapproaches.business_rule_rapproach_to_selection?(rapproached)
-          selected = selection.new_model(rapproached.to_h)
+          selected = selectiones.new_model(rapproached.to_h)
           national_app2_5 = @national_apps[:app2_5]
           national_app3 = @national_apps[:app3]
           national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
@@ -239,7 +239,7 @@ class TM
       $podio_flag = true
       selectiones.find_all.each do |selection|
         if selectiones.business_rule_selection_to_rapproach?(selection)
-          rapproached = rapproach.new_model(selected.to_h)
+          rapproached = rapproaches.new_model(selected.to_h)
           national_app3 = @national_apps[:app3]
           national_app2_5 = @national_apps[:app2_5]
           national_app3 = national_app3.find_national_local_id(selected.id)[0]
@@ -268,7 +268,7 @@ class TM
         end
 
         if selectiones.business_rule_selection_to_induction?(selection)
-          inducted = induction.new_model(selected.to_h)
+          inducted = inductiones.new_model(selected.to_h)
           national_app3 = @national_apps[:app3]
           national_app4 = @national_apps[:app4]
           national_app3 = national_app3.find_national_local_id(selected.id)[0]

@@ -129,30 +129,24 @@ class OGX_GIP
       puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec_ogcdp_ogip.to_s + ' - ' + Time.now.utc.to_s)
 
       local_leads2 = nil
-      local_lead2_id = nil
       local_leads2 = @local_apps_ids2[national_ors.local_aiesec_ogcdp_ogip][:app1] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec_ogcdp_ogip)
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
-
       if local_leads2.is_a?(GlobalTalentDAO)
         local_leads2 = local_leads2.new_model(national_ors.to_h)
         local_leads2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
-        local_lead2_id = local_leads2.create
       end
       national_ors.sync_with_local = 2
 
       national_app1 = @national_apps[:app1].new_model(national_ors.to_h)
-
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
 
       begin
-        local_lead_id = local_lead.create
+        national_app1.id_local_1 = national_ors.id_local_1 = local_lead.create
         if local_leads2.is_a?(GlobalTalentDAO)
-          local_lead2_id = local_leads2.create
+          national_app1.id_local_2 = national_ors.id_local_2 = local_leads2.create
         end
-        national_app1.id_local_1 = national_ors.id_local_1 = local_lead_id
-        national_app1.id_local_2 = national_ors.id_local_2 = local_lead2_id
         national_app1.create
         national_ors.update
       rescue
@@ -190,7 +184,7 @@ class OGX_GIP
         if leads.can_be_contacted?(lead)
           original = @ors.find_national_local_id_1(lead.id)[0]
           case lead.duplicate_vp
-            when 1 then
+            when 1,2,3 then
               next unless !@local_apps_ids2.has_key?(entity)
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
               original.id_local_2 = nil unless original.nil?
@@ -200,43 +194,23 @@ class OGX_GIP
               national_app2 = @national_apps[:app2]
               national_app2 = national_app2.new_model(lead.to_h)
 
-              original.update unless original.nil?
-              national_app2.id_local_1 = contacted.create
-              national_app2.create
-              national_app1.delete unless national_app1.nil?
-              lead.delete unless lead.nil?
-            when 2 then
-              (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
-              original.id_local_2 = nil unless original.nil?
-              contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
-
-              original.update unless original.nil?
-              national_app2.id_local_1 = contacted.create
-              national_app2.create
-              national_app1.delete unless national_app1.nil?
-              lead.delete unless lead.nil?
-            when 3 then
-              (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
-              original.id_local_2 = nil unless original.nil?
-              contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
-
-              original.update unless original.nil?
-              national_app2.id_local_1 = contacted.create
-              national_app2.create
-              national_app1.delete unless national_app1.nil?
-              lead.delete unless lead.nil?
+              begin
+                original.update unless original.nil?
+                national_app2.id_local_1 = contacted.create
+                national_app2.create
+                national_app1.delete unless national_app1.nil?
+                lead.delete unless lead.nil?
+              rescue
+                puts 'error'
+              end
             when 4 then
-              ((lead.delete unless lead.nil?) unless !original.id_local_2.nil?) unless original.nil?
-              original.id_local_1 = nil unless original.nil?
-              original.update unless original.nil?
+              begin
+                ((lead.delete unless lead.nil?) unless !original.id_local_2.nil?) unless original.nil?
+                original.id_local_1 = nil unless original.nil?
+                original.update unless original.nil?
+              rescue
+                puts 'error'
+              end
             else nil
           end
         end
@@ -252,10 +226,14 @@ class OGX_GIP
           national_app3 = @national_apps[:app3]
           national_app3 = national_app3.new_model(contacted.to_h)
 
-          national_app3.id_local_1 = epi.create
-          national_app3.create
-          national_app2.delete unless national_app2.nil?
-          contacted.delete unless contacted.nil?
+          begin
+            national_app3.id_local_1 = epi.create
+            national_app3.create
+            national_app2.delete unless national_app2.nil?
+            contacted.delete unless contacted.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -269,10 +247,14 @@ class OGX_GIP
           national_app4 = @national_apps[:app4]
           national_app4 = national_app4.new_model(epi.to_h)
 
-          national_app4.id_local_1 = open.create
-          national_app4.create
-          national_app3.delete unless national_app3.nil?
-          epi.delete unless epi.nil?
+          begin
+            national_app4.id_local_1 = open.create
+            national_app4.create
+            national_app3.delete unless national_app3.nil?
+            epi.delete unless epi.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -287,10 +269,14 @@ class OGX_GIP
           national_app5 = @national_apps[:app5]
           national_app5 = national_app5.new_model(open.to_h)
 
-          national_app5.id_local_1 = ip.create
-          national_app5.create
-          national_app4.delete unless national_app4.nil?
-          open.delete unless open.nil?
+          begin
+            national_app5.id_local_1 = ip.create
+            national_app5.create
+            national_app4.delete unless national_app4.nil?
+            open.delete unless open.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -304,10 +290,14 @@ class OGX_GIP
           national_app6 = @national_apps[:app6]
           national_app6 = national_app6.new_model(ip.to_h)
 
-          national_app6.id_local_1 = ma.create
-          national_app6.create
-          national_app5.delete unless national_app5.nil?
-          ip.delete unless ip.nil?
+          begin
+            national_app6.id_local_1 = ma.create
+            national_app6.create
+            national_app5.delete unless national_app5.nil?
+            ip.delete unless ip.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -321,10 +311,14 @@ class OGX_GIP
           national_app7 = @national_apps[:app7]
           national_app7 = national_app7.new_model(ma.to_h)
 
-          national_app7.id_local_1 = re.create
-          national_app7.create
-          national_app6.delete unless national_app6.nil?
-          ma.delete unless ma.nil?
+          begin
+            national_app7.id_local_1 = re.create
+            national_app7.create
+            national_app6.delete unless national_app6.nil?
+            ma.delete unless ma.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -338,10 +332,14 @@ class OGX_GIP
           national_app8 = @national_apps[:app8]
           national_app8 = national_app8.new_model(re.to_h)
 
-          national_app8.id_local_1 = co.create
-          national_app8.create
-          national_app7.delete unless national_app7.nil?
-          re.delete unless re.nil?
+          begin
+            national_app8.id_local_1 = co.create
+            national_app8.create
+            national_app7.delete unless national_app7.nil?
+            re.delete unless re.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -378,7 +376,11 @@ class OGX_GIP
           original = @ors.find_national_local_id_2(lead.id)[0]
           case lead.duplicate_vp
             when 2 then
-              lead.delete unless lead.nil?
+              begin
+                lead.delete unless lead.nil?
+              rescue
+                puts 'error'
+              end
             when 3 then
               (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
               original.id_local_1 = nil unless original.nil?
@@ -388,13 +390,21 @@ class OGX_GIP
               national_app2 = @national_apps[:app2]
               national_app2 = national_app2.new_model(lead.to_h)
 
-              original.update unless original.nil?
-              national_app2.id_local_2 = contacted.create
-              national_app2.create
-              national_app1.delete unless national_app1.nil?
-              lead.delete unless lead.nil?
+              begin
+                original.update unless original.nil?
+                national_app2.id_local_2 = contacted.create
+                national_app2.create
+                national_app1.delete unless national_app1.nil?
+                lead.delete unless lead.nil?
+              rescue
+                puts 'error'
+              end
             when 4 then
-              lead.delete unless lead.nil?
+              begin
+                lead.delete unless lead.nil?
+              rescue
+                puts 'error'
+              end
             else nil
           end
         end
@@ -410,10 +420,14 @@ class OGX_GIP
           national_app3 = @national_apps[:app3]
           national_app3 = national_app3.new_model(contacted.to_h)
 
-          national_app3.id_local_2 = epi.create
-          national_app3.create
-          national_app2.delete unless national_app2.nil?
-          contacted.delete unless contacted.nil?
+          begin
+            national_app3.id_local_2 = epi.create
+            national_app3.create
+            national_app2.delete unless national_app2.nil?
+            contacted.delete unless contacted.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -427,10 +441,14 @@ class OGX_GIP
           national_app4 = @national_apps[:app4]
           national_app4 = national_app4.new_model(epi.to_h)
 
-          national_app4.id_local_2 = open.create
-          national_app4.create
-          national_app3.delete unless national_app3.nil?
-          epi.delete unless epi.nil?
+          begin
+            national_app4.id_local_2 = open.create
+            national_app4.create
+            national_app3.delete unless national_app3.nil?
+            epi.delete unless epi.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -445,10 +463,14 @@ class OGX_GIP
           national_app5 = @national_apps[:app5]
           national_app5 = national_app5.new_model(open.to_h)
 
-          national_app5.id_local_2 = ip.create
-          national_app5.create
-          national_app4.delete unless national_app4.nil?
-          open.delete unless open.nil?
+          begin
+            national_app5.id_local_2 = ip.create
+            national_app5.create
+            national_app4.delete unless national_app4.nil?
+            open.delete unless open.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -462,10 +484,14 @@ class OGX_GIP
           national_app6 = @national_apps[:app6]
           national_app6 = national_app6.new_model(ip.to_h)
 
-          national_app6.id_local_2 = ma.create
-          national_app6.create
-          national_app5.delete unless national_app5.nil?
-          ip.delete unless ip.nil?
+          begin
+            national_app6.id_local_2 = ma.create
+            national_app6.create
+            national_app5.delete unless national_app5.nil?
+            ip.delete unless ip.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -479,10 +505,14 @@ class OGX_GIP
           national_app7 = @national_apps[:app7]
           national_app7 = national_app7.new_model(ma.to_h)
 
-          national_app7.id_local_2 = re.create
-          national_app7.create
-          national_app6.delete unless national_app6.nil?
-          ma.delete unless ma.nil?
+          begin
+            national_app7.id_local_2 = re.create
+            national_app7.create
+            national_app6.delete unless national_app6.nil?
+            ma.delete unless ma.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
@@ -496,10 +526,14 @@ class OGX_GIP
           national_app8 = @national_apps[:app8]
           national_app8 = national_app8.new_model(re.to_h)
 
-          national_app8.id_local_2 = co.create
-          national_app8.create
-          national_app7.delete unless national_app7.nil?
-          re.delete unless re.nil?
+          begin
+            national_app8.id_local_2 = co.create
+            national_app8.create
+            national_app7.delete unless national_app7.nil?
+            re.delete unless re.nil?
+          rescue
+            puts 'error'
+          end
         end
       end
 
