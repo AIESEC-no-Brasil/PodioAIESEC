@@ -51,7 +51,8 @@ class YouthLeaderDAO < PodioAppControl
             :id_local_gcdp_2 => 'id-local-gcdp-2',
             :id_local_gip_1 => 'id-local-gip-1',
             :id_local_gip_2 => 'id-local-gip-2',
-            :lead_date => 'data-da-inscricao'
+            :lead_date => 'data-da-inscricao',
+            :comments => 'comentarios'
         }
         basic_fields.merge!(extra_fields) unless extra_fields.nil?
         super(app_id, basic_fields)
