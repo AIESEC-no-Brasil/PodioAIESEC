@@ -10,11 +10,14 @@ require_relative 'youth_talent_dao'
 class TM
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
-  def initialize(spaces, apps)
+  def initialize(podioDatabase)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     abort('Wrong parameter for spaces in' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
     abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
+    spaces = podioDatabase.workspaces
+    apps = podioDatabase.apps
+    log = podioDatabase.logs
     config(spaces,apps)
     flow
     #TODO passagem de um CL para outro

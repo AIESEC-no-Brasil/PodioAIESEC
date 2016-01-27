@@ -107,6 +107,30 @@ class YouthLeaderDAO < PodioAppControl
       create_models Podio::Item.collection(response.body).all
     end
 
+    def find_national_local_id_3(local_id)
+      attributes = {:sort_by => 'last_edit_on'}
+      attributes[:filters] = {@fields_name_map[:id_local_3][:id] => {'from'=>local_id,'to'=>local_id}}
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      check_rate_limit_remaining(response)
+      create_models Podio::Item.collection(response.body).all
+    end
+
+    def find_national_local_id_4(local_id)
+      attributes = {:sort_by => 'last_edit_on'}
+      attributes[:filters] = {@fields_name_map[:id_local_4][:id] => {'from'=>local_id,'to'=>local_id}}
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      check_rate_limit_remaining(response)
+      create_models Podio::Item.collection(response.body).all
+    end
+
     def find_by_filter_values(app_id, filter_values, attributes={})
       attributes[:filters] = filter_values
       collection Podio.connection.post { |req|

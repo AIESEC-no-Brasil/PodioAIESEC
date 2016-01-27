@@ -7,15 +7,7 @@ require_relative 'control_database_app'
 # @author Marcus Vinicius de Carvalo <marcus.carvalho@aiesec.net>
 class ControlDatabase
 
-  # @param test [BooleanEnum] Is this a test run?
-  def initialize(test = false)
-    workspace_control = nil
-    app_control = nil
-    log_control = nil
-    @workspace_control_items = nil
-    @app_control_items = nil
-    @log_control_items = nil
-
+  def initialize
     general_im_space_id = 3722237
 
     sleep(3600) unless $podio_flag == true
@@ -42,8 +34,7 @@ class ControlDatabase
 
     @workspace_control_items = ControlDatabaseWorkspace.new(workspace_control['app_id'])
     @app_control_items = ControlDatabaseApp.new(app_control['app_id'])
-    #TODO Log Control Items
-
+    @@log_control_items = ControlDatabaseApp.new(log_control['app_id'])
   end
 
   # Get class that control all items at 'workspaces' app

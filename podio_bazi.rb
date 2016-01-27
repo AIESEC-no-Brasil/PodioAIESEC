@@ -87,7 +87,7 @@ class PodioBAZI
                  :bd => 306775405,
                  :host => 361615672}
 
-  def initialize(test = true, loop = false)
+  def initialize
     data = File.read('senha').each_line()
     username = data.next.gsub("\n",'')
     password = data.next.gsub("\n",'')
@@ -96,26 +96,19 @@ class PodioBAZI
 
     @enum_robot = {:username => username, :password => password, :api_key => api_key, :api_secret => api_secret}
 
-    begin
-      authenticate
-      podioDatabase = ControlDatabase.new(test)
-      sleep(3600) unless $podio_flag == true
-      $podio_flag = true
-      TM.new(podioDatabase.workspaces, podioDatabase.apps)
-      OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
-      #HOST.new(podioDatabase.workspaces, podioDatabase.apps)
-      #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
-      #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+    authenticate
+    podioDatabase = ControlDatabase.new
 
+    TM.new(podioDatabase)
+    OGX_GCDP.new(podioDatabase)
+    OGX_GIP.new(podioDatabase)
+    HOST.new(podioDatabase)
+    #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+    #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
 
-
-
-
-      #TODO fin
-      #TODO mkt
-      #TODO bd
-    end while loop
+    #TODO fin
+    #TODO mkt
+    #TODO bd
   end
 
   # Authenticate at Podio with script credentials
@@ -128,6 +121,6 @@ class PodioBAZI
 
 end
 
-PodioBAZI.new(false, false)
+PodioBAZI.new
 
 
