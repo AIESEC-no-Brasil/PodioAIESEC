@@ -29,34 +29,70 @@ class HostDAO < YouthLeaderDAO
   end
 
   def go_to_approach?(host)
-    true unless host.first_contact_date.nil? ||
-        host.first_contact_responsable.nil? ||
-        host.communication_channel.nil?
+    begin
+      true unless host.first_contact_date.nil? ||
+          host.first_contact_responsable.nil? ||
+          host.communication_channel.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def go_to_reapproach?(host)
-    true unless !say_yes?(host.re_approach) ||
-        host.re_approach_intention.nil?
+    begin
+      true unless !say_yes?(host.re_approach) ||
+          host.re_approach_intention.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def go_to_alignment?(host)
-    true unless say_yes?(host.re_approach) ||
-        host.alignment_meeting_date.nil?
+    begin
+      true unless say_yes?(host.re_approach) ||
+          host.alignment_meeting_date.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def finally_go_to_alignment?(host)
-    true unless !say_yes?(host.goto_alignment_meeting) ||
-        host.next_aproach_date.nil? ||
-        host.new_approach_responsable.nil?
+    begin
+      true unless !say_yes?(host.goto_alignment_meeting) ||
+          host.next_aproach_date.nil? ||
+          host.new_approach_responsable.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def go_to_whitelist?(host)
-    true unless !say_yes?(host.be_host)
+    begin
+      true unless !say_yes?(host.be_host)
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def go_to_blacklist?(host)
-    true unless say_yes?(host.be_host) ||
-        !say_yes?(host.blacklist) ||
-        host.blacklist_intention.nil?
+    begin
+      true unless say_yes?(host.be_host) ||
+          !say_yes?(host.blacklist) ||
+          host.blacklist_intention.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 end

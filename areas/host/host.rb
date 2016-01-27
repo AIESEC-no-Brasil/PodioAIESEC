@@ -246,7 +246,7 @@ class HOST
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:app2_5].find_all.each do |reapproached|
-        local_to_local_helper(iteration, reapproached, :app3) if reapplocal_apps_ids[iteration][entity][:app2_5].finally_go_to_alignment?(reapproached)
+        local_to_local_helper(iteration, reapproached, :app3) if local_apps_ids[iteration][entity][:app2_5].finally_go_to_alignment?(reapproached)
       end
     end
   end
