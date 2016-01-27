@@ -32,47 +32,85 @@ class GlobalTalentDAO < YouthLeaderDAO
 		super(app_id, fields)
 	end
 
-	def find_with_date_in(field)
-        create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
-    end
-
 	def can_be_contacted?(global_talent)
-		true unless global_talent.first_approach_date.nil? ||
-				global_talent.first_contact_responsable.nil? ||
-				!say_yes?(global_talent.approach_result) ||
-				global_talent.approach_channel.nil?
+    begin
+      true unless global_talent.first_approach_date.nil? ||
+          global_talent.first_contact_responsable.nil? ||
+          !say_yes?(global_talent.approach_result) ||
+          global_talent.approach_channel.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_EPI?(global_talent)
-		true unless global_talent.epi_date.nil? ||
-				global_talent.epi_responsable.nil?
+    begin
+      true unless global_talent.epi_date.nil? ||
+          global_talent.epi_responsable.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_open?(global_talent)
 		#TODO verificar se o link é realmente do expa. Usar include? para string
-		true unless global_talent.link_to_expa.nil? ||
-				global_talent.ep_manager.nil?
+    begin
+      true unless global_talent.link_to_expa.nil? ||
+          global_talent.ep_manager.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_ip?(global_talent)
-		say_yes?(global_talent.applying)
+    begin
+      say_yes?(global_talent.applying)
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_ma?(global_talent)
-		true unless global_talent.match_date.nil? ||
-				global_talent.country_host.nil? ||
-				global_talent.lc_host.nil? ||
-				global_talent.sub_product.nil?
+    begin
+      true unless global_talent.match_date.nil? ||
+          global_talent.country_host.nil? ||
+          global_talent.lc_host.nil? ||
+          global_talent.sub_product.nil?
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
 	end
 
 	def can_be_re?(global_talent)
-		true unless global_talent.ops_date.nil? ||
-				global_talent.realize_date.nil? ||
-				!say_yes?(global_talent.was_in_ops)
+    begin
+      true unless global_talent.ops_date.nil? ||
+          global_talent.realize_date.nil? ||
+          !say_yes?(global_talent.was_in_ops)
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 
   def can_be_co?(global_talent)
-    true unless global_talent.complete_date.nil? ||
-				!say_yes(global_talent.join_ris)
+    begin
+      true unless global_talent.complete_date.nil? ||
+          !say_yes(global_talent.join_ris)
+    rescue => exception
+      puts 'ERROR'
+      puts exception.backtrace
+      puts 'ERROR'
+    end
   end
 end

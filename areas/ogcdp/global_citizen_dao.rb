@@ -31,10 +31,6 @@ class GlobalCitizenDAO < YouthLeaderDAO
 		super(app_id, fields)
 	end
 
-	def find_with_date_in(field)
-		create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
-	end
-
 	def can_be_contacted?(global_citizen)
     begin
       true unless global_citizen.first_approach_date.nil? ||

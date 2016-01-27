@@ -232,7 +232,6 @@ class TM
           national_app3 = national_app3.new_model(rapproached.to_h)
           selected.responsable = rapproached.responsable_new_contact
           selected.first_approach_date = rapproached.next_contact_date
-          national_app3.responsable = rapproached.responsable_new_contact
           national_app3.first_approach_date = rapproached.next_contact_date
 
           begin

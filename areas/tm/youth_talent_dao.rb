@@ -43,57 +43,108 @@ class YouthTalentDAO < YouthLeaderDAO
         super(app_id, fields)
     end
 
-    def find_with_date_in(field)
-        create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
-    end
-
     def business_rule_lead_to_approach?(youth_talent)
+      begin
         true unless youth_talent.first_approach_date.nil? ||
             youth_talent.responsable.nil? ||
             youth_talent.approach_channel.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_approach_to_rapproach?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.send_to_rapproachement) ||
             youth_talent.rapprochement_notes.nil? ||
             youth_talent.rapprochement_reason.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_stop_rapproach?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.stop_approach) ||
             youth_talent.approach_interruption_reason.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_rapproach_to_selection?(youth_talent)
+
+      begin
         true unless !say_yes?(youth_talent.send_to_selection) ||
             youth_talent.responsable_new_contact.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_approach_to_selection?(youth_talent)
+      begin
         true unless youth_talent.selection_date.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_selection_to_rapproach?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.send_to_rapproachement) ||
             !say_yes?(youth_talent.join_selection)
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_delete_selection?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.was_selected) ||
             youth_talent.feedback.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_selection_to_induction?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.join_selection) ||
             !say_yes?(youth_talent.was_selected) ||
             youth_talent.selection_type.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 
     def business_rule_induction_to_local_crm?(youth_talent)
+      begin
         true unless !say_yes?(youth_talent.has_volunteer_term) ||
             !say_yes?(youth_talent.has_functional_induction) ||
             !say_yes?(youth_talent.has_organizational_induction) ||
             youth_talent.organizational_induction_date.nil? ||
             youth_talent.functional_induction_date.nil?
+      rescue => exception
+        puts 'ERROR'
+        puts exception.backtrace
+        puts 'ERROR'
+      end
     end
 end
