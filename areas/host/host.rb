@@ -11,7 +11,7 @@ class HOST
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(podioDatabase)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)Reti
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
 
     spaces = podioDatabase.workspaces
     apps = podioDatabase.apps
