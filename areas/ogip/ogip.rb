@@ -12,8 +12,6 @@ class OGX_GIP
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
   def initialize(podioDatabase)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    abort('Wrong parameter for spaces in ' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
-    abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
     spaces = podioDatabase.workspaces
     apps = podioDatabase.apps
