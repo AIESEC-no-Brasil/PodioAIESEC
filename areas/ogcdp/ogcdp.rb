@@ -158,7 +158,7 @@ class OGX_GCDP
   def local_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     for entity in @entities do
-      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity[0].to_s + ' - ' + Time.now.utc.to_s)
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
       leads = @local_apps_ids[entity][:app1]
       contacteds = @local_apps_ids[entity][:app2]
       epis = @local_apps_ids[entity][:app3]
