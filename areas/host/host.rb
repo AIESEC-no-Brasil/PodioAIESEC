@@ -202,7 +202,7 @@ class HOST
         national_app1.create
       rescue => exception
         puts 'ERROR'
-        puts exception.backtracce
+        puts exception.backtrace
         puts 'ERROR'
       end
     end
@@ -298,7 +298,7 @@ class HOST
 
     rescue => exception
       puts 'ERROR'
-      puts exception.backtracce
+      puts exception.backtrace
       puts 'ERROR'
     end
   end

@@ -114,7 +114,7 @@ class TM
         national_ors.update
       rescue => exception
         puts 'ERROR'
-        puts exception.backtracce
+        puts exception.backtrace
         puts 'ERROR'
       end
     end
@@ -156,7 +156,7 @@ class TM
             lead.delete unless lead.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -181,7 +181,7 @@ class TM
             approached.delete unless approached.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -200,7 +200,7 @@ class TM
             approached.delete unless approached.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
 
@@ -219,7 +219,7 @@ class TM
             rapproached.delete unless rapproached.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -242,7 +242,7 @@ class TM
             rapproached.delete unless rapproached.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -265,7 +265,7 @@ class TM
             selection.delete unless selection.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -279,7 +279,7 @@ class TM
             selected.delete unless selected.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
@@ -315,7 +315,7 @@ class TM
             induction.delete unless induction.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtracce
+            puts exception.backtrace
             puts 'ERROR'
           end
         end
