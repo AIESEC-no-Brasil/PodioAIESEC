@@ -8,7 +8,6 @@ require 'mocha/mini_test'
 require_relative '../enums'
 require_relative '../utils'
 require_relative '../oGIP/global_talent'
-require_relative '../control/youth_leader'
 
 class OGX_GIP_Test < Minitest::Test
 

@@ -16,11 +16,7 @@ class ControlDatabase
     @app_control_items = nil
     @log_control_items = nil
 
-    if test
-      general_im_space_id = 3709357
-    else
-      general_im_space_id = 3722237
-    end
+    general_im_space_id = 3722237
 
     sleep(3600) unless $podio_flag == true
     $podio_flag = true

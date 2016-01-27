@@ -19,6 +19,7 @@ class HOST
     configLocals(spaces, apps)
     configNational(spaces, apps)
     flow
+    #TODO passagem de um CL para outro
   end
 
   # Detect and configure every ORS workspace and ORS app that is linked to tm

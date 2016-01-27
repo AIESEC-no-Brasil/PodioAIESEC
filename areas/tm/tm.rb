@@ -17,6 +17,7 @@ class TM
 
     config(spaces,apps)
     flow
+    #TODO passagem de um CL para outro
   end
 
   private
@@ -84,36 +85,21 @@ class TM
   def flow
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     ors_to_local
-
-    lead_to_approach
-
-    approach_to_rapproach
-    selection_to_rapproach
-    stop_rapproach
-
-    rapproach_to_selection
-    approach_to_selection
-    stop_selection
-
-    selection_to_induction
-
-    induction_to_local_crm
+    local_to_local
   end
 
   # Migrate leads from the ORS app to all Local Leads Apps
   def ors_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    sleep(3600) unless $podio_flag == true
-    $podio_flag = true
     models_list = @ors.find_ors_to_local_lead
-
-    sleep(3600) unless $podio_flag == true
-    $podio_flag = true
     models_list.each do |national_ors|
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+
       next unless @local_apps_ids.has_key?(national_ors.local_aiesec)
       local_leads = @local_apps_ids[national_ors.local_aiesec][:app1]
-
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s) unless local_leads.is_a?(YouthTalentDAO)
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec.to_s + ' - ' + Time.now.utc.to_s)
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
@@ -121,9 +107,200 @@ class TM
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
       national_ors.sync_with_local = 2
 
-      national_ors.id_local = national_app1.id_local = local_lead.create
-      national_app1.create
-      national_ors.update
+      begin
+        national_ors.id_local = national_app1.id_local = local_lead.create
+        national_app1.create
+        national_ors.update
+      rescue
+        puts 'error'
+      end
+    end
+  end
+
+  def local_to_local
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    for entity in @entities do
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
+      leads = @local_apps_ids[entity][:app1]
+      approaches = @local_apps_ids[entity][:app2]
+      rapproaches = @local_apps_ids[entity][:app2_5]
+      selectiones = @local_apps_ids[entity][:app3]
+      inductiones = @local_apps_ids[entity][:app4]
+      local_crms = @local_apps_ids[entity][:app5]
+
+      abort('Wrong parameter for lead in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless leads.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless approaches.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for rapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless rapproaches.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for selection in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless selectiones.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for induction in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless inductiones.is_a?(YouthTalentDAO)
+      abort('Wrong parameter for local_crm in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless local_crms.is_a?(YouthTalentDAO)
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      leads.find_all.each do |lead|
+        if leads.business_rule_lead_to_approach?(lead)
+          approached = approach.new_model(lead.to_h)
+          national_app1 = @national_apps[:app1]
+          national_app2 = @national_apps[:app2]
+          national_app1 = national_app1.find_national_local_id(lead.id)[0]
+          national_app2 = national_app2.new_model(lead.to_h)
+
+
+          begin
+            national_app2.id_local = approached.create
+            national_app2.create
+            national_app1.delete unless national_app1.nil?
+            lead.delete unless lead.nil?
+          rescue
+            puts 'error'
+          end
+        end
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      approaches.find_all.each do |approached|
+        if approaches.business_rule_approach_to_rapproach?(approached)
+          rapproached = rapproach.new_model(approached.to_h)
+          national_app2 = @national_apps[:app2]
+          national_app2_5 = @national_apps[:app2_5]
+          national_app2 = national_app2.find_national_local_id(approached.id)[0]
+          national_app2_5 = national_app2_5.new_model(approached.to_h)
+          rapproached.approaches_number = 1
+          national_app2_5.approaches_number = 1
+
+          begin
+            national_app2_5.id_local = rapproached.create
+            national_app2_5.create
+            national_app2.delete unless national_app2.nil?
+            approached.delete unless approached.nil?
+          rescue
+            puts 'error'
+          end
+        end
+
+        if approaches.business_rule_approach_to_selection?(approached)
+          selected = selection.new_model(approached.to_h)
+          national_app2 = @national_apps[:app2]
+          national_app3 = @national_apps[:app3]
+          national_app2 = national_app2.find_national_local_id(approached.id)[0]
+          national_app3 = national_app3.new_model(approached.to_h)
+
+          begin
+            national_app3.id_local = selected.create
+            national_app3.create
+            national_app2.delete unless national_app2.nil?
+            approached.delete unless approached.nil?
+          rescue
+            puts 'error'
+          end
+
+        end
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      rapproaches.find_all.each do |rapproached|
+        if rapproaches.business_rule_stop_rapproach?(rapproached)
+          national_app2_5 = @national_apps[:app2_5]
+          national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
+
+          begin
+            national_app2_5.delete unless national_app2_5.nil?
+            rapproached.delete unless rapproached.nil?
+          rescue
+            puts 'error'
+          end
+        end
+
+        if rapproaches.business_rule_rapproach_to_selection?(rapproached)
+          selected = selection.new_model(rapproached.to_h)
+          national_app2_5 = @national_apps[:app2_5]
+          national_app3 = @national_apps[:app3]
+          national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
+          national_app3 = national_app3.new_model(rapproached.to_h)
+          selected.responsable = rapproached.responsable_new_contact
+          selected.first_approach_date = rapproached.next_contact_date
+          national_app3.responsable = rapproached.responsable_new_contact
+          national_app3.first_approach_date = rapproached.next_contact_date
+
+          begin
+            national_app3.id_local = selected.create
+            national_app3.create
+            national_app2_5.delete unless national_app2_5.nil?
+            rapproached.delete unless rapproached.nil?
+          rescue
+            puts 'error'
+          end
+        end
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      selectiones.find_all.each do |selection|
+        if selectiones.business_rule_selection_to_rapproach?(selection)
+          rapproached = rapproach.new_model(selected.to_h)
+          national_app3 = @national_apps[:app3]
+          national_app2_5 = @national_apps[:app2_5]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+          national_app2_5 = national_app2_5.new_model(selected.to_h)
+
+          begin
+            national_app2_5.id_local = rapproached.create
+            national_app2_5.create
+            national_app3.delete unless national_app3.nil?
+            selection.delete unless selection.nil?
+          rescue
+            puts 'error'
+          end
+        end
+
+        if selectiones.business_rule_delete_selection?(selection)
+          national_app3 = @national_apps[:app3]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+
+          begin
+            national_app3.delete unless national_app3.nil?
+            selected.delete unless selected.nil?
+          rescue
+            puts 'error'
+          end
+        end
+
+        if selectiones.business_rule_selection_to_induction?(selection)
+          inducted = induction.new_model(selected.to_h)
+          national_app3 = @national_apps[:app3]
+          national_app4 = @national_apps[:app4]
+          national_app3 = national_app3.find_national_local_id(selected.id)[0]
+          national_app4 = national_app4.new_model(selected.to_h)
+
+          national_app4.id_local = inducted.create
+          national_app4.create
+          national_app3.delete unless national_app3.nil?
+          selection.delete unless selection.nil?
+        end
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      inductiones.find_all.each do |induction|
+        if inductiones.business_rule_induction_to_local_crm?(induction)
+          client = local_crms.new_model(induction.to_h)
+          national_app4 = @national_apps[:app4]
+          national_app5 = @national_apps[:app5]
+          national_app4 = national_app4.find_national_local_id(induction.id)[0]
+          national_app5 = national_app5.new_model(induction.to_h)
+
+          begin
+            national_app5.id_local = client.create
+            national_app5.create
+            national_app4.delete unless national_app4.nil?
+            induction.delete unless induction.nil?
+          rescue
+            puts 'error'
+          end
+        end
+      end
     end
   end
 

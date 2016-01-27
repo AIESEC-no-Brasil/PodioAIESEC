@@ -101,13 +101,16 @@ class PodioBAZI
       podioDatabase = ControlDatabase.new(test)
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
+      TM.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
+      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
       #HOST.new(podioDatabase.workspaces, podioDatabase.apps)
       #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
       #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
 
-      OGX_GCDP.new(podioDatabase.workspaces, podioDatabase.apps)
-      OGX_GIP.new(podioDatabase.workspaces, podioDatabase.apps)
-      TM.new(podioDatabase.workspaces, podioDatabase.apps)
+
+
+
 
       #TODO fin
       #TODO mkt

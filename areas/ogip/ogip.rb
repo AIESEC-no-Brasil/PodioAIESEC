@@ -17,6 +17,7 @@ class OGX_GIP
 
     config(spaces,apps)
     flow
+    #TODO passagem de um CL para outro
   end
 
   def config(spaces,apps)
@@ -133,22 +134,30 @@ class OGX_GIP
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
-      local_lead_id = local_lead.create
+
       if local_leads2.is_a?(GlobalTalentDAO)
         local_leads2 = local_leads2.new_model(national_ors.to_h)
         local_leads2.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
         local_lead2_id = local_leads2.create
       end
-      national_ors.id_local_1 = local_lead_id
-      national_ors.id_local_2 = local_lead2_id
       national_ors.sync_with_local = 2
-      national_ors.update
 
       national_app1 = @national_apps[:app1].new_model(national_ors.to_h)
-      national_app1.id_local_1 = local_lead_id
-      national_app1.id_local_2 = local_lead2_id
+
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
-      national_app1.create
+
+      begin
+        local_lead_id = local_lead.create
+        if local_leads2.is_a?(GlobalTalentDAO)
+          local_lead2_id = local_leads2.create
+        end
+        national_app1.id_local_1 = national_ors.id_local_1 = local_lead_id
+        national_app1.id_local_2 = national_ors.id_local_2 = local_lead2_id
+        national_app1.create
+        national_ors.update
+      rescue
+        puts 'error'
+      end
     end
   end
 

@@ -17,6 +17,7 @@ class OGX_GCDP
 
     config(spaces,apps)
     flow
+    #TODO passagem de um CL para outro
   end
 
   def config(spaces,apps)
