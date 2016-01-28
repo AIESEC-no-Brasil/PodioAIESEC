@@ -34,7 +34,7 @@ class ControlDatabase
 
     @workspace_control_items = ControlDatabaseWorkspace.new(workspace_control['app_id'])
     @app_control_items = ControlDatabaseApp.new(app_control['app_id'])
-    @@log_control_items = ControlDatabaseApp.new(log_control['app_id'])
+    @log_control_items = ControlDatabaseApp.new(log_control['app_id'])
   end
 
   # Get class that control all items at 'workspaces' app
@@ -49,6 +49,6 @@ class ControlDatabase
 
   # Get class that control all items at 'log' app
   def logs
-    @@log_control_items
+    @log_control_items
   end
 end
