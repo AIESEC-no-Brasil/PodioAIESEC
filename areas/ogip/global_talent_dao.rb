@@ -11,7 +11,6 @@ class GlobalTalentDAO < YouthLeaderDAO
       :first_contact_responsable => 'responsavel-pelo-primeiro-contato',
       :approach_channel => 'qual-canal-de-abordagem-foi-utilizado',
       :approach_description => 'descricao-da-abordagem',
-      :approach_result => 'foi-abordado-e-nao-respondeu',
       :epi_date => 'data-da-epi',
       :epi_responsable => 'responsavel-pelo-epi',
       :ep_manager => 'ep-manager',
@@ -36,7 +35,6 @@ class GlobalTalentDAO < YouthLeaderDAO
     begin
       true unless global_talent.first_approach_date.nil? ||
           global_talent.first_contact_responsable.nil? ||
-          #!say_yes?(global_talent.approach_result) ||
           global_talent.approach_channel.nil?
     rescue => exception
       puts 'ERROR'
