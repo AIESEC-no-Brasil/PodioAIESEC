@@ -8,7 +8,7 @@ require_relative 'areas/tm/tm'
 require_relative 'areas/ogip/ogip'
 require_relative 'areas/ogcdp/ogcdp'
 require_relative 'areas/host/host'
-require_relative 'areas/igcdp/i_gcdp'
+require_relative 'areas/igcdp/igcdp'
 require_relative 'areas/igip/gip_opportunity'
 
 # This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
