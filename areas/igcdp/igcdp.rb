@@ -96,15 +96,16 @@ class ICX_GCDP
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     national_opens_map = {}
     national_projects_map = {}
-    national_opens = @national_apps[0]
-    national_projects = @national_apps[1]
-    national_history = @national_apps[2]
+    national_opens = @national_apps[:open]
+    national_projects = @national_apps[:project]
+    national_history = @national_apps[:history]
 
     national_opens.find_all.each do |national_open|
       national_opens_map[national_open.expa_id] = national_open
     end
 
     for entity in @entities1 do
+      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
       local_opens = @local_apps_ids1[entity][:open]
       local_projects = @local_apps_ids1[entity][:project]
       local_history = @local_apps_ids1[entity][:history]

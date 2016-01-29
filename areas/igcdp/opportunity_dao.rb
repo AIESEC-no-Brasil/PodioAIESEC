@@ -16,7 +16,12 @@ class OpportunityDAO < YouthLeaderDAO
         :local_entity => 'local-entity',
         :local_reference => 'local-reference-id',
         :trainees => 'trainees',
-        :tnt_checklist => 'visita-de-fechamento-feita'
+        :tnt_checklist => 'visita-de-fechamento-feita',
+        :status => 'status',
+        :percentage_occupied_vacancies => 'de-vagas-ocupadas',
+        :average_ma_time => 'tempo-medio-de-ma',
+        :number_trainees_ma => 'de-trainees-ma',
+        :number_trainees_re => 'de-trainees-re'
     }
     super(app_id, fields)
   end
@@ -40,6 +45,7 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def new_open?(opportunity)
+    attributes = nil
     expa = opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('experience.aiesec.org/#/opportunities/','').to_i |
@@ -49,16 +55,44 @@ class OpportunityDAO < YouthLeaderDAO
         opportunity.expa_link['url'].sub('experience-v1.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('www.experience-v1.aiesec.org/#/opportunities/','').to_i
     op = opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i |
-        opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i
+        opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('internships.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('www.internships.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('https://internships-v1.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('http://internships-v1.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('internships-v1.aiesec.org/#/volunteering/','').to_i |
+        opportunity.expa_link['url'].sub('www.internships-v1.aiesec.org/#/volunteering/','').to_i
     if expa != 0
-      Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:expa_id][:id] => {'to'=>expa,'from'=>expa}}).all.length == 0
+      attributes[:filters] = {@fields_name_map[:expa_id][:id] => {'to'=>expa,'from'=>expa}}
     elsif op != 0
-      Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:expa_id][:id] => {'to'=>op,'from'=>op}}).all.length == 0
+      attributes[:filters] = {@fields_name_map[:expa_id][:id] => {'to'=>op,'from'=>op}}
+    end
+    if expa || op != 0
+      attributes = {:sort_by => 'last_edit_on'}
+      attributes[:limit] = 500
+
+      response = Podio.connection.post do |req|
+        req.url "/item/app/#{@app_id}/filter/"
+        req.body = attributes
+      end
+      check_rate_limit_remaining(response)
+      create_models Podio::Item.collection(response.body).all
+    elsif
+      nil
     end
   end
 
   def find_newbies
-    create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:situation][:id] => 1}, :sort_by => 'created_on').all
+    attributes[:filters] = {@fields_name_map[:situation][:id] => 1}
+    attributes = {:sort_by => 'last_edit_on'}
+    attributes[:limit] = 500
+
+    response = Podio.connection.post do |req|
+      req.url "/item/app/#{@app_id}/filter/"
+      req.body = attributes
+    end
+    check_rate_limit_remaining(response)
+    create_models Podio::Item.collection(response.body).all
   end
 
   def find_approveds
