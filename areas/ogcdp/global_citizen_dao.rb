@@ -35,7 +35,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
     begin
       true unless global_citizen.first_approach_date.nil? ||
           global_citizen.first_contact_responsable.nil? ||
-          !say_yes?(global_citizen.approach_result) ||
+          #!say_yes?(global_citizen.approach_result) ||
           global_citizen.approach_channel.nil?
     rescue => exception
       puts 'ERROR'
