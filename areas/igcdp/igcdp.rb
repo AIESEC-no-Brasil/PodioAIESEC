@@ -7,98 +7,84 @@ require_relative 'opportunity_dao'
 # * 1. ORS ( 1 x )
 # * 2. Local ( Number of entities x )
 # * 3. National ( 1 x )
-class Opportunity
+class ICX_GCDP
   # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
   # @param apps [ControlDatabaseApp] List of apps registered at the IM General
-  def initialize(spaces, apps)
+  def initialize(podioDatabase)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    abort('Wrong parameter for spaces in ' + self.class.name + '.' + __method__.to_s) unless spaces.is_a?(ControlDatabaseWorkspace)
-    abort('Wrong parameter for apps in ' + self.class.name + '.' + __method__.to_s) unless apps.is_a?(ControlDatabaseApp)
 
-    configLocals(spaces, apps)
-    configNational(spaces, apps)
+    spaces = podioDatabase.workspaces
+    apps = podioDatabase.apps
+    log = podioDatabase.logs
+
+    config(spaces, apps)
     flow
   end
 
-  # Detect and configure every Locals workspaces and Locals apps taht are linkted to tm
-  # @todo research how to raise global array local_spaces_ids
-  # @todo research how to raise global hash local_apps_ids
-  # @param spaces [ControlDatabaseWorkspace] List of workspaces registered at the IM General
-  # @param apps [ControlDatabaseApp] List of apps registered at the IM general
-  def configLocals(spaces, apps)
+  def config(spaces,apps)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    @local_spaces_ids = {}
     @local_apps_ids1 = {}
-
-    for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:local] && spaces.area(i) == $enum_area[:igcdp]
-        @local_spaces_ids[spaces.id(i)] = nil
-      end
-    end
+    @local_apps_ids2 = {}
+    @national_apps = {}
 
     @entities1 = []
-    for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
-      for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.area(i) == $enum_area[:igcdp]
-          @entities1 << spaces.entity(i)
-        end
-      end
-    end
-
-    @entities1.uniq!
-    for entity in @entities1 do
-      app1 = nil
-      app2 = nil
-      app3 = nil
-      for j in 0...apps.total_count
-        work_id = apps.workspace_id_calculated(j)
-        for i in 0...spaces.total_count
-          if spaces.id(i) == work_id && !spaces.entity(i).nil? && spaces.entity(i).eql?(entity) && spaces.area(i) == $enum_area[:igcdp]
-            case apps.name(j)
-              when $enum_iGCDP_apps_name[:open] then app1 = OpportunityDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:project] then app2 = OpportunityDAO.new(apps.id(j))
-              when $enum_iGCDP_apps_name[:history] then app3 = OpportunityDAO.new(apps.id(j))
-            end
-          end
-          @local_apps_ids1[entity] = {:app1 => app1,
-                                      :app2 => app2,
-                                      :app3 => app3}
-
-        end
-      end
-    end
-
-  end
-
-  def configNational(spaces, apps)
-    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-
+    @entities2 = []
     for i in 0...spaces.total_count
-      if spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:igcdp]
-        @national_space_id = spaces.id(i)
-        break
+      if !spaces.entity(i).nil? &&
+          !spaces.id(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:igcdp]
+        @entities1 << spaces.entity(i)
+        @local_apps_ids1[spaces.entity(i)] = {:empty => ''}
+      end
+      if !spaces.entity(i).nil? &&
+          !spaces.id2(i).nil? &&
+          spaces.type(i) == $enum_type[:local] &&
+          spaces.area(i) == $enum_area[:igcdp]
+        @entities2 << spaces.entity(i)
+        @local_apps_ids2[spaces.entity(i)] = {:empty => ''}
       end
     end
-
-    app1 = nil
-    app2 = nil
-    app3 = nil
+    @entities1.uniq!
+    @entities2.uniq!
 
     for j in 0...apps.total_count
-      work_id = apps.workspace_id_calculated(j)
+      work_id = apps.workspace_id_calculated(j) || apps.workspace_id2_calculated(j)
       for i in 0...spaces.total_count
-        if spaces.id(i) == work_id && spaces.type(i) == $enum_type[:national] && spaces.area(i) == $enum_area[:igcdp]
+        next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil?)
+        entity = spaces.entity(i)
+
+        if !entity.nil? &&
+            spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:igcdp]
           case apps.name(j)
-            when $enum_iGCDP_apps_name[:open] then app1 = OpportunityDAO.new(apps.id(j))
-            when $enum_iGCDP_apps_name[:project] then app2 = OpportunityDAO.new(apps.id(j))
-            when $enum_iGCDP_apps_name[:history] then app3 = OpportunityDAO.new(apps.id(j))
+            when $enum_iGCDP_apps_name[:open] then @local_apps_ids1[entity].merge!({:open => OpportunityDAO.new(apps.id(j))})
+            when $enum_iGCDP_apps_name[:project] then @local_apps_ids1[entity].merge!({:project => OpportunityDAO.new(apps.id(j))})
+            when $enum_iGCDP_apps_name[:history] then @local_apps_ids1[entity].merge!({:history => OpportunityDAO.new(apps.id(j))})
+          end
+
+        elsif !entity.nil? &&
+            spaces.id2(i) == work_id &&
+            spaces.type(i) == $enum_type[:local] &&
+            spaces.area(i) == $enum_area[:igcdp]
+          case apps.name(j)
+            when $enum_iGCDP_apps_name[:open] then @local_apps_ids2[entity].merge!({:open => OpportunityDAO.new(apps.id(j))})
+            when $enum_iGCDP_apps_name[:project] then @local_apps_ids2[entity].merge!({:project => OpportunityDAO.new(apps.id(j))})
+            when $enum_oGCDP_apps_name[:history] then @local_apps_ids2[entity].merge!({:history => OpportunityDAO.new(apps.id(j))})
+          end
+
+        elsif spaces.id(i) == work_id &&
+            spaces.type(i) == $enum_type[:national] &&
+            spaces.area(i) == $enum_area[:igcdp]
+          case apps.name(j)
+            when $enum_iGCDP_apps_name[:open] then @national_apps[:open] = OpportunityDAO.new(apps.id(j))
+            when $enum_iGCDP_apps_name[:project] then @national_apps[:project] = OpportunityDAO.new(apps.id(j))
+            when $enum_iGCDP_apps_name[:history] then @national_apps[:history] = OpportunityDAO.new(apps.id(j))
           end
         end
       end
     end
-    @national_apps = [app1,app2,app3]
-
   end
 
   def flow
@@ -119,9 +105,9 @@ class Opportunity
     end
 
     for entity in @entities1 do
-      local_opens = @local_apps_ids1[entity][:app1]
-      local_projects = @local_apps_ids1[entity][:app2]
-      local_history = @local_apps_ids1[entity][:app3]
+      local_opens = @local_apps_ids1[entity][:open]
+      local_projects = @local_apps_ids1[entity][:project]
+      local_history = @local_apps_ids1[entity][:history]
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)
@@ -166,7 +152,7 @@ class Opportunity
     #National_Open 2 P (Create Local|National Projects - Delete Local|National Opens)
     national_opens.find_approveds.each do |approved|
       #Creating Local|National Projects
-      local_project = @local_apps_ids1[approved.local_entity][:app2].new_model(approved.to_h)
+      local_project = @local_apps_ids1[approved.local_entity][:project].new_model(approved.to_h)
       local_project.create
       national_project = national_projects.new_model(approved.to_h)
       national_project.create
@@ -179,13 +165,13 @@ class Opportunity
     #National Project 2 History (Delete Local|National Project - Create Local|National History)
     national_projects.find_closeds.each do |closed|
       #Creating Local|National History
-      local_closed = @local_apps_ids1[closed.local_entity][:app3].new_model(closed.to_h)
+      local_closed = @local_apps_ids1[closed.local_entity][:history].new_model(closed.to_h)
       local_closed.create
       national_closed = national_history.new_model(closed.to_h)
       national_closed.create
 
       #Deleting Local|National Project
-      @local_apps_ids1[closed.local_entity][:app2].delete_by_id(closed.local_reference)
+      @local_apps_ids1[closed.local_entity][:project].delete_by_id(closed.local_reference)
       Podio::Item.delete(closed.local_reference)
       closed.delete
     end

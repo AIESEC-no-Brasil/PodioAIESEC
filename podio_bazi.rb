@@ -8,7 +8,7 @@ require_relative 'areas/tm/tm'
 require_relative 'areas/ogip/ogip'
 require_relative 'areas/ogcdp/ogcdp'
 require_relative 'areas/host/host'
-require_relative 'areas/igcdp/opportunity'
+require_relative 'areas/igcdp/i_gcdp'
 require_relative 'areas/igip/gip_opportunity'
 
 # This is the root class of the PodioBAZI project. The PodioBAZI project creates standards procedures for different
@@ -103,7 +103,7 @@ class PodioBAZI
     OGX_GCDP.new(podioDatabase)
     OGX_GIP.new(podioDatabase)
     HOST.new(podioDatabase)
-    #Opportunity.new(podioDatabase.workspaces, podioDatabase.apps)
+    ICX_GCDP.new(podioDatabase)
     #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
 
     #TODO fin
