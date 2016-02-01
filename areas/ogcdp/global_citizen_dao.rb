@@ -37,7 +37,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
           global_citizen.approach_channel.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -48,7 +48,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
           global_citizen.epi_responsable.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -60,7 +60,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
           global_citizen.ep_manager.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -70,7 +70,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
       say_yes?(global_citizen.applying)
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -82,7 +82,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
           global_citizen.lc_host.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -93,7 +93,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
           global_citizen.realize_date.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
 	end
@@ -103,7 +103,7 @@ class GlobalCitizenDAO < YouthLeaderDAO
       true unless global_citizen.complete_date.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end

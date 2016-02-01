@@ -35,7 +35,7 @@ class HostDAO < YouthLeaderDAO
           host.communication_channel.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end
@@ -46,7 +46,7 @@ class HostDAO < YouthLeaderDAO
           host.re_approach_intention.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end
@@ -57,7 +57,7 @@ class HostDAO < YouthLeaderDAO
           host.alignment_meeting_date.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end
@@ -69,7 +69,7 @@ class HostDAO < YouthLeaderDAO
           host.new_approach_responsable.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end
@@ -79,7 +79,7 @@ class HostDAO < YouthLeaderDAO
       true unless !say_yes?(host.be_host)
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end
@@ -91,7 +91,7 @@ class HostDAO < YouthLeaderDAO
           host.blacklist_intention.nil?
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end

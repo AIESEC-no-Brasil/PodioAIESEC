@@ -88,27 +88,38 @@ class ICX_GCDP
   end
 
   def flow
-    local_national_sync
+    for i in 0..1 do
+      local_national_sync(i)
+    end
   end
 
 
-  def local_national_sync
+  def local_national_sync(iteration)
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+
     national_opens_map = {}
     national_projects_map = {}
     national_opens = @national_apps[:open]
     national_projects = @national_apps[:project]
     national_history = @national_apps[:history]
 
+    local_apps_ids = [@local_apps_ids1, @local_apps_ids2]
+
     national_opens.find_all.each do |national_open|
       national_opens_map[national_open.expa_id] = national_open
     end
 
-    for entity in @entities1 do
-      puts(self.class.name + '.' + __method__.to_s + ' ~ ' + entity.to_s + ' - ' + Time.now.utc.to_s)
-      local_opens = @local_apps_ids1[entity][:open]
-      local_projects = @local_apps_ids1[entity][:project]
-      local_history = @local_apps_ids1[entity][:history]
+    for entities in @entities1.zip(@entities2)
+      next if entities[iteration].nil?
+      entity = entities[iteration]
+
+      local_opens = local_apps_ids[iteration][entity][:open]
+      local_projects = local_apps_ids[iteration][entity][:project]
+      local_history = local_apps_ids[iteration][entity][:history]
+
+      abort('Wrong parameter for open in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_opens.is_a?(HostDAO)
+      abort('Wrong parameter for project in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_projects.is_a?(HostDAO)
+      abort('Wrong parameter for history in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_history.is_a?(HostDAO)
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)
@@ -116,8 +127,11 @@ class ICX_GCDP
           national.expa_id = national_opens.get_id(national)
           national.situation = 2
           national.local_entity = entity
-          national.local_reference = newbie.id
-          national.id = nil
+          if iteration == 0
+            national.local_reference = newbie.id
+          elsif iteration == 1
+            national.local_reference_2 = newbie.id
+          end
 
           national_opens_map[national.expa_id] = national
           newbie.situation = 2
@@ -127,7 +141,7 @@ class ICX_GCDP
             newbie.update
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         else
@@ -135,13 +149,21 @@ class ICX_GCDP
         end
       end
 
-      #Local Project Update ()
+      #Local Opens Update ()
       local_opens.find_all.each do |local_open|
         national_open = national_opens_map[local_opens.get_id(local_open)]
         next if national_open.nil?
         if national_opens.local_open_updated?(national_open,local_open)
-          local_open.opens = national_opens.update_local_opens(national_open,local_open)
-          local_open.update
+          national_open.opens = local_open.opens = national_opens.update_local_opens(national_open,local_open)
+
+          begin
+            local_open.update
+            national_open.update
+          rescue => exception
+            puts 'ERROR'
+            puts exception.to_s
+            puts 'ERROR'
+          end
         end
       end
 
@@ -151,37 +173,64 @@ class ICX_GCDP
         next if national_project.nil?
         if national_projects.local_project_updated?(national_project,local_project)
           national_projects.update_local_project(national_project,local_project)
-          local_project.update
+
+          begin
+            local_project.update
+          rescue => exception
+            puts 'ERROR'
+            puts exception.to_s
+            puts 'ERROR'
+          end
         end
       end
-
     end
 
     #National_Open 2 P (Create Local|National Projects - Delete Local|National Opens)
     national_opens.find_approveds.each do |approved|
       #Creating Local|National Projects
-      local_project = @local_apps_ids1[approved.local_entity][:project].new_model(approved.to_h)
-      local_project.create
+      local_project = local_apps_ids[iteration][approved.local_entity][:project].new_model(approved.to_h)
       national_project = national_projects.new_model(approved.to_h)
-      national_project.create
 
-      #Deleting Local|National Opens
-      Podio::Item.delete(approved.local_reference)
-      approved.delete
+      begin
+        local_project.create
+        national_project.create
+        #Deleting Local|National Opens
+        if iteration == 0
+          Podio::Item.delete(approved.local_reference)
+        elsif iteration == 1
+          Podio::Item.delete(approved.local_reference_2)
+        end
+
+        approved.delete
+      rescue => exception
+        puts 'ERROR'
+        puts exception.to_s
+        puts 'ERROR'
+      end
+
     end
 
     #National Project 2 History (Delete Local|National Project - Create Local|National History)
     national_projects.find_closeds.each do |closed|
       #Creating Local|National History
-      local_closed = @local_apps_ids1[closed.local_entity][:history].new_model(closed.to_h)
-      local_closed.create
+      local_closed = local_apps_ids[iteration][closed.local_entity][:history].new_model(closed.to_h)
       national_closed = national_history.new_model(closed.to_h)
-      national_closed.create
 
-      #Deleting Local|National Project
-      @local_apps_ids1[closed.local_entity][:project].delete_by_id(closed.local_reference)
-      Podio::Item.delete(closed.local_reference)
-      closed.delete
+      begin
+        local_closed.create
+        national_closed.create
+        #Deleting Local|National Project
+        if iteration == 0
+          Podio::Item.delete(closed.local_reference)
+        elsif iteration == 1
+          Podio::Item.delete(closed.local_reference_1)
+        end
+        closed.delete
+      rescue => exception
+        puts 'ERROR'
+        puts exception.to_s
+        puts 'ERROR'
+      end
     end
   end
 

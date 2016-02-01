@@ -152,7 +152,7 @@ class OGX_GIP
         national_ors.update
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -206,7 +206,7 @@ class OGX_GIP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtrace
+                puts exception.to_s
                 puts 'ERROR'
               end
             when 4 then
@@ -216,7 +216,7 @@ class OGX_GIP
                 original.update unless original.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtrace
+                puts exception.to_s
                 puts 'ERROR'
               end
             else nil
@@ -241,7 +241,7 @@ class OGX_GIP
             contacted.delete unless contacted.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -264,7 +264,7 @@ class OGX_GIP
             epi.delete unless epi.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -288,7 +288,7 @@ class OGX_GIP
             open.delete unless open.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -311,7 +311,7 @@ class OGX_GIP
             ip.delete unless ip.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -334,7 +334,7 @@ class OGX_GIP
             ma.delete unless ma.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -357,7 +357,7 @@ class OGX_GIP
             re.delete unless re.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -401,7 +401,7 @@ class OGX_GIP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtrace
+                puts exception.to_s
                 puts 'ERROR'
               end
             when 3 then
@@ -421,7 +421,7 @@ class OGX_GIP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtrace
+                puts exception.to_s
                 puts 'ERROR'
               end
             when 4 then
@@ -429,7 +429,7 @@ class OGX_GIP
                 lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
-                puts exception.backtrace
+                puts exception.to_s
                 puts 'ERROR'
               end
             else nil
@@ -454,7 +454,7 @@ class OGX_GIP
             contacted.delete unless contacted.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -477,7 +477,7 @@ class OGX_GIP
             epi.delete unless epi.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -501,7 +501,7 @@ class OGX_GIP
             open.delete unless open.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -524,7 +524,7 @@ class OGX_GIP
             ip.delete unless ip.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -547,7 +547,7 @@ class OGX_GIP
             ma.delete unless ma.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end
@@ -570,7 +570,7 @@ class OGX_GIP
             re.delete unless re.nil?
           rescue => exception
             puts 'ERROR'
-            puts exception.backtrace
+            puts exception.to_s
             puts 'ERROR'
           end
         end

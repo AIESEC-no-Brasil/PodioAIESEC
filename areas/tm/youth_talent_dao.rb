@@ -50,7 +50,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.approach_channel.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -62,7 +62,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.rapprochement_reason.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -73,7 +73,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.approach_interruption_reason.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -85,7 +85,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.responsable_new_contact.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -95,7 +95,7 @@ class YouthTalentDAO < YouthLeaderDAO
         true unless youth_talent.selection_date.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -106,7 +106,7 @@ class YouthTalentDAO < YouthLeaderDAO
             !say_yes?(youth_talent.join_selection)
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -117,7 +117,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.feedback.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -129,7 +129,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.selection_type.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -143,7 +143,7 @@ class YouthTalentDAO < YouthLeaderDAO
             youth_talent.functional_induction_date.nil?
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end

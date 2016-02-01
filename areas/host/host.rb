@@ -135,12 +135,12 @@ class HOST
               spaces.type(i) == $enum_type[:national] &&
               spaces.area(i) == $enum_area[:host]
           case apps.name(j)
-            when $enum_HOST_apps_name[:leads] then @national_apps[entity].merge!({:leads => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:approach] then @national_apps[entity].merge!({:approach => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:reapproach] then @national_apps[entity].merge!({:reapproach => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:alignment] then @national_apps[entity].merge!({:alignment => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:blacklist] then @national_apps[entity].merge!({:blacklist => HostDAO.new(apps.id(j))})
-            when $enum_HOST_apps_name[:whitelist] then @national_apps[entity].merge!({:whitelist => HostDAO.new(apps.id(j))})
+            when $enum_HOST_apps_name[:leads] then @national_apps[:leads] = HostDAO.new(apps.id(j))
+            when $enum_HOST_apps_name[:approach] then @national_apps[:approach] = HostDAO.new(apps.id(j))
+            when $enum_HOST_apps_name[:reapproach] then @national_apps[:reapproach] = HostDAO.new(apps.id(j))
+            when $enum_HOST_apps_name[:alignment] then @national_apps[:alignment] = HostDAO.new(apps.id(j))
+            when $enum_HOST_apps_name[:blacklist] then @national_apps[:blacklist] = HostDAO.new(apps.id(j))
+            when $enum_HOST_apps_name[:whitelist] then @national_apps[:whitelist] = HostDAO.new(apps.id(j))
           end
         end
       end
@@ -202,7 +202,7 @@ class HOST
         national_app1.create
       rescue => exception
         puts 'ERROR'
-        puts exception.backtrace
+        puts exception.to_s
         puts 'ERROR'
       end
     end
@@ -297,7 +297,7 @@ class HOST
 
     rescue => exception
       puts 'ERROR'
-      puts exception.backtrace
+      puts exception.to_s
       puts 'ERROR'
     end
   end

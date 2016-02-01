@@ -15,6 +15,7 @@ class OpportunityDAO < YouthLeaderDAO
         :project => 'projeto',
         :local_entity => 'local-entity',
         :local_reference => 'local-reference-id',
+        :local_reference_2 => 'local-reference-id-2',
         :trainees => 'trainees',
         :tnt_checklist => 'visita-de-fechamento-feita',
         :status => 'status',
@@ -100,15 +101,29 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def find_approveds
-    create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:situation][:id] => 4}, :sort_by => 'created_on').all
+    attributes[:filters] = {@fields_name_map[:situation][:id] => 4}
+    attributes = {:sort_by => 'last_edit_on'}
+    attributes[:limit] = 500
+
+    response = Podio.connection.post do |req|
+      req.url "/item/app/#{@app_id}/filter/"
+      req.body = attributes
+    end
+    check_rate_limit_remaining(response)
+    create_models Podio::Item.collection(response.body).all
   end
 
   def find_closeds
-    create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[:tnt_checklist][:id] => 2}, :sort_by => 'created_on').all
-  end
+    attributes[:filters] = {@fields_name_map[:tnt_checklist][:id] => 2}
+    attributes = {:sort_by => 'last_edit_on'}
+    attributes[:limit] = 500
 
-  def find_with_date_in(field)
-    create_models Podio::Item.find_by_filter_values(@app_id, {@fields_name_map[field][:id] => {'from'=>'1900-01-01 00:00:00'}}, :sort_by => 'created_on').all
+    response = Podio.connection.post do |req|
+      req.url "/item/app/#{@app_id}/filter/"
+      req.body = attributes
+    end
+    check_rate_limit_remaining(response)
+    create_models Podio::Item.collection(response.body).all
   end
 
   def local_open_updated?(national_opportunity,local_opportunity)
