@@ -117,9 +117,9 @@ class ICX_GCDP
       local_projects = local_apps_ids[iteration][entity][:project]
       local_history = local_apps_ids[iteration][entity][:history]
 
-      abort('Wrong parameter for open in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_opens.is_a?(HostDAO)
-      abort('Wrong parameter for project in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_projects.is_a?(HostDAO)
-      abort('Wrong parameter for history in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_history.is_a?(HostDAO)
+      abort('Wrong parameter for open in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_opens.is_a?(OpportunityDAO)
+      abort('Wrong parameter for project in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_projects.is_a?(OpportunityDAO)
+      abort('Wrong parameter for history in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_history.is_a?(OpportunityDAO)
 
       local_opens.find_newbies.each do |newbie|
         if national_opens.new_open?(newbie)

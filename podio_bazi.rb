@@ -63,7 +63,7 @@ class PodioBAZI
   $enum_iGCDP_apps_name = {
       :open => 'iGCDP 1. Open',
       :project => 'iGCDP 2. Projetos',
-      :history => 'iGCDP 3. Histórico de Projetos'
+      :history => 'iGCDP 3. Historico'
   }
 
   $enum_iGIP_apps_name = {
@@ -99,9 +99,9 @@ class PodioBAZI
     authenticate
     podioDatabase = ControlDatabase.new
 
-    TM.new(podioDatabase)
-    OGX_GCDP.new(podioDatabase)
-    OGX_GIP.new(podioDatabase)
+    #TM.new(podioDatabase)
+    #OGX_GCDP.new(podioDatabase)
+    #OGX_GIP.new(podioDatabase)
     HOST.new(podioDatabase)
     ICX_GCDP.new(podioDatabase)
     #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)

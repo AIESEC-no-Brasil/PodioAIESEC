@@ -193,10 +193,10 @@ class HOST
       national_app1.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
 
       begin
-        national_app1.id_local_1 = national_ors.id_local_1 = local_lead.create
-        national_app1.id_local_2 = national_ors.id_local_2 = local_lead.create if local_leads2.is_a?(HostDAO)
-        national_app1.id_local_3 = national_ors.id_local_3 = local_lead.create if local_leads3.is_a?(HostDAO)
-        national_app1.id_local_4 = national_ors.id_local_4 = local_lead.create if local_leads4.is_a?(HostDAO)
+        national_app1.id_local_gcdp_1 = national_ors.id_local_gcdp_1 = local_lead.create
+        national_app1.id_local_gip_1 = national_ors.id_local_gip_1 = local_lead2.create if local_leads2.is_a?(HostDAO)
+        national_app1.id_local_gcdp_2 = national_ors.id_local_gcdp_2 = local_lead3.create if local_leads3.is_a?(HostDAO)
+        national_app1.id_local_gip_2 = national_ors.id_local_gip_2 = local_lead4.create if local_leads4.is_a?(HostDAO)
 
         national_ors.update
         national_app1.create
@@ -266,32 +266,32 @@ class HOST
     begin
       if entities[0].has_key?(entity)
         to_be_created = @local_apps_ids1[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?
-        original.id_local_1 = to_be_created.create
+        Podio::Item.delete(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
+        original.id_local_gcdp_1 = to_be_created.create
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       if entities[1].has_key?(entity)
         to_be_created = @local_apps_ids2[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?
-        original.id_local_2 = to_be_created.create
+        Podio::Item.delete(original.id_local_gip_1) unless original.id_local_gip_1.nil?
+        original.id_local_gip_1 = to_be_created.create
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       if entities[2].has_key?(entity)
         to_be_created = @local_apps_ids3[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_3) unless original.id_local_3.nil?
-        original.id_local_3 = to_be_created.create
+        Podio::Item.delete(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
+        original.id_local_gcdp_2 = to_be_created.create
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       if entities[3].has_key?(entity)
         to_be_created = @local_apps_ids4[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_4) unless original.id_local_4.nil?
-        original.id_local_4 = to_be_created.create
+        Podio::Item.delete(original.id_local_gip_2) unless original.id_local_gip_2.nil?
+        original.id_local_gip_2 = to_be_created.create
       end
       original.update
 

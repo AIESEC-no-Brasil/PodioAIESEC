@@ -88,8 +88,8 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def find_newbies
-    attributes[:filters] = {@fields_name_map[:situation][:id] => 1}
     attributes = {:sort_by => 'last_edit_on'}
+    attributes[:filters] = {@fields_name_map[:situation][:id] => 1}
     attributes[:limit] = 500
 
     response = Podio.connection.post do |req|
@@ -101,8 +101,8 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def find_approveds
-    attributes[:filters] = {@fields_name_map[:situation][:id] => 4}
     attributes = {:sort_by => 'last_edit_on'}
+    attributes[:filters] = {@fields_name_map[:situation][:id] => 4}
     attributes[:limit] = 500
 
     response = Podio.connection.post do |req|
@@ -114,8 +114,8 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def find_closeds
-    attributes[:filters] = {@fields_name_map[:tnt_checklist][:id] => 2}
     attributes = {:sort_by => 'last_edit_on'}
+    attributes[:filters] = {@fields_name_map[:tnt_checklist][:id] => 2}
     attributes[:limit] = 500
 
     response = Podio.connection.post do |req|
