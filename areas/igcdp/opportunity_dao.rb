@@ -37,16 +37,11 @@ class OpportunityDAO < YouthLeaderDAO
   end
 
   def get_id(opportunity)
-    expa_ssl = opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i
-    expa = opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i
-    op_ssl = opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i
-    op = opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i
-    expa | expa_ssl | op | op_ssl
+    test_expa_link(opportunity) | text_op_link(opportunity)
   end
 
-  def new_open?(opportunity)
-    attributes = nil
-    expa = opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i |
+  def test_expa_link(opportunity)
+    opportunity.expa_link['url'].sub('https://experience.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('http://experience.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('experience.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('www.experience.aiesec.org/#/opportunities/','').to_i |
@@ -54,7 +49,10 @@ class OpportunityDAO < YouthLeaderDAO
         opportunity.expa_link['url'].sub('http://experience-v1.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('experience-v1.aiesec.org/#/opportunities/','').to_i |
         opportunity.expa_link['url'].sub('www.experience-v1.aiesec.org/#/opportunities/','').to_i
-    op = opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i |
+  end
+
+  def text_op_link(opportunity)
+    opportunity.expa_link['url'].sub('https://internships.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('http://internships.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('internships.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('www.internships.aiesec.org/#/volunteering/','').to_i |
@@ -62,6 +60,12 @@ class OpportunityDAO < YouthLeaderDAO
         opportunity.expa_link['url'].sub('http://internships-v1.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('internships-v1.aiesec.org/#/volunteering/','').to_i |
         opportunity.expa_link['url'].sub('www.internships-v1.aiesec.org/#/volunteering/','').to_i
+  end
+
+  def new_open?(opportunity)
+    attributes = nil
+    expa = test_expa_link(opportunity)
+    op = text_op_link(opportunity)
     if expa != 0
       attributes[:filters] = {@fields_name_map[:expa_id][:id] => {'to'=>expa,'from'=>expa}}
     elsif op != 0
@@ -69,14 +73,14 @@ class OpportunityDAO < YouthLeaderDAO
     end
     if expa || op != 0
       attributes = {:sort_by => 'last_edit_on'}
-      attributes[:limit] = 500
+      attributes[:limit] = 1
 
       response = Podio.connection.post do |req|
         req.url "/item/app/#{@app_id}/filter/"
         req.body = attributes
       end
       check_rate_limit_remaining(response)
-      create_models Podio::Item.collection(response.body).all
+      Podio::Item.collection(response.body).all.length == 0
     elsif
       nil
     end

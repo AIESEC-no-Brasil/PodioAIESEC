@@ -183,7 +183,8 @@ class OGX_GCDP
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
           original = @ors.find_national_local_id_1(lead.id)[0]
-          case (lead.duplicate_vp if lead.methods.include? :duplicate_vp)
+          next unless lead.methods.include?(:duplicate_vp)
+          case lead.duplicate_vp
             when 1 then
               next unless !@local_apps_ids2.has_key?(entity)
               (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
@@ -431,7 +432,8 @@ class OGX_GCDP
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
           original = @ors.find_national_local_id_2(lead.id)[0]
-          case (lead.duplicate_vp if lead.methods.include? :duplicate_vp)
+          next unless lead.methods.include?(:duplicate_vp)
+          case lead.duplicate_vp
             when 2, 4 then
               begin
                 ((lead.delete unless lead.nil?) unless !original.id_local_1.nil?) unless original.nil?

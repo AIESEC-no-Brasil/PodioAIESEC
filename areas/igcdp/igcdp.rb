@@ -118,11 +118,18 @@ class ICX_GCDP
           national.local_entity = entity
           national.local_reference = newbie.id
           national.id = nil
-          national.create
-          national_opens_map[national.expa_id] = national
 
+          national_opens_map[national.expa_id] = national
           newbie.situation = 2
-          newbie.update
+
+          begin
+            national.create
+            newbie.update
+          rescue => exception
+            puts 'ERROR'
+            puts exception.backtrace
+            puts 'ERROR'
+          end
         else
           puts 'Novo Open que já existe nacionalmente' #TODO Mensagem
         end
