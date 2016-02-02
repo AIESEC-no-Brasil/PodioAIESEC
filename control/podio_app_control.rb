@@ -2,7 +2,7 @@
 # Must be inherited by another class.
 # @author Marcus Vinicius de Carvalho <marcus.carvalho@aiesec.net>
 class PodioAppControl
-  attr_reader :item, :app_id, :app, :fields_name_map
+  attr_reader :item, :app_id, :app, :fields_name_map, :last_event_on
 
   $type_of_data = {
     :category => 'category',

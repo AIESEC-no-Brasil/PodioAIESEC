@@ -149,8 +149,9 @@ class HOST
 
   def flow
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    ors_to_local
+    #ors_to_local
     for i in 0..3 do
+      update_national_local(i)
       local_to_local(i)
     end
   end
@@ -169,8 +170,8 @@ class HOST
 
       local_leads4 = local_leads3 = local_leads2 = nil
       local_leads2 = @local_apps_ids2[national_ors.local_aiesec][:leads] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec)
-      local_leads3 = @local_apps_ids2[national_ors.local_aiesec][:leads] unless !@local_apps_ids3.has_key?(national_ors.local_aiesec)
-      local_leads4 = @local_apps_ids2[national_ors.local_aiesec][:leads] unless !@local_apps_ids4.has_key?(national_ors.local_aiesec)
+      local_leads3 = @local_apps_ids3[national_ors.local_aiesec][:leads] unless !@local_apps_ids3.has_key?(national_ors.local_aiesec)
+      local_leads4 = @local_apps_ids4[national_ors.local_aiesec][:leads] unless !@local_apps_ids4.has_key?(national_ors.local_aiesec)
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
@@ -204,6 +205,58 @@ class HOST
         puts 'ERROR'
         puts exception.to_s
         puts 'ERROR'
+      end
+    end
+  end
+
+  def update_national_local(iteration)
+    puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
+    for entities in @entities1.zip(@entities2, @entities3, @entities4) do
+      next if entities[iteration].nil?
+      entity = entities[iteration]
+      local_apps_ids = [@local_apps_ids1, @local_apps_ids2, @local_apps_ids3, @local_apps_ids4]
+
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:leads].is_a?(HostDAO)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:approach].is_a?(HostDAO)
+      abort('Wrong parameter for reapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:reapproach].is_a?(HostDAO)
+      abort('Wrong parameter for alignment in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:alignment].is_a?(HostDAO)
+      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:blacklist].is_a?(HostDAO)
+      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration) unless local_apps_ids[iteration][entity][:whitelist].is_a?(HostDAO)
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:leads].find_all.each do |lead|
+        update_local_national_helper(iteration, lead)
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:approach].find_all.each do |approach|
+        update_local_national_helper(iteration, approach)
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:reapproach].find_all.each do |reapproach|
+        update_local_national_helper(iteration, reapproach)
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:alignment].find_all.each do |alignment|
+        update_local_national_helper(iteration, alignment)
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:blacklist].find_all.each do |blacklist|
+        update_local_national_helper(iteration, blacklist)
+      end
+
+      sleep(3600) unless $podio_flag == true
+      $podio_flag = true
+      local_apps_ids[iteration][entity][:whitelist].find_all.each do |whitelist|
+        update_local_national_helper(iteration, whitelist)
       end
     end
   end
@@ -250,6 +303,90 @@ class HOST
       end
     end
   end
+
+  def update_local_national_helper(iteration, element)
+    original = nil
+    case iteration
+      when 0 then original = element.find_national_local_id_1(element.id)
+      when 1 then original = element.find_national_local_id_2(element.id)
+      when 2 then original = element.find_national_local_id_3(element.id)
+      when 3 then original = element.find_national_local_id_4(element.id)
+      else nil
+    end
+
+    item1 = Podio::Item(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
+    item2 = Podio::Item(original.id_local_gip_1) unless original.id_local_gip_1.nil?
+    item3 = Podio::Item(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
+    item4 = Podio::Item(original.id_local_gip_2) unless original.id_local_gip_2.nil?
+
+    ok = true
+    case iteration
+      when 0
+        item1.to_h.each_key do |key|
+          (ok = false if item1[key] != item2[key]) unless item2.nil?
+          (ok = false if item1[key] != item3[key]) unless item3.nil?
+          (ok = false if item1[key] != item4[key]) unless item4.nil?
+        end
+      when 1
+        item2.to_h.each_key do |key|
+          (ok = false if item2[key] != item1[key]) unless item1.nil?
+          (ok = false if item2[key] != item3[key]) unless item3.nil?
+          (ok = false if item2[key] != item4[key]) unless item4.nil?
+        end
+      when 2
+        item3.to_h.each_key do |key|
+          (ok = false if item3[key] != item1[key]) unless item1.nil?
+          (ok = false if item3[key] != item2[key]) unless item2.nil?
+          (ok = false if item3[key] != item4[key]) unless item4.nil?
+        end
+      when 3
+        item4.to_h.each_key do |key|
+          (ok = false if item4[key] != item1[key]) unless item1.nil?
+          (ok = false if item4[key] != item2[key]) unless item2.nil?
+          (ok = false if item4[key] != item3[key]) unless item3.nil?
+        end
+      else nil
+    end
+
+    if ok == false
+      case iteration
+        when 0
+          item1.to_h.each_key do |key|
+            item2[key] = item1[key]
+            item3[key] = item1[key]
+            item4[key] = item1[key]
+          end
+        when 1
+          item2.to_h.each_key do |key|
+            item1[key] = item2[key]
+            item3[key] = item2[key]
+            item4[key] = item2[key]
+          end
+        when 2
+          item3.to_h.each_key do |key|
+            item1[key] = item3[key]
+            item2[key] = item3[key]
+            item4[key] = item3[key]
+          end
+        when 3
+          item4.to_h.each_key do |key|
+            item1[key] = item4[key]
+            item2[key] = item4[key]
+            item3[key] = item4[key]
+          end
+        else nil
+      end
+      begin
+        item1.update
+        item2.update
+        item3.update
+        item4.update
+      rescue => excetion
+        puts excetion.to_s
+      end
+    end
+  end
+
 
   def local_to_local_helper(iteration, element, app)
     entities = @entities1.zip(@entities2, @entities3, @entities4)

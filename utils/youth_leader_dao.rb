@@ -140,7 +140,6 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def find_all
-      #attributes = {:sort_by => 'last_edit_on', :created_by => {:type => 'user', :id => 0}}
       attributes = {:sort_by => 'last_edit_on'}
       attributes[:limit] = 500
 
