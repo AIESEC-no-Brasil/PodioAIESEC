@@ -199,11 +199,11 @@ class OGX_GIP
               national_app2 = national_app2.new_model(lead.to_h)
 
               begin
+                national_app1.delete unless national_app1.nil?
+                lead.delete unless lead.nil?
                 original.update unless original.nil?
                 national_app2.id_local_1 = contacted.create
                 national_app2.create
-                national_app1.delete unless national_app1.nil?
-                lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
                 puts exception.to_s
@@ -235,10 +235,10 @@ class OGX_GIP
           national_app3 = national_app3.new_model(contacted.to_h)
 
           begin
-            national_app3.id_local_1 = epi.create
-            national_app3.create
             national_app2.delete unless national_app2.nil?
             contacted.delete unless contacted.nil?
+            national_app3.id_local_1 = epi.create
+            national_app3.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -258,10 +258,10 @@ class OGX_GIP
           national_app4 = national_app4.new_model(epi.to_h)
 
           begin
-            national_app4.id_local_1 = open.create
-            national_app4.create
             national_app3.delete unless national_app3.nil?
             epi.delete unless epi.nil?
+            national_app4.id_local_1 = open.create
+            national_app4.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -282,10 +282,10 @@ class OGX_GIP
           national_app5 = national_app5.new_model(open.to_h)
 
           begin
-            national_app5.id_local_1 = ip.create
-            national_app5.create
             national_app4.delete unless national_app4.nil?
             open.delete unless open.nil?
+            national_app5.id_local_1 = ip.create
+            national_app5.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -305,10 +305,10 @@ class OGX_GIP
           national_app6 = national_app6.new_model(ip.to_h)
 
           begin
-            national_app6.id_local_1 = ma.create
-            national_app6.create
             national_app5.delete unless national_app5.nil?
             ip.delete unless ip.nil?
+            national_app6.id_local_1 = ma.create
+            national_app6.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -328,10 +328,10 @@ class OGX_GIP
           national_app7 = national_app7.new_model(ma.to_h)
 
           begin
-            national_app7.id_local_1 = re.create
-            national_app7.create
             national_app6.delete unless national_app6.nil?
             ma.delete unless ma.nil?
+            national_app7.id_local_1 = re.create
+            national_app7.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -351,10 +351,10 @@ class OGX_GIP
           national_app8 = national_app8.new_model(re.to_h)
 
           begin
-            national_app8.id_local_1 = co.create
-            national_app8.create
             national_app7.delete unless national_app7.nil?
             re.delete unless re.nil?
+            national_app8.id_local_1 = co.create
+            national_app8.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -414,11 +414,11 @@ class OGX_GIP
               national_app2 = national_app2.new_model(lead.to_h)
 
               begin
+                national_app1.delete unless national_app1.nil?
+                lead.delete unless lead.nil?
                 original.update unless original.nil?
                 national_app2.id_local_2 = contacted.create
                 national_app2.create
-                national_app1.delete unless national_app1.nil?
-                lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
                 puts exception.to_s
@@ -448,10 +448,10 @@ class OGX_GIP
           national_app3 = national_app3.new_model(contacted.to_h)
 
           begin
-            national_app3.id_local_2 = epi.create
-            national_app3.create
             national_app2.delete unless national_app2.nil?
             contacted.delete unless contacted.nil?
+            national_app3.id_local_2 = epi.create
+            national_app3.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -471,10 +471,10 @@ class OGX_GIP
           national_app4 = national_app4.new_model(epi.to_h)
 
           begin
-            national_app4.id_local_2 = open.create
-            national_app4.create
             national_app3.delete unless national_app3.nil?
             epi.delete unless epi.nil?
+            national_app4.id_local_2 = open.create
+            national_app4.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -495,10 +495,10 @@ class OGX_GIP
           national_app5 = national_app5.new_model(open.to_h)
 
           begin
-            national_app5.id_local_2 = ip.create
-            national_app5.create
             national_app4.delete unless national_app4.nil?
             open.delete unless open.nil?
+            national_app5.id_local_2 = ip.create
+            national_app5.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -518,10 +518,10 @@ class OGX_GIP
           national_app6 = national_app6.new_model(ip.to_h)
 
           begin
-            national_app6.id_local_2 = ma.create
-            national_app6.create
             national_app5.delete unless national_app5.nil?
             ip.delete unless ip.nil?
+            national_app6.id_local_2 = ma.create
+            national_app6.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -541,10 +541,10 @@ class OGX_GIP
           national_app7 = national_app7.new_model(ma.to_h)
 
           begin
-            national_app7.id_local_2 = re.create
-            national_app7.create
             national_app6.delete unless national_app6.nil?
             ma.delete unless ma.nil?
+            national_app7.id_local_2 = re.create
+            national_app7.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s
@@ -564,10 +564,10 @@ class OGX_GIP
           national_app8 = national_app8.new_model(re.to_h)
 
           begin
-            national_app8.id_local_2 = co.create
-            national_app8.create
             national_app7.delete unless national_app7.nil?
             re.delete unless re.nil?
+            national_app8.id_local_2 = co.create
+            national_app8.create
           rescue => exception
             puts 'ERROR'
             puts exception.to_s

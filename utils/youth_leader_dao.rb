@@ -153,7 +153,7 @@ class YouthLeaderDAO < PodioAppControl
     end
 
     def check_rate_limit_remaining(response)
-      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 15) then
+      if (response.env[:response_headers]["x-rate-limit-remaining"].to_i <= 20) then
         $podio_flag = false
       end
     end
