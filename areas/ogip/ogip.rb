@@ -185,6 +185,8 @@ class OGX_GIP
       $podio_flag = true
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
+          sleep(3600) unless $podio_flag == true
+          $podio_flag = true
           original = @ors.find_national_local_id_1(lead.id)[0]
           next unless lead.methods.include?(:duplicate_vp)
           case lead.duplicate_vp
@@ -393,10 +395,12 @@ class OGX_GIP
       $podio_flag = true
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
+          sleep(3600) unless $podio_flag == true
+          $podio_flag = true
           original = @ors.find_national_local_id_2(lead.id)[0]
           next unless lead.methods.include?(:duplicate_vp)
           case lead.duplicate_vp
-            when 2 then
+            when 2, 4 then
               begin
                 lead.delete unless lead.nil?
               rescue => exception
@@ -406,10 +410,8 @@ class OGX_GIP
               end
             when 3 then
               contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_2(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
+              national_app1 = @national_apps[:app1].find_national_local_id_2(lead.id)[0]
+              national_app2 = @national_apps[:app2].new_model(lead.to_h)
 
               begin
                 (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
@@ -419,14 +421,6 @@ class OGX_GIP
                 original.update unless original.nil?
                 national_app2.id_local_2 = contacted.create
                 national_app2.create
-              rescue => exception
-                puts 'ERROR'
-                puts exception.to_s
-                puts 'ERROR'
-              end
-            when 4 then
-              begin
-                lead.delete unless lead.nil?
               rescue => exception
                 puts 'ERROR'
                 puts exception.to_s

@@ -181,6 +181,8 @@ class OGX_GCDP
       $podio_flag = true
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
+          sleep(3600) unless $podio_flag == true
+          $podio_flag = true
           original = @ors.find_national_local_id_1(lead.id)[0]
           next unless lead.methods.include?(:duplicate_vp)
           case lead.duplicate_vp
@@ -429,6 +431,8 @@ class OGX_GCDP
       $podio_flag = true
       leads.find_all.each do |lead|
         if leads.can_be_contacted?(lead)
+          sleep(3600) unless $podio_flag == true
+          $podio_flag = true
           original = @ors.find_national_local_id_2(lead.id)[0]
           next unless lead.methods.include?(:duplicate_vp)
           case lead.duplicate_vp
@@ -444,10 +448,8 @@ class OGX_GCDP
               end
             when 3 then
               contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_2(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
+              national_app1 = @national_apps[:app1].find_national_local_id_2(lead.id)[0]
+              national_app2 = @national_apps[:app2].new_model(lead.to_h)
 
               begin
                 (Podio::Item.delete(original.id_local_1) unless original.id_local_1.nil?) unless original.nil?
