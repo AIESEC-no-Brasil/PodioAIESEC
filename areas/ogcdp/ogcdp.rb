@@ -186,53 +186,11 @@ class OGX_GCDP
           original = @ors.find_national_local_id_1(lead.id)[0]
           next unless lead.methods.include?(:duplicate_vp)
           case lead.duplicate_vp
-            when 1 then
-              next unless @local_apps_ids2.has_key?(entity)
+            when 1, 2, 3 then
+              next if lead.duplicate_vp == 1 && @local_apps_ids2.has_key?(entity)
               contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
-
-              begin
-                (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
-                original.id_local_2 = nil unless original.nil?
-                national_app1.delete unless national_app1.nil?
-                lead.delete unless lead.nil?
-                original.update unless original.nil?
-                national_app2.id_local_1 = contacted.create
-                national_app2.create
-              rescue => exception
-                puts 'ERROR'
-                puts exception.to_s
-                puts 'ERROR'
-              end
-            when 2 then
-              contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
-
-              begin
-                (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
-                original.id_local_2 = nil unless original.nil?
-                national_app1.delete unless national_app1.nil?
-                lead.delete unless lead.nil?
-                original.update unless original.nil?
-                national_app2.id_local_1 = contacted.create
-                national_app2.create
-              rescue => exception
-                puts 'ERROR'
-                puts exception.to_s
-                puts 'ERROR'
-              end
-            when 3 then
-              contacted = contacteds.new_model(lead.to_h)
-              national_app1 = @national_apps[:app1]
-              national_app1 = national_app1.find_national_local_id_1(lead.id)[0]
-              national_app2 = @national_apps[:app2]
-              national_app2 = national_app2.new_model(lead.to_h)
+              national_app1 = @national_apps[:app1].find_national_local_id_1(lead.id)[0]
+              national_app2 = @national_apps[:app2].new_model(lead.to_h)
 
               begin
                 (Podio::Item.delete(original.id_local_2) unless original.id_local_2.nil?) unless original.nil?
