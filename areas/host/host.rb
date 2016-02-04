@@ -226,37 +226,37 @@ class HOST
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:leads].find_all.each do |lead|
-        update_local_national_helper(iteration, lead)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:leads], lead)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:approach].find_all.each do |approach|
-        update_local_national_helper(iteration, approach)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:approach], approach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:reapproach].find_all.each do |reapproach|
-        update_local_national_helper(iteration, reapproach)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:reapproach],  reapproach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:alignment].find_all.each do |alignment|
-        update_local_national_helper(iteration, alignment)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:alignment], alignment)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:blacklist].find_all.each do |blacklist|
-        update_local_national_helper(iteration, blacklist)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:blacklist], blacklist)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:whitelist].find_all.each do |whitelist|
-        update_local_national_helper(iteration, whitelist)
+        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:whitelist], whitelist)
       end
     end
   end
@@ -304,13 +304,13 @@ class HOST
     end
   end
 
-  def update_local_national_helper(iteration, element)
+  def update_local_national_helper(iteration, view, element)
     original = nil
     case iteration
-      when 0 then original = element.find_national_local_id_1(element.id)
-      when 1 then original = element.find_national_local_id_2(element.id)
-      when 2 then original = element.find_national_local_id_3(element.id)
-      when 3 then original = element.find_national_local_id_4(element.id)
+      when 0 then original = view.find_national_local_id_1(element.id)
+      when 1 then original = view.find_national_local_id_2(element.id)
+      when 2 then original = view.find_national_local_id_3(element.id)
+      when 3 then original = view.find_national_local_id_4(element.id)
       else nil
     end
 
