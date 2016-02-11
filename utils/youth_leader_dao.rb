@@ -85,7 +85,8 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_national_local_id_1(local_id)
       attributes = {:sort_by => 'last_edit_on'}
-      attributes[:filters] = {@fields_name_map[:id_local_1][:id] => {'from'=>local_id,'to'=>local_id}}
+      attributes[:filters] = {@fields_name_map[:id_local_1][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_1)
+      attributes[:filters] = {@fields_name_map[:id_local_gcdp_1][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_gcdp_1)
 
       response = Podio.connection.post do |req|
         req.url "/item/app/#{@app_id}/filter/"
@@ -97,7 +98,8 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_national_local_id_2(local_id)
       attributes = {:sort_by => 'last_edit_on'}
-      attributes[:filters] = {@fields_name_map[:id_local_2][:id] => {'from'=>local_id,'to'=>local_id}}
+      attributes[:filters] = {@fields_name_map[:id_local_2][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_2)
+      attributes[:filters] = {@fields_name_map[:id_local_gip_1][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_gip_1)
 
       response = Podio.connection.post do |req|
         req.url "/item/app/#{@app_id}/filter/"
@@ -109,7 +111,8 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_national_local_id_3(local_id)
       attributes = {:sort_by => 'last_edit_on'}
-      attributes[:filters] = {@fields_name_map[:id_local_3][:id] => {'from'=>local_id,'to'=>local_id}}
+      attributes[:filters] = {@fields_name_map[:id_local_3][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_3)
+      attributes[:filters] = {@fields_name_map[:id_local_gcdp_2][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_gcdp_2)
 
       response = Podio.connection.post do |req|
         req.url "/item/app/#{@app_id}/filter/"
@@ -121,7 +124,8 @@ class YouthLeaderDAO < PodioAppControl
 
     def find_national_local_id_4(local_id)
       attributes = {:sort_by => 'last_edit_on'}
-      attributes[:filters] = {@fields_name_map[:id_local_4][:id] => {'from'=>local_id,'to'=>local_id}}
+      attributes[:filters] = {@fields_name_map[:id_local_4][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_4)
+      attributes[:filters] = {@fields_name_map[:id_local_gip_2][:id] => {'from'=>local_id,'to'=>local_id}} if @fields_name_map.has_key?(:id_local_gip_2)
 
       response = Podio.connection.post do |req|
         req.url "/item/app/#{@app_id}/filter/"
