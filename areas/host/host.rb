@@ -149,9 +149,9 @@ class HOST
 
   def flow
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    #ors_to_local
+    ors_to_local
     for i in 0..3 do
-      update_national_local(i)
+      #update_national_local(i)
       local_to_local(i)
     end
   end
@@ -169,9 +169,9 @@ class HOST
       puts(self.class.name + '.' + __method__.to_s + ' ~ ' + national_ors.local_aiesec.to_s + ' - ' + Time.now.utc.to_s)
 
       local_leads4 = local_leads3 = local_leads2 = nil
-      local_leads2 = @local_apps_ids2[national_ors.local_aiesec][:leads] unless !@local_apps_ids2.has_key?(national_ors.local_aiesec)
-      local_leads3 = @local_apps_ids3[national_ors.local_aiesec][:leads] unless !@local_apps_ids3.has_key?(national_ors.local_aiesec)
-      local_leads4 = @local_apps_ids4[national_ors.local_aiesec][:leads] unless !@local_apps_ids4.has_key?(national_ors.local_aiesec)
+      local_leads2 = @local_apps_ids2[national_ors.local_aiesec][:leads] if @local_apps_ids2.has_key?(national_ors.local_aiesec)
+      local_leads3 = @local_apps_ids3[national_ors.local_aiesec][:leads] if @local_apps_ids3.has_key?(national_ors.local_aiesec)
+      local_leads4 = @local_apps_ids4[national_ors.local_aiesec][:leads] if @local_apps_ids4.has_key?(national_ors.local_aiesec)
 
       local_lead = local_leads.new_model(national_ors.to_h)
       local_lead.lead_date = {'start' => Time.new.strftime('%Y-%m-%d %H:%M:%S')}
@@ -202,9 +202,7 @@ class HOST
         national_ors.update
         national_app1.create
       rescue => exception
-        puts 'ERROR'
         puts exception.to_s
-        puts 'ERROR'
       end
     end
   end
@@ -226,37 +224,37 @@ class HOST
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:leads].find_all.each do |lead|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:leads], lead)
+        update_local_national_helper(iteration, lead)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:approach].find_all.each do |approach|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:approach], approach)
+        update_local_national_helper(iteration, approach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:reapproach].find_all.each do |reapproach|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:reapproach],  reapproach)
+        update_local_national_helper(iteration, reapproach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:alignment].find_all.each do |alignment|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:alignment], alignment)
+        update_local_national_helper(iteration, alignment)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:blacklist].find_all.each do |blacklist|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:blacklist], blacklist)
+        update_local_national_helper(iteration, blacklist)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
       local_apps_ids[iteration][entity][:whitelist].find_all.each do |whitelist|
-        update_local_national_helper(iteration, local_apps_ids[iteration][entity][:whitelist], whitelist)
+        update_local_national_helper(iteration, whitelist)
       end
     end
   end
@@ -304,46 +302,46 @@ class HOST
     end
   end
 
-  def update_local_national_helper(iteration, view, element)
+  def update_local_national_helper(iteration, element)
     original = nil
     case iteration
-      when 0 then original = view.find_national_local_id_1(element.id)
-      when 1 then original = view.find_national_local_id_2(element.id)
-      when 2 then original = view.find_national_local_id_3(element.id)
-      when 3 then original = view.find_national_local_id_4(element.id)
+      when 0 then original = @ors.find_national_local_id_1(element.id)[0]
+      when 1 then original = @ors.find_national_local_id_2(element.id)[0]
+      when 2 then original = @ors.find_national_local_id_3(element.id)[0]
+      when 3 then original = @ors.find_national_local_id_4(element.id)[0]
       else nil
     end
 
-    item1 = Podio::Item(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
-    item2 = Podio::Item(original.id_local_gip_1) unless original.id_local_gip_1.nil?
-    item3 = Podio::Item(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
-    item4 = Podio::Item(original.id_local_gip_2) unless original.id_local_gip_2.nil?
+    item1 = Podio::Item.find(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
+    item2 = Podio::Item.find(original.id_local_gip_1) unless original.id_local_gip_1.nil?
+    item3 = Podio::Item.find(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
+    item4 = Podio::Item.find(original.id_local_gip_2) unless original.id_local_gip_2.nil?
 
     ok = true
     case iteration
       when 0
-        item1.to_h.each_key do |key|
-          (ok = false if item1[key] != item2[key]) unless item2.nil?
-          (ok = false if item1[key] != item3[key]) unless item3.nil?
-          (ok = false if item1[key] != item4[key]) unless item4.nil?
+        for i in 0..item1.attributes[:fields].count
+          (ok = false if item1.attributes[:fields][i].values != item2.attributes[:fields][i].values) unless item2.nil?
+          (ok = false if item1.attributes[:fields][i].values != item3.attributes[:fields][i].values) unless item3.nil?
+          (ok = false if item1.attributes[:fields][i].values != item4.attributes[:fields][i].values) unless item4.nil?
         end
       when 1
-        item2.to_h.each_key do |key|
-          (ok = false if item2[key] != item1[key]) unless item1.nil?
-          (ok = false if item2[key] != item3[key]) unless item3.nil?
-          (ok = false if item2[key] != item4[key]) unless item4.nil?
+        for i in 0..item2.attributes[:fields].count
+          (ok = false if item2.attributes[:fields][i].values != item1.attributes[:fields][i].values) unless item1.nil?
+          (ok = false if item2.attributes[:fields][i].values != item3.attributes[:fields][i].values) unless item3.nil?
+          (ok = false if item2.attributes[:fields][i].values != item4.attributes[:fields][i].values) unless item4.nil?
         end
       when 2
-        item3.to_h.each_key do |key|
-          (ok = false if item3[key] != item1[key]) unless item1.nil?
-          (ok = false if item3[key] != item2[key]) unless item2.nil?
-          (ok = false if item3[key] != item4[key]) unless item4.nil?
+        for i in 0..item3.attributes[:fields].count
+          (ok = false if item3.attributes[:fields][i].values != item1.attributes[:fields][i].values) unless item1.nil?
+          (ok = false if item3.attributes[:fields][i].values != item2.attributes[:fields][i].values) unless item2.nil?
+          (ok = false if item3.attributes[:fields][i].values != item4.attributes[:fields][i].values) unless item4.nil?
         end
       when 3
-        item4.to_h.each_key do |key|
-          (ok = false if item4[key] != item1[key]) unless item1.nil?
-          (ok = false if item4[key] != item2[key]) unless item2.nil?
-          (ok = false if item4[key] != item3[key]) unless item3.nil?
+        for i in 0..item4.attributes[:fields].count
+          (ok = false if item4.attributes[:fields][i].values != item1.attributes[:fields][i].values) unless item1.nil?
+          (ok = false if item4.attributes[:fields][i].values != item2.attributes[:fields][i].values) unless item2.nil?
+          (ok = false if item4.attributes[:fields][i].values != item3.attributes[:fields][i].values) unless item3.nil?
         end
       else nil
     end
@@ -351,36 +349,36 @@ class HOST
     if ok == false
       case iteration
         when 0
-          item1.to_h.each_key do |key|
-            item2[key] = item1[key]
-            item3[key] = item1[key]
-            item4[key] = item1[key]
+          for i in 0..item1.attributes[:fields].count
+            item2.attributes[:fields][i].values = item1.attributes[:fields][i].values unless item2.nil?
+            item3.attributes[:fields][i].values = item1.attributes[:fields][i].values unless item3.nil?
+            item4.attributes[:fields][i].values = item1.attributes[:fields][i].values unless item4.nil?
           end
         when 1
-          item2.to_h.each_key do |key|
-            item1[key] = item2[key]
-            item3[key] = item2[key]
-            item4[key] = item2[key]
+          for i in 0..item2.attributes[:fields].count
+            item1.attributes[:fields][i].values = item2.attributes[:fields][i].values unless item1.nil?
+            item3.attributes[:fields][i].values = item2.attributes[:fields][i].values unless item3.nil?
+            item4.attributes[:fields][i].values = item2.attributes[:fields][i].values unless item4.nil?
           end
         when 2
-          item3.to_h.each_key do |key|
-            item1[key] = item3[key]
-            item2[key] = item3[key]
-            item4[key] = item3[key]
+          for i in 0..item3.attributes[:fields].count
+            item1.attributes[:fields][i].values = item3.attributes[:fields][i].values unless item1.nil?
+            item2.attributes[:fields][i].values = item3.attributes[:fields][i].values unless item2.nil?
+            item4.attributes[:fields][i].values = item3.attributes[:fields][i].values unless item3.nil?
           end
         when 3
-          item4.to_h.each_key do |key|
-            item1[key] = item4[key]
-            item2[key] = item4[key]
-            item3[key] = item4[key]
+          for i in 0..item4.attributes[:fields].count
+            item1.attributes[:fields][i].values = item4.attributes[:fields][i].values unless item1.nil?
+            item2.attributes[:fields][i].values = item4.attributes[:fields][i].values unless item2.nil?
+            item3.attributes[:fields][i].values = item4.attributes[:fields][i].values unless item3.nil?
           end
         else nil
       end
       begin
-        item1.update
-        item2.update
-        item3.update
-        item4.update
+        item1.update unless item1.nil?
+        item2.update unless item2.nil?
+        item3.update unless item3.nil?
+        item4.update unless item4.nil?
       rescue => excetion
         puts excetion.to_s
       end
@@ -433,9 +431,7 @@ class HOST
       original.update
 
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
   end
 end

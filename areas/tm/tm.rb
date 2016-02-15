@@ -113,9 +113,7 @@ class TM
         national_app1.create
         national_ors.update
       rescue => exception
-        puts 'ERROR'
         puts exception.to_s
-        puts 'ERROR'
       end
     end
   end
@@ -155,9 +153,7 @@ class TM
             national_app2.id_local = approached.create
             national_app2.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -180,9 +176,7 @@ class TM
             national_app2_5.id_local = rapproached.create
             national_app2_5.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
 
@@ -199,9 +193,7 @@ class TM
             national_app3.id_local = selected.create
             national_app3.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
 
         end
@@ -218,9 +210,7 @@ class TM
             national_app2_5.delete unless national_app2_5.nil?
             rapproached.delete unless rapproached.nil?
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
 
@@ -240,9 +230,7 @@ class TM
             national_app3.id_local = selected.create
             national_app3.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -263,9 +251,7 @@ class TM
             national_app2_5.id_local = rapproached.create
             national_app2_5.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
 
@@ -277,9 +263,7 @@ class TM
             national_app3.delete unless national_app3.nil?
             selected.delete unless selected.nil?
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
 
@@ -313,9 +297,7 @@ class TM
             national_app5.id_local = client.create
             national_app5.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end

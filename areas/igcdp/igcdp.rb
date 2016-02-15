@@ -140,9 +140,7 @@ class ICX_GCDP
             national.create
             newbie.update
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         else
           puts 'Novo Open que já existe nacionalmente' #TODO Mensagem
@@ -160,9 +158,7 @@ class ICX_GCDP
             local_open.update
             national_open.update
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -177,9 +173,7 @@ class ICX_GCDP
           begin
             local_project.update
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -203,9 +197,7 @@ class ICX_GCDP
 
         approved.delete
       rescue => exception
-        puts 'ERROR'
         puts exception.to_s
-        puts 'ERROR'
       end
 
     end
@@ -227,9 +219,7 @@ class ICX_GCDP
         end
         closed.delete
       rescue => exception
-        puts 'ERROR'
         puts exception.to_s
-        puts 'ERROR'
       end
     end
   end

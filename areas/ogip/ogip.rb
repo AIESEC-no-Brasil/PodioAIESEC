@@ -151,9 +151,7 @@ class OGX_GIP
         national_app1.create
         national_ors.update
       rescue => exception
-        puts 'ERROR'
         puts exception.to_s
-        puts 'ERROR'
       end
     end
   end
@@ -205,9 +203,7 @@ class OGX_GIP
                 national_app2.id_local_1 = contacted.create
                 national_app2.create
               rescue => exception
-                puts 'ERROR'
                 puts exception.to_s
-                puts 'ERROR'
               end
             when 4 then
               begin
@@ -215,9 +211,7 @@ class OGX_GIP
                 original.id_local_1 = nil unless original.nil?
                 original.update unless original.nil?
               rescue => exception
-                puts 'ERROR'
                 puts exception.to_s
-                puts 'ERROR'
               end
             else nil
           end
@@ -240,9 +234,7 @@ class OGX_GIP
             national_app3.id_local_1 = epi.create
             national_app3.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -263,9 +255,7 @@ class OGX_GIP
             national_app4.id_local_1 = open.create
             national_app4.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -287,9 +277,7 @@ class OGX_GIP
             national_app5.id_local_1 = ip.create
             national_app5.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -310,9 +298,7 @@ class OGX_GIP
             national_app6.id_local_1 = ma.create
             national_app6.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -333,9 +319,7 @@ class OGX_GIP
             national_app7.id_local_1 = re.create
             national_app7.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -356,9 +340,7 @@ class OGX_GIP
             national_app8.id_local_1 = co.create
             national_app8.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -402,9 +384,7 @@ class OGX_GIP
               begin
                 lead.delete unless lead.nil?
               rescue => exception
-                puts 'ERROR'
                 puts exception.to_s
-                puts 'ERROR'
               end
             when 3 then
               contacted = contacteds.new_model(lead.to_h)
@@ -420,9 +400,7 @@ class OGX_GIP
                 national_app2.id_local_2 = contacted.create
                 national_app2.create
               rescue => exception
-                puts 'ERROR'
                 puts exception.to_s
-                puts 'ERROR'
               end
             else nil
           end
@@ -445,9 +423,7 @@ class OGX_GIP
             national_app3.id_local_2 = epi.create
             national_app3.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -468,9 +444,7 @@ class OGX_GIP
             national_app4.id_local_2 = open.create
             national_app4.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -492,9 +466,7 @@ class OGX_GIP
             national_app5.id_local_2 = ip.create
             national_app5.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -515,9 +487,7 @@ class OGX_GIP
             national_app6.id_local_2 = ma.create
             national_app6.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -538,9 +508,7 @@ class OGX_GIP
             national_app7.id_local_2 = re.create
             national_app7.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end
@@ -561,9 +529,7 @@ class OGX_GIP
             national_app8.id_local_2 = co.create
             national_app8.create
           rescue => exception
-            puts 'ERROR'
             puts exception.to_s
-            puts 'ERROR'
           end
         end
       end

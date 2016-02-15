@@ -37,9 +37,7 @@ class GlobalTalentDAO < YouthLeaderDAO
           global_talent.first_contact_responsable.nil? ||
           global_talent.approach_channel.nil?
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
 	end
 
@@ -48,9 +46,7 @@ class GlobalTalentDAO < YouthLeaderDAO
       true unless global_talent.epi_date.nil? ||
           global_talent.epi_responsable.nil?
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
 	end
 
@@ -60,9 +56,7 @@ class GlobalTalentDAO < YouthLeaderDAO
       true unless global_talent.link_to_expa.nil? ||
           global_talent.ep_manager.nil?
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
 	end
 
@@ -70,9 +64,7 @@ class GlobalTalentDAO < YouthLeaderDAO
     begin
       say_yes?(global_talent.applying)
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
 	end
 
@@ -83,9 +75,7 @@ class GlobalTalentDAO < YouthLeaderDAO
           global_talent.lc_host.nil? ||
           global_talent.sub_product.nil?
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
 	end
 
@@ -95,9 +85,7 @@ class GlobalTalentDAO < YouthLeaderDAO
           global_talent.realize_date.nil? ||
           !say_yes?(global_talent.was_in_ops)
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
   end
 
@@ -106,9 +94,7 @@ class GlobalTalentDAO < YouthLeaderDAO
       true unless global_talent.complete_date.nil? ||
           !say_yes(global_talent.join_ris)
     rescue => exception
-      puts 'ERROR'
       puts exception.to_s
-      puts 'ERROR'
     end
   end
 end
