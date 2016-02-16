@@ -266,6 +266,7 @@ class HOST
       next if entities[iteration].nil?
       entity = entities[iteration]
       local_apps_ids = [@local_apps_ids1, @local_apps_ids2, @local_apps_ids3, @local_apps_ids4]
+      next if entity.nil?
 
       abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:leads].is_a?(HostDAO)
       abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:approach].is_a?(HostDAO)
