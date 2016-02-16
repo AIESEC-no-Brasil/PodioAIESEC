@@ -399,7 +399,7 @@ class HOST
     end
 
     begin
-      if entities[0].has_key?(entity)
+      if entities[0].include?(entity)
         to_be_created = @local_apps_ids1[entity][app].new_model(element.to_h)
         Podio::Item.delete(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
         original.id_local_gcdp_1 = to_be_created.create
@@ -407,7 +407,7 @@ class HOST
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      if entities[1].has_key?(entity)
+      if entities[1].include?(entity)
         to_be_created = @local_apps_ids2[entity][app].new_model(element.to_h)
         Podio::Item.delete(original.id_local_gip_1) unless original.id_local_gip_1.nil?
         original.id_local_gip_1 = to_be_created.create
@@ -415,7 +415,7 @@ class HOST
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      if entities[2].has_key?(entity)
+      if entities[2].include?(entity)
         to_be_created = @local_apps_ids3[entity][app].new_model(element.to_h)
         Podio::Item.delete(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
         original.id_local_gcdp_2 = to_be_created.create
@@ -423,7 +423,7 @@ class HOST
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      if entities[3].has_key?(entity)
+      if entities[3].include?(entity)
         to_be_created = @local_apps_ids4[entity][app].new_model(element.to_h)
         Podio::Item.delete(original.id_local_gip_2) unless original.id_local_gip_2.nil?
         original.id_local_gip_2 = to_be_created.create
