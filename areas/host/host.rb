@@ -71,7 +71,7 @@ class HOST
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j) || apps.workspace_id2_calculated(j) || apps.workspace_id3_calculated(j) || apps.workspace_id4_calculated(j)
       for i in 0...spaces.total_count
-        next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil?)
+        next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil? || !spaces.id3(i).nil? || !spaces.id4(i).nil?)
         entity = spaces.entity(i)
 
         if spaces.id(i) == work_id &&
