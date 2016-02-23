@@ -261,7 +261,7 @@ class TM
 
           begin
             national_app3.delete unless national_app3.nil?
-            selected.delete unless selected.nil?
+            selection.delete unless selection.nil?
           rescue => exception
             puts exception.to_s
           end
