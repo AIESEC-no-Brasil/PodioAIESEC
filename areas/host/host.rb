@@ -223,37 +223,43 @@ class HOST
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:leads].find_all.each do |lead|
+      leads = local_apps_ids[iteration][entity][:leads].find_all
+      leads.each do |lead|
         update_local_national_helper(iteration, lead)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:approach].find_all.each do |approach|
+      approaches = local_apps_ids[iteration][entity][:approach].find_all
+      approaches.each do |approach|
         update_local_national_helper(iteration, approach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:reapproach].find_all.each do |reapproach|
+      reapproaches = local_apps_ids[iteration][entity][:reapproach].find_all
+      reapproaches.each do |reapproach|
         update_local_national_helper(iteration, reapproach)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:alignment].find_all.each do |alignment|
+      aligns = local_apps_ids[iteration][entity][:alignment].find_all
+      aligns.each do |alignment|
         update_local_national_helper(iteration, alignment)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:blacklist].find_all.each do |blacklist|
+      blacklists = local_apps_ids[iteration][entity][:blacklist].find_all
+      blacklists.each do |blacklist|
         update_local_national_helper(iteration, blacklist)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:whitelist].find_all.each do |whitelist|
+      whitelists = local_apps_ids[iteration][entity][:whitelist].find_all
+      whitelists.each do |whitelist|
         update_local_national_helper(iteration, whitelist)
       end
     end
@@ -277,27 +283,31 @@ class HOST
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:leads].find_all.each do |lead|
+      leads = local_apps_ids[iteration][entity][:leads].find_all
+      leads.each do |lead|
         local_to_local_helper(iteration, lead, :approach) if local_apps_ids[iteration][entity][:leads].go_to_approach?(lead)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:approach].find_all.each do |approached|
+      approaches = local_apps_ids[iteration][entity][:approach].find_all
+      approaches.each do |approached|
         local_to_local_helper(iteration, approached, :reapproach) if local_apps_ids[iteration][entity][:approach].go_to_reapproach?(approached)
         local_to_local_helper(iteration, approached, :alignment) if local_apps_ids[iteration][entity][:approach].go_to_alignment?(approached)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:alignment].find_all.each do |aligned|
+      aligns = local_apps_ids[iteration][entity][:alignment].find_all
+      aligns.each do |aligned|
         local_to_local_helper(iteration, aligned, :blacklist) if local_apps_ids[iteration][entity][:alignment].go_to_blacklist?(aligned)
         local_to_local_helper(iteration, aligned, :whitelist) if local_apps_ids[iteration][entity][:alignment].go_to_whitelist?(aligned)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      local_apps_ids[iteration][entity][:reapproach].find_all.each do |reapproached|
+      reapproaches = local_apps_ids[iteration][entity][:reapproach].find_all
+      reapproaches.each do |reapproached|
         local_to_local_helper(iteration, reapproached, :alignment) if local_apps_ids[iteration][entity][:reapproach].finally_go_to_alignment?(reapproached)
       end
     end
