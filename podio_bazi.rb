@@ -99,11 +99,11 @@ class PodioBAZI
     authenticate
     podioDatabase = ControlDatabase.new
 
-    #TM.new(podioDatabase)
-    #OGX_GCDP.new(podioDatabase)
-    #OGX_GIP.new(podioDatabase)
+    TM.new(podioDatabase)
+    OGX_GCDP.new(podioDatabase)
+    OGX_GIP.new(podioDatabase)
     HOST.new(podioDatabase)
-    #ICX_GCDP.new(podioDatabase)
+    ICX_GCDP.new(podioDatabase)
     #GIPOpportunity.new(podioDatabase.workspaces, podioDatabase.apps)
 
     #TODO fin
