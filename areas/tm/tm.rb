@@ -41,18 +41,21 @@ class TM
     end
     @entities1.uniq!
 
+    @ors = YouthTalentDAO.new(14573025)
+    @national_apps[:app1] = YouthTalentDAO.new(14573027)
+    @national_apps[:app2] = YouthTalentDAO.new(14573031)
+    @national_apps[:app3] = YouthTalentDAO.new(14573035)
+    @national_apps[:app4] = YouthTalentDAO.new(14573051)
+    @national_apps[:app5] = YouthTalentDAO.new(14573066)
+    @national_apps[:app2_5] = YouthTalentDAO.new(14573032)
+
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j)
       for i in 0...spaces.total_count
         next unless !work_id.nil? && !spaces.id(i).nil?
         entity = spaces.entity(i)
 
-        if spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:ors] &&
-            spaces.area(i) == $enum_area[:tm]
-          @ors = YouthTalentDAO.new(apps.id(j))
-
-        elsif !entity.nil? &&
+        if !entity.nil? &&
               spaces.id(i) == work_id &&
               spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:tm]
@@ -63,18 +66,6 @@ class TM
             when $enum_TM_apps_name[:app4] then @local_apps_ids1[entity].merge!({:app4 => YouthTalentDAO.new(apps.id(j))})
             when $enum_TM_apps_name[:app5] then @local_apps_ids1[entity].merge!({:app5 => YouthTalentDAO.new(apps.id(j))})
             when $enum_TM_apps_name[:app2_5] then @local_apps_ids1[entity].merge!({:app2_5 => YouthTalentDAO.new(apps.id(j))})
-          end
-
-        elsif spaces.id(i) == work_id &&
-              spaces.type(i) == $enum_type[:national] &&
-              spaces.area(i) == $enum_area[:tm]
-          case apps.name(j)
-            when $enum_TM_apps_name[:app1] then @national_apps[:app1] = YouthTalentDAO.new(apps.id(j))
-            when $enum_TM_apps_name[:app2] then @national_apps[:app2] = YouthTalentDAO.new(apps.id(j))
-            when $enum_TM_apps_name[:app3] then @national_apps[:app3] = YouthTalentDAO.new(apps.id(j))
-            when $enum_TM_apps_name[:app4] then @national_apps[:app4] = YouthTalentDAO.new(apps.id(j))
-            when $enum_TM_apps_name[:app5] then @national_apps[:app5] = YouthTalentDAO.new(apps.id(j))
-            when $enum_TM_apps_name[:app2_5] then @national_apps[:app2_5] = YouthTalentDAO.new(apps.id(j))
           end
         end
       end

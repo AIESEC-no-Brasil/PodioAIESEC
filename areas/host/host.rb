@@ -68,18 +68,22 @@ class HOST
     @entities3.uniq!
     @entities4.uniq!
 
+    @ors = HostDAO.new(14576062)
+
+    @national_apps[:leads] = HostDAO.new(14871523)
+    @national_apps[:approach] = HostDAO.new(14871524)
+    @national_apps[:reapproach] = HostDAO.new(14871526)
+    @national_apps[:alignment] = HostDAO.new(14871531)
+    @national_apps[:blacklist] = HostDAO.new(14871532)
+    @national_apps[:whitelist] = HostDAO.new(14871534)
+
     for j in 0...apps.total_count
       work_id = apps.workspace_id_calculated(j) || apps.workspace_id2_calculated(j) || apps.workspace_id3_calculated(j) || apps.workspace_id4_calculated(j)
       for i in 0...spaces.total_count
         next unless !work_id.nil? && (!spaces.id(i).nil? || !spaces.id2(i).nil? || !spaces.id3(i).nil? || !spaces.id4(i).nil?)
         entity = spaces.entity(i)
 
-        if spaces.id(i) == work_id &&
-            spaces.type(i) == $enum_type[:ors] &&
-            spaces.area(i) == $enum_area[:host]
-          @ors = HostDAO.new(apps.id(j))
-
-        elsif !entity.nil? &&
+        if !entity.nil? &&
               spaces.id(i) == work_id &&
               spaces.type(i) == $enum_type[:local] &&
               spaces.area(i) == $enum_area[:host]
@@ -129,18 +133,6 @@ class HOST
             when $enum_HOST_apps_name[:alignment] then @local_apps_ids4[entity].merge!({:alignment => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:blacklist] then @local_apps_ids4[entity].merge!({:blacklist => HostDAO.new(apps.id(j))})
             when $enum_HOST_apps_name[:whitelist] then @local_apps_ids4[entity].merge!({:whitelist => HostDAO.new(apps.id(j))})
-          end
-
-        elsif spaces.id(i) == work_id &&
-              spaces.type(i) == $enum_type[:national] &&
-              spaces.area(i) == $enum_area[:host]
-          case apps.name(j)
-            when $enum_HOST_apps_name[:leads] then @national_apps[:leads] = HostDAO.new(apps.id(j))
-            when $enum_HOST_apps_name[:approach] then @national_apps[:approach] = HostDAO.new(apps.id(j))
-            when $enum_HOST_apps_name[:reapproach] then @national_apps[:reapproach] = HostDAO.new(apps.id(j))
-            when $enum_HOST_apps_name[:alignment] then @national_apps[:alignment] = HostDAO.new(apps.id(j))
-            when $enum_HOST_apps_name[:blacklist] then @national_apps[:blacklist] = HostDAO.new(apps.id(j))
-            when $enum_HOST_apps_name[:whitelist] then @national_apps[:whitelist] = HostDAO.new(apps.id(j))
           end
         end
       end
