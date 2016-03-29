@@ -144,11 +144,11 @@ class HOST
     ors_to_local
     for i in 0..3 do
       #update_national_local(i)
-      local_to_local(i)
+      local_to_local
     end
   end
 
-  # Migrate leads from the ORS app to all Local Leads Apps
+  # Migrate leads from the ORS next_app to all Local Leads Apps
   def ors_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
     models_list = @ors.find_ors_to_local_lead
@@ -258,49 +258,45 @@ class HOST
   end
 
   # For all local apps, move the registers through customer flow.
-  def local_to_local(iteration)
+  def local_to_local
     puts(self.class.name + '.' + __method__.to_s + ' - ' + Time.now.utc.to_s)
-    for entities in @entities1.zip(@entities2, @entities3, @entities4) do
-      next if entities[iteration].nil?
-      entity = entities[iteration]
-      local_apps_ids = [@local_apps_ids1, @local_apps_ids2, @local_apps_ids3, @local_apps_ids4]
-      next if entity.nil?
+    @entities1.each do |entity|
 
-      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:leads].is_a?(HostDAO)
-      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:approach].is_a?(HostDAO)
-      abort('Wrong parameter for reapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:reapproach].is_a?(HostDAO)
-      abort('Wrong parameter for alignment in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:alignment].is_a?(HostDAO)
-      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:blacklist].is_a?(HostDAO)
-      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s + ' and iteration ' + iteration.to_s) unless local_apps_ids[iteration][entity][:whitelist].is_a?(HostDAO)
+      abort('Wrong parameter for leads in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:leads].is_a?(HostDAO)
+      abort('Wrong parameter for approach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:approach].is_a?(HostDAO)
+      abort('Wrong parameter for reapproach in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:reapproach].is_a?(HostDAO)
+      abort('Wrong parameter for alignment in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:alignment].is_a?(HostDAO)
+      abort('Wrong parameter for blacklist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:blacklist].is_a?(HostDAO)
+      abort('Wrong parameter for whitelist in ' + self.class.name + '.' + __method__.to_s + ' at entity ' + entity.to_s) unless @local_apps_ids1[entity][:whitelist].is_a?(HostDAO)
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      leads = local_apps_ids[iteration][entity][:leads].find_all
+      leads = @local_apps_ids1[entity][:leads].find_all
       leads.each do |lead|
-        local_to_local_helper(iteration, lead, :approach) if local_apps_ids[iteration][entity][:leads].go_to_approach?(lead)
+        local_to_local_helper(entity, lead,:leads, :approach) if @local_apps_ids1[entity][:leads].go_to_approach?(lead)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      approaches = local_apps_ids[iteration][entity][:approach].find_all
+      approaches = @local_apps_ids1[entity][:approach].find_all
       approaches.each do |approached|
-        local_to_local_helper(iteration, approached, :reapproach) if local_apps_ids[iteration][entity][:approach].go_to_reapproach?(approached)
-        local_to_local_helper(iteration, approached, :alignment) if local_apps_ids[iteration][entity][:approach].go_to_alignment?(approached)
+        local_to_local_helper(entity, approached, :approach, :reapproach) if @local_apps_ids1[entity][:approach].go_to_reapproach?(approached)
+        local_to_local_helper(entity, approached, :approach, :alignment) if @local_apps_ids1[entity][:approach].go_to_alignment?(approached)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      aligns = local_apps_ids[iteration][entity][:alignment].find_all
+      aligns = @local_apps_ids1[entity][:alignment].find_all
       aligns.each do |aligned|
-        local_to_local_helper(iteration, aligned, :blacklist) if local_apps_ids[iteration][entity][:alignment].go_to_blacklist?(aligned)
-        local_to_local_helper(iteration, aligned, :whitelist) if local_apps_ids[iteration][entity][:alignment].go_to_whitelist?(aligned)
+        local_to_local_helper(entity, aligned, :alignment, :blacklist) if @local_apps_ids1[entity][:alignment].go_to_blacklist?(aligned)
+        local_to_local_helper(entity, aligned, :alignment, :whitelist) if @local_apps_ids1[entity][:alignment].go_to_whitelist?(aligned)
       end
 
       sleep(3600) unless $podio_flag == true
       $podio_flag = true
-      reapproaches = local_apps_ids[iteration][entity][:reapproach].find_all
+      reapproaches = @local_apps_ids1[entity][:reapproach].find_all
       reapproaches.each do |reapproached|
-        local_to_local_helper(iteration, reapproached, :alignment) if local_apps_ids[iteration][entity][:reapproach].finally_go_to_alignment?(reapproached)
+        local_to_local_helper(entity, reapproached, :reapproach, :alignment) if @local_apps_ids1[entity][:reapproach].finally_go_to_alignment?(reapproached)
       end
     end
   end
@@ -389,50 +385,61 @@ class HOST
   end
 
 
-  def local_to_local_helper(iteration, element, app)
-    entities = @entities1.zip(@entities2, @entities3, @entities4)
-    entity = entities[iteration]
-
-    case iteration
-      when 0 then original = @ors.find_national_local_id_1(element.id)[0]
-      when 1 then original = @ors.find_national_local_id_2(element.id)[0]
-      when 2 then original = @ors.find_national_local_id_3(element.id)[0]
-      when 3 then original = @ors.find_national_local_id_4(element.id)[0]
-      else nil
-    end
-
+  def local_to_local_helper(entity, element, current_app, next_app)
+    original = @national_apps[current_app].find_national_local_id_1(element.id).first
+    to_be_created = @local_apps_ids1[entity][next_app].new_model(element.to_h)
+    to_be_created_national = @national_apps[next_app].new_model(element.to_h)
     begin
-      if entities[0].include?(entity)
-        to_be_created = @local_apps_ids1[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
-        original.id_local_gcdp_1 = to_be_created.create
-      end
+      Podio::Item.delete(original.id_local_gcdp_1) unless original.nil? || original.id_local_gcdp_1.nil?
+      element.delete
+      to_be_created_national.id_local_gcdp_1 = to_be_created.create
+      to_be_created_national.create
 
-      sleep(3600) unless $podio_flag == true
-      $podio_flag = true
-      if entities[1].include?(entity)
-        to_be_created = @local_apps_ids2[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_gip_1) unless original.id_local_gip_1.nil?
-        original.id_local_gip_1 = to_be_created.create
-      end
-
-      sleep(3600) unless $podio_flag == true
-      $podio_flag = true
-      if entities[2].include?(entity)
-        to_be_created = @local_apps_ids3[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
-        original.id_local_gcdp_2 = to_be_created.create
-      end
-
-      sleep(3600) unless $podio_flag == true
-      $podio_flag = true
-      if entities[3].include?(entity)
-        to_be_created = @local_apps_ids4[entity][app].new_model(element.to_h)
-        Podio::Item.delete(original.id_local_gip_2) unless original.id_local_gip_2.nil?
-        original.id_local_gip_2 = to_be_created.create
-      end
-      original.update
-
+    #
+    #
+    #entities = @entities1.zip(@entities2, @entities3, @entities4)
+    #entity = entities[iteration]
+    #
+    #case iteration
+    #  when 0 then original = @ors.find_national_local_id_1(element.id)[0]
+    #  when 1 then original = @ors.find_national_local_id_2(element.id)[0]
+    #  when 2 then original = @ors.find_national_local_id_3(element.id)[0]
+    #  when 3 then original = @ors.find_national_local_id_4(element.id)[0]
+    #  else nil
+    #end
+    #
+    #begin
+    #  if entities[0].include?(entity)
+    #    to_be_created = @local_apps_ids1[entity][next_app].new_model(element.to_h)
+    #    Podio::Item.delete(original.id_local_gcdp_1) unless original.id_local_gcdp_1.nil?
+    #    original.id_local_gcdp_1 = to_be_created.create
+    #  end
+    #
+    #  sleep(3600) unless $podio_flag == true
+    #  $podio_flag = true
+    #  if entities[1].include?(entity)
+    #    to_be_created = @local_apps_ids2[entity][next_app].new_model(element.to_h)
+    #    Podio::Item.delete(original.id_local_gip_1) unless original.id_local_gip_1.nil?
+    #    original.id_local_gip_1 = to_be_created.create
+    #  end
+    #
+    #  sleep(3600) unless $podio_flag == true
+    #  $podio_flag = true
+    #  if entities[2].include?(entity)
+    #    to_be_created = @local_apps_ids3[entity][next_app].new_model(element.to_h)
+    #    Podio::Item.delete(original.id_local_gcdp_2) unless original.id_local_gcdp_2.nil?
+    #    original.id_local_gcdp_2 = to_be_created.create
+    # end
+    #
+    # sleep(3600) unless $podio_flag == true
+    #  $podio_flag = true
+    #  if entities[3].include?(entity)
+    #    to_be_created = @local_apps_ids4[entity][next_app].new_model(element.to_h)
+    #    Podio::Item.delete(original.id_local_gip_2) unless original.id_local_gip_2.nil?
+    #    original.id_local_gip_2 = to_be_created.create
+    #  end
+    #  original.update
+    #
     rescue => exception
       puts exception.to_s
     end

@@ -99,7 +99,7 @@ class PodioBAZI
     authenticate
     podioDatabase = ControlDatabase.new
 
-    TM.new(podioDatabase)
+    #TM.new(podioDatabase)
     #OGX_GCDP.new(podioDatabase)
     #OGX_GIP.new(podioDatabase)
     HOST.new(podioDatabase)
