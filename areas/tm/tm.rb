@@ -265,10 +265,14 @@ class TM
           national_app3 = national_app3.find_national_local_id(selection.id)[0]
           national_app4 = national_app4.new_model(selection.to_h)
 
-          national_app4.id_local = inducted.create
-          national_app4.create
-          national_app3.delete unless national_app3.nil?
-          selection.delete unless selection.nil?
+          begin
+            national_app4.id_local = inducted.create
+            national_app4.create
+            national_app3.delete unless national_app3.nil?
+            selection.delete unless selection.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
 
@@ -315,10 +319,14 @@ class TM
           national_app2 = national_app2.new_model(lead.to_h)
 
 
-          national_app2.id_local = approached.create
-          national_app2.create
-          national_app1.delete unless national_app1.nil?
-          lead.delete unless lead.nil?
+          begin
+            national_app2.id_local = approached.create
+            national_app2.create
+            national_app1.delete unless national_app1.nil?
+            lead.delete unless lead.nil?
+          rescue => exception
+            exception.to_s
+          end
         end
       end
     end
@@ -343,12 +351,16 @@ class TM
           national_app2 = national_app2.find_national_local_id(approached.id)[0]
           national_app2_5 = national_app2_5.new_model(approached.to_h)
 
-          rapproached.approaches_number = 1
-          national_app2_5.id_local = rapproached.create
-          national_app2_5.approaches_number = 1
-          national_app2_5.create
-          national_app2.delete unless national_app2.nil?
-          approached.delete unless approached.nil?
+          begin
+            rapproached.approaches_number = 1
+            national_app2_5.id_local = rapproached.create
+            national_app2_5.approaches_number = 1
+            national_app2_5.create
+            national_app2.delete unless national_app2.nil?
+            approached.delete unless approached.nil?
+          rescue => exception
+            exception.to_s
+          end
         end
       end
     end
@@ -368,8 +380,12 @@ class TM
           national_app2_5 = @national_apps[:app2_5]
           national_app2_5 = national_app2_5.find_national_local_id(rapproached.id)[0]
 
-          national_app2_5.delete unless national_app2_5.nil?
-          rapproached.delete unless rapproached.nil?
+          begin
+            national_app2_5.delete unless national_app2_5.nil?
+            rapproached.delete unless rapproached.nil?
+          rescue => exception
+            exception.to_s
+          end
         end
       end
     end
@@ -395,14 +411,18 @@ class TM
           national_app3 = national_app3.new_model(rapproached.to_h)
 
 
-          selected.responsable = rapproached.responsable_new_contact
-          selected.first_approach_date = rapproached.next_contact_date
-          national_app3.id_local = selected.create
-          national_app3.responsable = rapproached.responsable_new_contact
-          national_app3.first_approach_date = rapproached.next_contact_date
-          national_app3.create
-          national_app2_5.delete unless national_app2_5.nil?
-          rapproached.delete unless rapproached.nil?
+          begin
+            selected.responsable = rapproached.responsable_new_contact
+            selected.first_approach_date = rapproached.next_contact_date
+            national_app3.id_local = selected.create
+            national_app3.responsable = rapproached.responsable_new_contact
+            national_app3.first_approach_date = rapproached.next_contact_date
+            national_app3.create
+            national_app2_5.delete unless national_app2_5.nil?
+            rapproached.delete unless rapproached.nil?
+          rescue => exception
+            exception.to_s
+          end
         end
       end
     end
@@ -427,10 +447,14 @@ class TM
           national_app2 = national_app2.find_national_local_id(approached.id)[0]
           national_app3 = national_app3.new_model(approached.to_h)
 
-          national_app3.id_local = selected.create
-          national_app3.create
-          national_app2.delete unless national_app2.nil?
-          approached.delete unless approached.nil?
+          begin
+            national_app3.id_local = selected.create
+            national_app3.create
+            national_app2.delete unless national_app2.nil?
+            approached.delete unless approached.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
     end
@@ -455,10 +479,14 @@ class TM
           national_app3 = national_app3.find_national_local_id(selected.id)[0]
           national_app2_5 = national_app2_5.new_model(selected.to_h)
 
-          national_app2_5.id_local = rapproached.create
-          national_app2_5.create
-          national_app3.delete unless national_app3.nil?
-          selected.delete unless selected.nil?
+          begin
+            national_app2_5.id_local = rapproached.create
+            national_app2_5.create
+            national_app3.delete unless national_app3.nil?
+            selected.delete unless selected.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
     end
@@ -478,8 +506,12 @@ class TM
           national_app3 = @national_apps[:app3]
           national_app3 = national_app3.find_national_local_id(selected.id)[0]
 
-          national_app3.delete unless national_app3.nil?
-          selected.delete unless selected.nil?
+          begin
+            national_app3.delete unless national_app3.nil?
+            selected.delete unless selected.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
     end
@@ -504,10 +536,14 @@ class TM
           national_app3 = national_app3.find_national_local_id(selected.id)[0]
           national_app4 = national_app4.new_model(selected.to_h)
 
-          national_app4.id_local = inducted.create
-          national_app4.create
-          national_app3.delete unless national_app3.nil?
-          selected.delete unless selected.nil?
+          begin
+            national_app4.id_local = inducted.create
+            national_app4.create
+            national_app3.delete unless national_app3.nil?
+            selected.delete unless selected.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
     end
@@ -532,10 +568,14 @@ class TM
           national_app4 = national_app4.find_national_local_id(selected.id)[0]
           national_app5 = national_app5.new_model(selected.to_h)
 
-          national_app5.id_local = client.create
-          national_app5.create
-          national_app4.delete unless national_app4.nil?
-          inducted.delete unless inducted.nil?
+          begin
+            national_app5.id_local = client.create
+            national_app5.create
+            national_app4.delete unless national_app4.nil?
+            inducted.delete unless inducted.nil?
+          rescue => exception
+            puts exception.to_s
+          end
         end
       end
     end
