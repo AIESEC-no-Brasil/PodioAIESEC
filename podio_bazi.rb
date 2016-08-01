@@ -100,7 +100,7 @@ class PodioBAZI
     podioDatabase = ControlDatabase.new
 
     HOST.new(podioDatabase)
-    TM.new(podioDatabase)
+    #TM.new(podioDatabase)
     #OGX_GCDP.new(podioDatabase)
     #OGX_GIP.new(podioDatabase)
 
